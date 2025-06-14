@@ -1,0 +1,25 @@
+# Relative to backend/
+# Sensitive local profile stays ignored from repo root: backend/src/main/resources/application-local.properties
+
+# Maven
+target/
+
+# Maven Wrapper (distributionType=only-script — jar not shipped in-repo)
+.mvn/wrapper/maven-wrapper.jar
+
+build/
+out/
+
+.DS_Store
+*.DS_Store
+
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+*.log
+logs/
