@@ -1,0 +1,27 @@
+# Copy to application-local.properties (gitignored via repo-root .gitignore).
+
+spring.application.name=backend
+spring.config.activate.on-profile=local
+
+server.port=8080
+
+# Matches Vite (5173) and Compose-mapped storefront (3000) — tweak if your origin differs.
+app.cors.allowed-origins=http://localhost:5173,http://localhost:3000
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/cthdb
+spring.datasource.username=postgres
+spring.datasource.password=YOUR_LOCAL_POSTGRES_PASSWORD
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.generate-ddl=true
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+
+logging.level.org.hibernate.SQL=INFO
+logging.level.org.hibernate.orm.deprecation=ERROR
+logging.level.org.hibernate.type.descriptor.sql.BasicExtractor=TRACE
+logging.level.org.hibernate.orm.jdbc.bind=INFO
+
+# Generate a long random secret for local dev; do not reuse production secrets.
+application.security.jwt.secret-key=YOUR_BASE64_OR_HEX_SECRET_AT_LEAST_256_BITS
+application.security.jwt.expiration=86400000
