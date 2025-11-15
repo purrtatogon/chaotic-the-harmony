@@ -1,0 +1,23 @@
+section,key,title,content
+NAV,main_nav_json,,"[{""id"":""home"",""label"":""Home"",""to"":""/""},{""id"":""music"",""label"":""Music"",""to"":""/music"",""items"":[{""label"":""Albums"",""to"":""/music/albums""},{""label"":""EPs"",""to"":""/music/eps""}]},{""id"":""about"",""label"":""About"",""to"":""/about"",""items"":[{""label"":""Our Story"",""to"":""/about""},{""label"":""Mission & Values"",""to"":""/about#mission""},{""label"":""Tour Dates"",""to"":""/tour""},{""label"":""Latest News"",""to"":""/news""}]},{""id"":""media"",""label"":""Media"",""to"":""/media"",""items"":[{""label"":""Videos"",""to"":""/media/videos""},{""label"":""Pics"",""to"":""/media/pics""}]}]"
+GLOBAL,route_names_json,,"{""/"":""Home"",""/store"":""Store"",""/about"":""About"",""/shipping"":""Shipping"",""/faq"":""FAQ"",""/login"":""Sign in"",""/signup"":""Sign up"",""/cart"":""Cart"",""/music"":""Music"",""/music/albums"":""Albums"",""/music/eps"":""EPs"",""/media"":""Media"",""/media/videos"":""Videos"",""/media/pics"":""Photos"",""/tour"":""Tour Dates"",""/news"":""Latest News"",""/admin"":""Admin Dashboard"",""/admin/login"":""Admin Sign in"",""/admin/users"":""Users"",""/admin/products"":""Products"",""/admin/orders"":""Orders"",""/admin/warehouses"":""Warehouses""}"
+GLOBAL,skip_link_text,Skip to main content,
+GLOBAL,footer_credit,© Chaotic the Harmony · Music for the Burned Out,
+GLOBAL,demo_region_aria_label,Demo environment notice,
+GLOBAL,demo_badge,Demo mode,
+GLOBAL,demo_static_suffix,"— Sample data for System ""Harmony"" restores every two hours (UTC). "
+GLOBAL,coming_soon_body,This page is coming soon. Check back later!,
+GLOBAL,coming_soon_link,Return to home,
+GLOBAL,not_found_title,404 — Page not found,
+GLOBAL,not_found_link,Return to home,
+STUB,music_title,,Music
+STUB,albums_title,,Albums
+STUB,eps_title,,EPs
+STUB,tour_title,,Tour Dates
+STUB,news_title,,Latest News
+STUB,media_title,,Media
+STUB,videos_title,,Videos
+STUB,pics_title,,Pics
+STUB,wishlist_title,,Wishlist
+MEGANAV,brand_link_text,,Chaotic the Harmony
+MEGANAV,brand_aria_label,,Chaotic the Harmony — home
