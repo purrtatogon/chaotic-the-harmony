@@ -1,0 +1,4228 @@
+/* ================================================================
+   Admin Theme — CSS Modules
+   Soda Pop, Pink Strawberry Edition
+
+   Sections (search by ═══):
+     1. Primitives       — .button, .actionLink, .input, .card, .table
+     2. Login            — .adminLogin*
+     3. Animations       — @keyframes, glyph spinner, signing overlay
+     4. Dashboard Chrome — .adminHeader*, .dashboardSidebar, .dashboardNav*
+     5. Dashboard Content— .dashboardWelcome*, .dashboardStat*, .activity*
+     6. Page Layouts     — .pageContent, .form*, .itemDetail*, .productEdit*
+     7. Product Index    — .productsIndex*, .indexProduct*, .indexAction*
+     8. Badges & Status  — .roleBadge*, .orderStatus*, .categoryBadge*
+     9. Utilities        — .flexRow, .textMuted, .adminSkipLink, .boldHighlight
+    10. Responsive       — @media breakpoints (1024, 768, 480)
+    11. Reduced Motion   — @media (prefers-reduced-motion)
+   ================================================================ */
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. PRIMITIVES — buttons, links, inputs, cards, tables
+   ═══════════════════════════════════════════════════════════════════ */
+
+.button {
+  padding: 12px 24px;
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  cursor: pointer;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  font-family: inherit;
+}
+
+.button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.button:active {
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  box-shadow: 0 0 0 0 var(--gray-100);
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  z-index: 1;
+}
+
+.button:focus-visible:hover {
+  transform: translate(2px, 2px);
+}
+
+.buttonPrimary {
+  background-color: var(--main-50);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+}
+
+.buttonPrimary:hover {
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--main-100);
+}
+
+/* Compact control — still meets 44×44 px minimum (WCAG 2.5.5 AAA) */
+.buttonSmall {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.buttonSecondary {
+  background-color: var(--secondary-30);
+  color: var(--secondary-100);
+  border-color: var(--secondary-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--secondary-100);
+}
+
+.buttonSecondary:hover {
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--secondary-100);
+}
+
+.buttonDanger {
+  background-color: var(--danger-05);
+  color: var(--danger-100);
+  border-color: var(--danger-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--danger-100);
+}
+
+.buttonDanger:hover {
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--danger-100);
+}
+
+/* Navigation link styled as a neo-brutalist boxed element (lift-out on hover).
+   Use for <Link> elements that navigate to a new route — semantically distinct
+   from <button> actions, but visually consistent with the admin theme. */
+.actionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  cursor: pointer;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  font-family: inherit;
+}
+
+.actionLink:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 0 var(--gray-100);
+}
+
+.actionLink:active {
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  box-shadow: 0 0 0 0 var(--gray-100);
+}
+
+.actionLink:focus {
+  outline: none;
+}
+
+.actionLink:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  z-index: 1;
+}
+
+.actionLink:focus-visible:hover {
+  transform: translate(-2px, -2px);
+}
+
+.actionLinkSecondary {
+  background-color: var(--secondary-30);
+  color: var(--secondary-100);
+  border-color: var(--secondary-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--secondary-100);
+}
+
+.actionLinkSecondary:hover {
+  box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 0 var(--secondary-100);
+}
+
+.input {
+  padding: 12px 16px;
+  min-height: 44px;
+  font-size: 16px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  font-family: inherit;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.input:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.input::placeholder {
+  color: var(--admin-text-subtle);
+  opacity: 1;
+}
+
+.input:disabled::placeholder {
+  color: var(--gray-50);
+}
+
+.card {
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  padding: 24px;
+}
+
+.statCard {
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  padding: 24px;
+}
+
+.statValue {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--main-100);
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--admin-text-muted);
+  font-weight: 700;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.tableCaption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-100);
+  padding: 0 0 12px;
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.table th {
+  background-color: var(--main-05);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--main-100);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover {
+  background: var(--main-05);
+  box-shadow: inset 4px 0 0 0 var(--main-100);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. LOGIN — admin login page layout, form, credentials panel
+   ═══════════════════════════════════════════════════════════════════ */
+
+.adminLoginContainer {
+  /* Fills the viewport below DemoBanner (publishes --demo-banner-height on :root). */
+  box-sizing: border-box;
+  width: 100%;
+  min-height: calc(100vh - var(--demo-banner-height, 0px));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "info login";
+  align-items: center;
+  column-gap: clamp(2rem, 5vw, 4rem);
+  row-gap: 2rem;
+  padding: clamp(16px, 2.5vh, 32px) clamp(24px, 4vw, 56px);
+  background-color: var(--main-05);
+}
+
+@media (max-width: 768px) {
+  .adminLoginContainer {
+    grid-template-columns: 1fr;
+    grid-template-areas: "login" "info";
+    padding: clamp(20px, 3vh, 32px) clamp(20px, 4vw, 24px);
+    gap: 2rem;
+  }
+}
+
+.adminLoginCard {
+  grid-area: login;
+  width: 100%;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  padding: 32px 36px 40px;
+}
+
+.adminLoginInfoAside {
+  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.adminLoginTitle {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.adminLoginTitleBrand {
+  color: var(--secondary-100);
+}
+
+.adminLoginTitleLogin {
+  color: var(--main-100);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. ANIMATIONS — brand stagger, glyph spinner, signing overlay
+   (AdminLoggingInAndOutAnimation.jsx + adminLoggingInAndOutAnimation.model.js)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Brand stagger — "[ CTH // BACKLINE ]" character-by-character reveal */
+
+.adminThinkingBrandWrap {
+  display: inline;
+  white-space: nowrap;
+}
+
+.adminThinkingBrandWrapOverlay {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: clamp(1.15rem, 3.5vw, 1.65rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.adminThinkingChar {
+  display: inline-block;
+}
+
+/* Per-character tone colors */
+.adminThinkingCharBracket {
+  color: var(--info-100);
+}
+
+.adminThinkingCharMain {
+  color: var(--main-100);
+}
+
+.adminThinkingCharSecondary {
+  color: var(--secondary-100);
+}
+
+.adminThinkingCharSpace {
+  color: var(--admin-text-muted);
+}
+
+/* Active stagger — 1480ms fallback must match charRevealMs in the model */
+.adminThinkingBrandWrapActive .adminThinkingChar {
+  opacity: 0.62;
+  animation: adminThinkingCharReveal var(--admin-thinking-char-duration, 1480ms) ease-out forwards;
+}
+
+@keyframes adminThinkingCharReveal {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Overlay layouts — full-screen (login/logout) and embedded (page loader) */
+
+.adminSigningOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 32px);
+  background-color: var(--main-05);
+}
+
+.adminSigningOverlayEmbedded {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: min(14rem, 38vh);
+  padding: clamp(12px, 3vw, 24px);
+}
+
+.adminSigningOverlayCard {
+  max-width: 28rem;
+  width: 100%;
+  padding: 2rem 2.25rem;
+  text-align: center;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.adminSigningOverlayCard:focus {
+  outline: none;
+}
+
+.adminSigningOverlayCard:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 4px;
+}
+
+.adminSigningOverlayEmbeddedInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 32rem;
+}
+
+.adminSigningOverlayEmbeddedInner:focus {
+  outline: none;
+}
+
+.adminSigningOverlayEmbeddedInner:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 4px;
+}
+
+/* Status text below the brand stagger */
+.adminSigningOverlayStatus {
+  margin: 1.125rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gray-100);
+}
+
+.adminSigningOverlayEmbeddedStatus {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--gray-100);
+  line-height: 1.35;
+}
+
+/* Glyph spinner — [ // ] flip-and-color animation for AdminLoading */
+
+@keyframes adminGlyphSpin {
+  0% {
+    transform: scale(1, 1);
+    color: var(--main-100);
+  }
+  25% {
+    transform: scaleX(-1);
+    color: var(--secondary-50);
+  }
+  50% {
+    transform: scale(-1, -1);
+    color: var(--info-100);
+  }
+  75% {
+    transform: scaleY(-1);
+    color: var(--success-100);
+  }
+  100% {
+    transform: scale(1, 1);
+    color: var(--main-100);
+  }
+}
+
+.adminLoadingGlyphRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.adminLoadingGlyph {
+  display: inline-block;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  animation: adminGlyphSpin 1.6s ease-in-out infinite;
+}
+
+.adminLoadingGlyphA {
+  animation-delay: 0s;
+}
+
+.adminLoadingGlyphB {
+  animation-delay: 0.25s;
+}
+
+.adminLoadingGlyphC {
+  animation-delay: 0.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adminLoadingGlyph {
+    animation-name: adminGlyphPulse;
+    animation-duration: 2s;
+  }
+
+  @keyframes adminGlyphPulse {
+    0%, 100% {
+      opacity: 1;
+      color: var(--main-100);
+    }
+    33% {
+      opacity: 0.5;
+      color: var(--secondary-50);
+    }
+    66% {
+      opacity: 0.5;
+      color: var(--info-100);
+    }
+  }
+}
+
+/* Animated dots — the "..." that appear one by one in a loop */
+
+.adminSigningDotsWrap {
+  display: inline;
+}
+
+.adminSigningDot {
+  display: inline-block;
+  opacity: 0;
+  animation: adminSigningDotReveal 1.4s infinite;
+}
+
+@keyframes adminSigningDotReveal {
+  0%, 20% {
+    opacity: 0;
+  }
+  50%, 100% {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion — disable all signing animations */
+@media (prefers-reduced-motion: reduce) {
+  .adminThinkingBrandWrapActive .adminThinkingChar,
+  .adminSigningDot {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.adminLoginSubtitle {
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--admin-text-muted);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.adminLoginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.adminLoginForm fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.adminLoginFieldsetReset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.adminLoginFieldHint {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--gray-100);
+}
+
+.adminLoginPasswordRow {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.adminLoginPasswordInputWrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.adminLoginPasswordInputWrap .input {
+  width: 100%;
+}
+
+.adminLoginPasswordToggle {
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-100);
+  background-color: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.adminLoginPasswordToggle:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.adminLoginPasswordToggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.adminLoginPasswordToggle:focus {
+  outline: none;
+}
+
+.adminLoginPasswordToggle:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.adminLoginFieldError {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--secondary-100);
+  background-color: var(--secondary-05);
+  border: 2px solid var(--secondary-100);
+}
+
+.adminLoginFieldErrorIcon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--secondary-100);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroupLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  color: var(--gray-100);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. DASHBOARD CHROME — header, sidebar, nav links, account menu
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dashboardContainer {
+  /* Reserve exactly the viewport minus the demo banner so the body never
+     scrolls — main content scrolls inside .dashboardMain instead, keeping
+     the top bar pinned against the banner without any body-level offset. */
+  min-height: calc(100vh - var(--demo-banner-height, 0px));
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+}
+
+/* Row that holds the sidebar + main below the sticky top bar */
+.dashboardBody {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ========== Admin top bar ========== */
+/* Sticks below the DemoBanner (which publishes its measured height as
+   --demo-banner-height on :root) so the two never overlap on scroll. */
+.adminHeader {
+  position: sticky;
+  top: var(--demo-banner-height, 0px);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: var(--admin-topbar-height);
+  padding: 8px 24px 8px 10px;
+  background-color: var(--main-05);
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.adminHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.adminHeaderAccountArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.adminHeaderBrand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.adminHeaderTitle {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  color: var(--secondary-100);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adminHeaderSubtitle {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  line-height: 1.3;
+  color: var(--secondary-100);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right-aligned manifesto in the top bar — styled like the brand */
+.adminHeaderRight {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.backlineManifesto {
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  color: var(--main-100);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1024px) {
+  .backlineManifesto {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .backlineManifesto {
+    font-size: 0.75rem;
+    letter-spacing: 0;
+  }
+}
+
+/* Hamburger lives in the top bar on narrow viewports only (>=44x44 tap target). */
+.adminHeaderHamburger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  border-radius: 0;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
+}
+
+.adminHeaderHamburger:hover {
+  background: var(--main-05);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--main-100);
+}
+
+.adminHeaderHamburger:focus {
+  outline: none;
+}
+
+.adminHeaderHamburger:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .adminHeaderHamburger {
+    display: flex;
+  }
+}
+
+/* Account chip + dropdown */
+.adminHeaderAccount {
+  position: relative;
+}
+
+.adminHeaderAccountTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 12px;
+  background-color: var(--main-05);
+  color: var(--gray-100);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.adminHeaderAccountTrigger:hover {
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.adminHeaderAccountTrigger:active {
+  transform: translate(4px, 4px);
+  box-shadow: calc(var(--shadow-offset) - 4px) calc(var(--shadow-offset) - 4px) 0 0 var(--gray-100);
+}
+
+.adminHeaderAccountTrigger:focus {
+  outline: none;
+}
+
+.adminHeaderAccountTrigger:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.adminHeaderAvatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  overflow: hidden;
+}
+
+.adminHeaderAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adminHeaderUsername {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--gray-100);
+  max-width: 18ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminHeaderCaret {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--gray-100);
+  line-height: 0.9;
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.adminHeaderCaretOpen {
+  transform: rotate(180deg);
+}
+
+.adminHeaderAccountMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 950;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background-color: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.adminHeaderAccountMenuItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-100);
+  background-color: var(--white);
+  border: var(--border-width) solid transparent;
+  cursor: pointer;
+  transition: background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+}
+
+.adminHeaderAccountMenuItem:hover {
+  background-color: var(--main-05);
+  border-color: var(--gray-100);
+  color: var(--gray-100);
+}
+
+.adminHeaderAccountMenuItem:focus {
+  outline: none;
+}
+
+.adminHeaderAccountMenuItem:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: -3px;
+  background-color: var(--main-05);
+  color: var(--gray-100);
+}
+
+.adminHeaderAccountMenuItem:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--gray-100);
+}
+
+.adminHeaderAccountMenuItemActive {
+  background-color: var(--main-50);
+  border-color: var(--main-100);
+  color: var(--gray-100);
+}
+
+/* Logout — distinguished by both color AND icon-style "→" prefix to satisfy
+   "no reliance on color" (label text "Logout" already does the lifting). */
+.adminHeaderAccountMenuItemDanger {
+  color: var(--secondary-100);
+}
+
+.adminHeaderAccountMenuItemDanger:hover,
+.adminHeaderAccountMenuItemDanger:focus-visible {
+  background-color: var(--secondary-05);
+  border-color: var(--secondary-100);
+  color: var(--secondary-100);
+}
+
+@media (max-width: 768px) {
+  .adminHeader {
+    padding: 6px 12px;
+    gap: 12px;
+  }
+
+  .adminHeaderTitle {
+    font-size: 15px;
+    letter-spacing: 0.4px;
+  }
+
+  .adminHeaderSubtitle {
+    display: none;
+  }
+
+  .adminHeaderUsername {
+    max-width: 12ch;
+  }
+
+  .adminHeaderAccountMenu {
+    right: 0;
+    left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .adminHeaderUsername {
+    display: none;
+  }
+}
+
+
+.dashboardSidebar {
+  width: 248px;
+  background-color: var(--main-05);
+  border-right: var(--border-width) solid var(--gray-100);
+  /* Tighter chrome + extra inline-end room for badge / link shadows */
+  padding: 18px 24px 18px 18px;
+  position: sticky;
+  /* Sit below the demo banner (height published as --demo-banner-height by
+     DemoBanner.jsx; falls back to 0px when the banner is not rendered) and
+     below the admin top bar. */
+  top: calc(var(--demo-banner-height, 0px) + var(--admin-topbar-height));
+  height: calc(100vh - var(--demo-banner-height, 0px) - var(--admin-topbar-height));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollable middle: prevents nav links from painting over the logout block when viewport is short */
+.dashboardNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  padding-bottom: 12px;
+}
+
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.navSectionLabel {
+  display: block;
+  margin: 0 0 6px 0;
+  padding: 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--main-100);
+  line-height: 1.3;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.navOverviewLink {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--main-100);
+}
+
+.navSectionLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboardNavSubLink {
+  border-left: 3px solid var(--gray-30);
+  padding-left: 18px;
+  margin-left: 8px;
+}
+
+.dashboardNavSubLink:hover {
+  border-left-color: var(--gray-100);
+}
+
+.dashboardNavSubLink:focus-visible {
+  border-left-color: var(--main-100);
+}
+
+.dashboardNavLinkActive.dashboardNavSubLink {
+  border-left-color: var(--main-100);
+}
+
+.dashboardNavLink {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--gray-100);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+  font-size: 14px;
+}
+
+.dashboardNavLink:hover {
+  background-color: var(--white);
+  border-color: var(--gray-100);
+  box-shadow: 4px 4px 0 0 var(--gray-100);
+  transform: translate(-2px, -2px);
+}
+
+.dashboardNavLink:focus {
+  outline: none;
+}
+
+.dashboardNavLink:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  background-color: var(--white);
+  border-color: var(--gray-100);
+}
+
+.dashboardNavLinkActive {
+  background-color: var(--main-50);
+  border-color: var(--main-100);
+  color: var(--main-100);
+  box-shadow: 4px 4px 0 0 var(--main-100);
+}
+
+/* Slightly tighter nav targets inside the narrow sidebar (still ≥44px min-height) */
+.dashboardSidebar .dashboardNavLink {
+  padding: 12px 14px;
+  min-height: 44px;
+}
+
+.dashboardMain {
+  flex: 1;
+  padding: 28px 32px;
+  overflow-y: auto;
+  scroll-padding-top: 6.5rem;
+}
+
+.dashboardHeader {
+  margin-bottom: 20px;
+  padding-bottom: 24px;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+/* Sticky product header: actions in PageHeader; scroll-padding on .dashboardMain pairs with this */
+.pageHeaderSticky {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin-bottom: 24px;
+  padding: 20px 0 20px;
+  background-color: var(--white);
+  border-bottom: var(--border-width) solid var(--gray-100);
+  box-shadow: 0 6px 0 0 var(--gray-30);
+}
+
+.dashboardTitle {
+  font-size: 36px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--gray-100);
+  margin-bottom: 8px;
+}
+
+.dashboardSubtitle {
+  font-size: 16px;
+  color: var(--admin-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. PAGE LAYOUTS — forms, item detail, product edit, lists
+   ═══════════════════════════════════════════════════════════════════ */
+
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Product detail/form: extra scroll margin for focus targets */
+.pageContentProductAaa {
+  scroll-padding-top: 6.5rem;
+}
+
+/* Pass via PageHeader `subtitleClassName` on product pages for AAA body text contrast */
+.subtitleAaa {
+  color: var(--admin-text-aux);
+}
+
+.mutedP {
+  color: var(--admin-text-muted);
+  margin: 0;
+}
+
+.codeSnippet {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.variantMediaBlock {
+  margin-top: 16px;
+}
+
+.variantMediaLabel {
+  margin-bottom: 8px;
+}
+
+.variantMediaHint {
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+}
+
+/* Read-only / info strip — matches .card / .statCard vocabulary */
+.adminBrutalistNote {
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--gray-100);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background-color: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+/* JSON validation error (icon + text — not color alone) */
+.formJsonError {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background-color: var(--secondary-05);
+  border: var(--border-width) solid var(--secondary-100);
+  color: var(--secondary-100);
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.formJsonErrorIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 2px solid var(--secondary-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* Inline feedback banners (success / error) */
+.inlineFeedbackSuccess,
+.inlineFeedbackError {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: var(--border-width) solid var(--gray-100);
+}
+
+.inlineFeedbackSuccess {
+  background: var(--success-05);
+  color: var(--success-100);
+  border-color: var(--success-100);
+}
+
+.inlineFeedbackError {
+  background: var(--danger-05);
+  color: var(--danger-100);
+  border-color: var(--danger-100);
+}
+
+.inlineFeedbackIcon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.pageActions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Form Styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 600px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formFullWidthField {
+  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formJsonHint {
+  margin: 0 0 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--admin-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pageContentProductAaa .formJsonHint {
+  color: var(--admin-text-aux);
+}
+
+.pageContentProductAaa .mutedP {
+  color: var(--admin-text-aux);
+}
+
+.formActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+/* List/Table Styles */
+.listContainer {
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  overflow: hidden;
+}
+
+.listHeader {
+  padding: 20px 24px;
+  background-color: var(--main-05);
+  border-bottom: var(--border-width) solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listHeaderTitle {
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--main-100);
+}
+
+.listContent {
+  padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Item Detail Styles */
+.itemDetail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.itemDetailCard {
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  padding: 24px;
+}
+
+.itemDetailCardFullWidth {
+  grid-column: 1 / -1;
+}
+
+/* Product detail / edit: main + sidebar (Shopify-like), then full-width blocks */
+.productEditPageWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.productEditLayout {
+  display: grid;
+  /* 75% main / 25% sidebar */
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+}
+
+.productEditMain {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.productEditAside {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.productEditFull {
+  width: 100%;
+}
+
+/* Form that spans 2 columns inside product edit; overrides default .form max-width */
+.productEditForm {
+  max-width: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.productEditForm .productEditLayout {
+  margin: 0;
+}
+
+.productEditAside .formRow {
+  grid-template-columns: 1fr;
+}
+
+/* Scope badge on product media (Product vs Variant) */
+.mediaScopeBadge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  max-width: calc(100% - 4px);
+  padding: 4px 8px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  color: var(--gray-100);
+  background: var(--main-50);
+  border-top: var(--border-width) solid var(--gray-100);
+  border-right: var(--border-width) solid var(--gray-100);
+}
+
+.mediaScopeBadgeVariant {
+  background: var(--secondary-30);
+  color: var(--secondary-100);
+}
+
+.galleryVariantReadOnlyFrame {
+  position: relative;
+  width: 100%;
+  max-width: 120px;
+}
+
+.galleryVariantReadOnlyFrame .galleryThumbnail {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.itemDetailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.itemDetailActions {
+  flex-shrink: 0;
+}
+
+.itemDetailTitle {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-100);
+  margin-bottom: 4px;
+}
+
+.itemDetailLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  color: var(--admin-text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.itemDetailValue {
+  font-size: 16px;
+  color: var(--gray-100);
+  margin-bottom: 16px;
+}
+
+/* Inline per-field editing */
+.inlineFieldRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.inlineFieldRow > *:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.inlineEditTrigger {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.inlineEditTrigger:hover {
+  background: var(--main-05);
+}
+
+.inlineEditTrigger:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.inlineEditBlock {
+  margin-bottom: 4px;
+}
+
+.inlineFieldActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--admin-border);
+}
+
+/* Stats/Grid Styles */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. DASHBOARD CONTENT — welcome header, stat cards, activity feed
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dashboardWelcomeHeader {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Adds consistent breathing room between title, subtitle, and pills */
+}
+
+.dashboardWelcomeTitle {
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--gray-100); /* Existing */
+}
+
+.dashboardWelcomeSubtitle {
+  margin: 0;
+}
+
+.dashboardWelcomeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.65rem;
+  row-gap: 0.6rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.dashboardRoleMetaLabel {
+  font-weight: 900;
+  color: var(--gray-100);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+}
+
+.dashboardRoleMetaLabel::after {
+  content: ':';
+}
+
+.dashboardWelcomeMetaDelimiter {
+  font-weight: 900;
+  color: var(--gray-100);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  user-select: none;
+}
+
+.dashboardWelcomeRoleBadge {
+  font-size: 0.8125rem;
+  padding: 6px 12px;
+  line-height: 1.3;
+}
+
+/* Same pill as role badge + role tint; prose flourish (sentence case + wrap). */
+.dashboardWelcomeStatusBadge {
+  white-space: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  text-align: left;
+  max-width: min(28rem, 100%);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.dashboardMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.dashboardDetailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.dashboardDetailsLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboardStatCard {
+  padding: 1rem;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Quick snapshot row (under welcome): same neo-brutalist cards, thematic accents */
+.dashboardStatCardOrders {
+  border-color: var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+}
+
+.dashboardStatCardPopular {
+  border-color: var(--info-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--info-50);
+}
+
+.dashboardStatCardInventoryClear {
+  border-color: var(--success-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--success-50);
+}
+
+.dashboardStatCardInventoryAlert {
+  border-color: var(--warning-50);
+  background-color: var(--warning-05);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--warning-50);
+}
+
+.dashboardStatCardInventoryAlert .dashboardStatTitle,
+.dashboardStatCardInventoryAlert .dashboardStatValue {
+  color: var(--warning-100);
+}
+
+.dashboardStatCardInventoryAlert .dashboardStatSubtextAttention {
+  color: var(--warning-50);
+}
+
+.dashboardStatCardInventoryAlert .dashboardStatSubtextNeutral {
+  color: var(--warning-100);
+}
+
+.dashboardStatCardOutOfStock {
+  border-color: var(--danger-50);
+  background-color: var(--danger-05);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--danger-50);
+}
+
+.dashboardStatCardOutOfStock .dashboardStatTitle,
+.dashboardStatCardOutOfStock .dashboardStatValue {
+  color: var(--danger-100);
+}
+
+.dashboardStatCardOutOfStock .dashboardStatSubtextUrgent {
+  color: var(--danger-50);
+}
+
+.dashboardStatCardOutOfStock .dashboardStatSubtextNeutral {
+  color: var(--danger-100);
+}
+
+.dashboardStatTitle {
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.dashboardStatValue {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--gray-100);
+}
+
+.dashboardStatSubtext {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.activityIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.activityText {
+  flex: 1;
+}
+
+.activityDescription {
+  font-weight: 500;
+}
+
+.activityTime {
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+}
+
+.dashboardCatalogSubheading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-100);
+  margin: 1.5rem 0 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: var(--border-width) solid var(--gray-30);
+}
+
+.dashboardProductLink {
+  color: var(--main-100);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.dashboardProductLink:hover {
+  border-bottom-color: var(--main-100);
+}
+
+.dashboardProductLink:focus-visible {
+  outline: 2px solid var(--main-100);
+  outline-offset: 2px;
+}
+
+.dashboardTable {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.dashboardTableHeader {
+  color: var(--admin-text-muted);
+  font-size: 0.85rem;
+}
+
+.dashboardTableHeader th {
+  padding-bottom: 0.5rem;
+}
+
+.dashboardTableRow {
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.dashboardTableCell {
+  padding: 0.75rem 0;
+}
+
+.dashboardTableCellRight {
+  text-align: right;
+}
+
+.dashboardTableCellBold {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. PRODUCT INDEX — filter toolbar, product table, index cards
+   ═══════════════════════════════════════════════════════════════════ */
+
+.filterToolbar {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--white);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.filterInput {
+  padding: 0.75rem 1rem;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 140px;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  font-family: inherit;
+  transition: all 0.1s ease;
+}
+
+.filterInput:focus {
+  outline: none;
+}
+
+.filterInput:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.filterInputSmall {
+  min-width: 80px;
+  width: 100px;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  padding: 1rem;
+}
+
+.productTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  color: var(--gray-100);
+}
+
+.productTableHeader {
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.productTableHeader th {
+  padding: 1rem;
+}
+
+.productTableRow {
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.productTableCell {
+  padding: 1rem;
+}
+
+.productImageContainer {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--surface-muted);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Category badges share a base and differ only in background tint */
+.categoryBadge,
+.categoryBadgeMusic,
+.categoryBadgeApparel,
+.categoryBadgeAccessories {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.categoryBadge { background: var(--white); }
+.categoryBadgeMusic { background: var(--gray-30); }
+.categoryBadgeApparel { background: var(--secondary-05); }
+.categoryBadgeAccessories { background: var(--main-05); }
+
+.emptyState {
+  padding: 3rem;
+  text-align: center;
+  color: var(--admin-text-muted);
+}
+
+.emptyStateActions {
+  margin-top: 1rem;
+}
+
+/* Product Detail Page Styles */
+.cardHeaderFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.galleryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.galleryMainImage {
+  position: relative;
+  text-align: center;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-muted);
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.galleryMainImage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.galleryThumbnails {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.galleryThumbnail {
+  width: 70px;
+  height: 70px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  object-fit: cover;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  opacity: 0.6;
+  transition: opacity 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease;
+}
+
+.galleryThumbnail:hover {
+  opacity: 1;
+  border-color: var(--main-100);
+}
+
+.galleryThumbnail:focus {
+  outline: none;
+}
+
+.galleryThumbnail:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  opacity: 1;
+}
+
+.galleryThumbnailActive {
+  border-color: var(--main-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+  opacity: 1;
+}
+
+.categorySelectLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.categorySelect {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  font-family: inherit;
+  transition: all 0.1s ease;
+}
+
+.categorySelect:focus {
+  outline: none;
+}
+
+.categorySelect:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.warningText {
+  color: var(--admin-text-subtle);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Profile Page Styles */
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 2rem;
+  padding: 1rem 1.25rem 1.25rem;
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.profileHeader .userProfileCardKicker {
+  margin: 0 0 8px;
+}
+
+.profileHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.profileAvatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 0;
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  flex-shrink: 0;
+}
+
+.profileAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileInfo {
+  flex: 1;
+}
+
+.profileName {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: var(--gray-100);
+}
+
+.profileRole {
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.profileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profileActionsRow {
+  display: flex;
+  gap: 10px;
+}
+
+.passwordSection {
+  margin: 1.5rem 0;
+  padding: 1rem 1.1rem;
+  background: var(--main-05);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.passwordSectionTitle {
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  color: var(--admin-text-muted);
+}
+
+.passwordSectionGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. BADGES & STATUS — role badges, order statuses, user detail
+   ═══════════════════════════════════════════════════════════════════ */
+
+.avatarFormContainer {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.avatarLarge {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.avatarLarge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarSmall {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.avatarSmall img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.roleBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Role badge pairs verified 7:1+ contrast (WCAG 2.2 AAA normal text) */
+.roleBadgeAdmin {
+  background: var(--role-admin-bg);
+  color: var(--role-admin-text);
+}
+
+.roleBadgeStaff {
+  background: var(--role-staff-bg);
+  color: var(--role-staff-text);
+}
+
+.roleBadgeManager {
+  background: var(--role-manager-bg);
+  color: var(--role-manager-text);
+}
+
+.roleBadgeWarehouse {
+  background: var(--role-warehouse-bg);
+  color: var(--role-warehouse-text);
+}
+
+.roleBadgeSupport {
+  background: var(--role-support-bg);
+  color: var(--role-support-text);
+}
+
+.roleBadgeAuditor {
+  background: var(--role-auditor-bg);
+  color: var(--role-auditor-text);
+}
+
+.roleBadgeCustomer {
+  background: var(--role-customer-bg);
+  color: var(--role-customer-text);
+}
+
+/* Order Status Badges – one color per status, aligned with admin theme */
+.orderStatusPENDING {
+  background: var(--main-05);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  box-shadow: 2px 2px 0 0 var(--main-100);
+}
+
+.orderStatusCONFIRMED {
+  background: var(--main-30);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  box-shadow: 2px 2px 0 0 var(--main-100);
+}
+
+.orderStatusPROCESSING {
+  background: var(--secondary-05);
+  color: var(--secondary-100);
+  border-color: var(--secondary-100);
+  box-shadow: 2px 2px 0 0 var(--secondary-100);
+}
+
+.orderStatusSHIPPED {
+  background: var(--gray-30);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.orderStatusDELIVERED {
+  background: var(--order-delivered-bg);
+  color: var(--order-delivered-text);
+  border-color: var(--order-delivered-text);
+  box-shadow: 2px 2px 0 0 var(--order-delivered-text);
+}
+
+.orderStatusCANCELLED {
+  background: var(--order-cancelled-bg);
+  color: var(--order-cancelled-text);
+  border-color: var(--order-cancelled-text);
+  box-shadow: 2px 2px 0 0 var(--order-cancelled-text);
+}
+
+.orderStatusREFUNDED {
+  background: var(--gray-30);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.orderStatusUnknown {
+  background: var(--white);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+/* User Detail Page Styles */
+.userDetailAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.userDetailAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.userDetailFlex {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.userDetailGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.userDetailGridFull {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+}
+
+.userDetailFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.passwordFormGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.passwordFormActions {
+  margin-top: 1rem;
+}
+
+/* Tabs Styles */
+.tabsContainer {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 10px 20px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  cursor: pointer;
+  box-shadow: 4px 4px 0 0 var(--gray-100);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.tab:focus {
+  outline: none;
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.tab:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 0 var(--gray-100);
+}
+
+.tabActive {
+  background-color: var(--main-50);
+  border-color: var(--main-100);
+  color: var(--main-100);
+  box-shadow: 4px 4px 0 0 var(--main-100);
+  transform: translate(-2px, -2px);
+}
+
+.tabActive:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 0 var(--main-100);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. UTILITIES — layout helpers, text variants, skip link
+   ═══════════════════════════════════════════════════════════════════ */
+
+.flexRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.textMuted {
+  color: var(--admin-text-muted);
+}
+
+.textSecondary {
+  color: var(--admin-text-subtle);
+}
+
+.textError {
+  color: var(--danger-100);
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.textErrorWithIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--danger-100);
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.textErrorWithIcon::before {
+  content: '⚠';
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
+.divider {
+  margin: 1.5rem 0;
+  opacity: 0.2;
+}
+
+/* Skip link — keyboard users jump past mobile top bar + sidebar (Deque / WCAG 2.4.1) */
+.adminSkipLink {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 1003;
+  padding: 12px 20px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+  color: var(--gray-100);
+  background: var(--main-50);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  text-decoration: none;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.adminSkipLink:focus,
+.adminSkipLink:focus-visible {
+  clip: auto;
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+/* Admin login — error region: text + border (not color alone) */
+.adminLoginError {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background-color: var(--secondary-05);
+  border: var(--border-width) solid var(--secondary-100);
+  color: var(--secondary-100);
+  font-weight: 700;
+}
+
+.adminLoginErrorIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  border: 2px solid var(--secondary-100);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+/* Backline info panel on login page */
+.backlineExplainCard {
+  padding: 20px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.backlineCredentialsCard {
+  padding: 20px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.backlineCredentialsCardHeading {
+  margin-bottom: 12px;
+}
+
+.backlineCredentialsCardHeading .adminLoginInfoCardHeading {
+  margin: 0;
+}
+
+.adminLoginInfoCardHeading {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--gray-100);
+}
+
+.backlineInfoText {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--gray-100);
+}
+
+/* Neo-brutalist, high-legibility credential chip (AAA contrast: gray-100 on white). */
+.demoPasswordValue {
+  display: inline-block;
+  font-family: ui-monospace, 'Cousine', 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+  color: var(--gray-100);
+  background-color: var(--white);
+  padding: 10px 14px;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+  vertical-align: baseline;
+  cursor: text;
+  user-select: all;
+}
+
+.backlineCredentialsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--border-width) solid var(--gray-100);
+  font-size: 0.85rem;
+}
+
+.backlineCredentialsTable th {
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.75rem;
+  color: var(--main-100);
+  background-color: var(--main-50);
+  border-bottom: var(--border-width) solid var(--main-100);
+}
+
+.backlineCredentialsTable th.backlineCredentialsPasswordColHeader {
+  max-width: 11rem;
+  text-align: center;
+  vertical-align: middle;
+  border-left: var(--border-width) solid var(--main-100);
+}
+
+.backlineCredentialsPasswordCell {
+  text-align: center;
+  vertical-align: middle;
+  border-left: var(--border-width) solid var(--main-100);
+  padding: 12px 12px;
+  background-color: var(--main-05);
+}
+
+.backlineCredentialsTable td {
+  padding: 6px 10px;
+  border-bottom: 2px solid var(--gray-30);
+  color: var(--gray-100);
+  font-weight: 600;
+}
+
+.backlineCredentialsTable tr:last-child td {
+  border-bottom: none;
+}
+
+.backlineCredentialsTable code:not(.demoPasswordValue) {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+}
+
+.userProfileCardKicker {
+  margin: 0 0 8px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+  line-height: 1.2;
+}
+
+.fullWidthButton {
+  width: 100%;
+}
+
+.dashboardWelcomeRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.dashboardWelcomeAvatar {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+}
+
+.dashboardWelcomeRow .dashboardWelcomeAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dashboardAuthBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--white);
+  background-color: var(--gray-100);
+  border: var(--border-width) solid var(--gray-100);
+  white-space: nowrap;
+}
+
+.dashboardEmptyMessage {
+  text-align: center;
+  color: var(--admin-text-muted);
+  padding: 20px;
+  margin: 0;
+}
+
+.dashboardStatSubtextNeutral {
+  color: var(--admin-text-muted);
+}
+
+.dashboardStatSubtextAttention {
+  color: var(--gray-100);
+  font-weight: 800;
+}
+
+.dashboardStatSubtextUrgent {
+  color: var(--danger-100);
+  font-weight: 800;
+}
+
+.activityTypeBadge {
+  flex-shrink: 0;
+}
+
+.activityIconOrder {
+  background-color: var(--main-30);
+  color: var(--gray-100);
+  border-color: var(--main-100);
+  box-shadow: 2px 2px 0 0 var(--main-100);
+}
+
+.activityIconProduct {
+  background-color: var(--secondary-05);
+  color: var(--secondary-100);
+  border-color: var(--secondary-100);
+  box-shadow: 2px 2px 0 0 var(--secondary-100);
+}
+
+.activityIconStaff {
+  background-color: var(--info-05);
+  color: var(--info-100);
+  border-color: var(--info-100);
+  box-shadow: 2px 2px 0 0 var(--info-50);
+}
+
+.activityIconUser {
+  background-color: var(--success-05);
+  color: var(--success-100);
+  border-color: var(--success-100);
+  box-shadow: 2px 2px 0 0 var(--success-50);
+}
+
+.activityIconDefault {
+  background-color: var(--gray-30);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+/* ----- Orders / lists / tables (module-only pages) ----- */
+.coldStorageNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 24px;
+  background: var(--warning-05);
+  border: var(--border-width) solid var(--warning-50);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--warning-50);
+  color: var(--warning-100);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.coldStorageNotice::before {
+  content: "\26A0";
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  background: var(--warning-30);
+  border: 2px solid var(--warning-50);
+}
+
+.coldStorageNoticeText {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.listToolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filterSelectMonth {
+  min-width: 140px;
+}
+
+.filterSummaryBox {
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.filterSummaryText {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.tableCellMono {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+}
+
+.tableCellStrong {
+  font-weight: 700;
+}
+
+.tableSecondaryLine {
+  font-size: 0.75rem;
+  color: var(--admin-text-muted);
+}
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border-top: var(--border-width) solid var(--gray-100);
+}
+
+.paginationStatus {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Order detail */
+.orderMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.orderMetaLabel {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.orderMetaEmail {
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+.orderTotalValue {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.orderLineItemsPanel {
+  border: var(--border-width) solid var(--gray-100);
+  padding: 16px;
+  background: var(--main-05);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.orderLineItemsTitle {
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.9rem;
+}
+
+.orderLineItemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+}
+
+.orderLineItemsHeadRow {
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--gray-100);
+  background: var(--main-05);
+}
+
+.orderLineItemsTh {
+  padding: 10px 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--gray-100);
+}
+
+.orderLineItemsRow {
+  border-bottom: 1px solid var(--gray-30);
+}
+
+.orderLineItemsTd {
+  padding: 10px 12px;
+  vertical-align: top;
+}
+
+.orderLineVariantMeta {
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+  margin-left: 8px;
+}
+
+.orderLineSkuCell {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+}
+
+.orderLineSubtotalCell {
+  font-weight: 700;
+}
+
+/* Order audit trail + status control */
+.orderAuditTrail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  margin-top: 24px;
+  background: var(--main-05);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.orderAuditTrailLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  color: var(--gray-100);
+  margin-bottom: 4px;
+}
+
+.orderAuditTrailValue {
+  font-size: 0.9rem;
+}
+
+.orderAuditTrailMuted {
+  color: var(--admin-text-muted);
+  font-style: italic;
+}
+
+.orderStatusControl {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  margin-top: 16px;
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.orderStatusControlLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  color: var(--gray-100);
+  white-space: nowrap;
+}
+
+.orderStatusSelect {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  min-width: 160px;
+  min-height: 44px;
+}
+
+.orderStatusSelect:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+/* Stock editing inline controls */
+.stockEditCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stockInput {
+  width: 72px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  min-height: 36px;
+  text-align: center;
+}
+
+.stockInput:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.stockEditButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 2px solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  cursor: pointer;
+}
+
+.stockEditButton:hover {
+  background: var(--gray-100);
+  color: var(--white);
+}
+
+.stockEditButton:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.stockAuditInfo {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--admin-text-muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* User detail / profile */
+.pageHeaderActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.accountOverviewLayout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.userDetailAvatarShrink {
+  flex-shrink: 0;
+}
+
+.accountOverviewMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.emptyStateText {
+  text-align: center;
+  padding: 24px;
+  color: var(--admin-text-muted);
+  margin: 0;
+}
+
+.orderHistoryItemStack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.orderHistoryItemLine {
+  font-size: 0.8rem;
+}
+
+.inlineErrorPanel {
+  color: var(--danger-100);
+  padding: 20px;
+  font-weight: 700;
+  border: var(--border-width) solid var(--danger-100);
+  background: var(--danger-05);
+}
+
+.roleBadgeSpacing {
+  display: inline-block;
+  margin-top: 4px;
+}
+
+/* Product gallery (view mode) */
+.galleryAltNote {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+  font-style: italic;
+}
+
+.galleryThumbCell {
+  position: relative;
+}
+
+.galleryThumbButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+
+.galleryThumbButton:hover {
+  opacity: 0.85;
+}
+
+.galleryThumbButton:focus {
+  outline: none;
+}
+
+.galleryThumbButton:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+.galleryThumbAltStrip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--gray-100);
+  color: var(--white);
+  font-size: 0.65rem;
+  padding: 4px 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+  border-top: 1px solid var(--gray-100);
+}
+
+.formGrow {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Variants table */
+.variantImgWrap {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.variantThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+  display: block;
+}
+
+.variantImgCountBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--main-100);
+  color: var(--main-50);
+  border: var(--border-width) solid var(--gray-100);
+  min-width: 22px;
+  min-height: 22px;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.variantNoImg {
+  width: 60px;
+  height: 60px;
+  background: var(--gray-30);
+  border: var(--border-width) solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.2;
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.variantPriceCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.variantPriceLine {
+  font-size: 0.85rem;
+}
+
+.variantPriceMuted {
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+/* ----- Product list page ----- */
+.categorySummaryBanner {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--main-05);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.categorySummaryInner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.categorySummaryLabel {
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-100);
+}
+
+.categorySummaryEmpty {
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+.pageActionBar {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.productTableColExpand {
+  width: 44px;
+}
+
+.productTableCellMiddle {
+  vertical-align: middle;
+}
+
+.expandRowToggle {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.productCodesStack {
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.productNestedCell {
+  padding: 0 !important;
+  border-top: none !important;
+  background-color: var(--gray-30);
+  vertical-align: top;
+}
+
+.productNestedInner {
+  padding: 12px 16px;
+}
+
+.productNestedTitle {
+  font-weight: 800;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-100);
+}
+
+.productNestedTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  box-shadow: 4px 4px 0 0 var(--gray-100);
+}
+
+.productNestedTheadRow {
+  border-bottom: var(--border-width) solid var(--gray-100);
+  background: var(--main-05);
+}
+
+.productNestedTh {
+  text-align: left;
+  padding: 8px 10px;
+  font-weight: 800;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-100);
+}
+
+.productNestedThRight {
+  text-align: right;
+}
+
+.productNestedBodyRow {
+  border-bottom: 1px solid var(--gray-30);
+}
+
+.productNestedTd {
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+.productNestedTdMono {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+}
+
+.productNestedStockCell {
+  text-align: right;
+  font-weight: 700;
+}
+
+.stockStatusOk {
+  color: var(--main-100);
+  font-weight: 700;
+}
+
+.productNestedFootnote {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+}
+
+/* — Products index: neo-brutalist shell (aligned with .card / .filterToolbar / .button) — */
+.productsIndexPageHeader {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+
+.productsIndexPanel {
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.productsIndexSearchBlock {
+  padding: 1.1rem 1.25rem 1.2rem;
+  border-bottom: var(--border-width) solid var(--gray-100);
+  background: var(--main-05);
+  box-shadow: inset 0 -4px 0 0 var(--main-30);
+}
+
+.productsIndexSearchLabel {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-100);
+}
+
+.productsIndexSearchHint {
+  margin: 0 0 10px;
+  max-width: 48rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--admin-text-aux);
+}
+
+.productsIndexSearchInput {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-100);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.productsIndexSearchInput::placeholder {
+  color: var(--admin-text-aux);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+}
+
+.productsIndexSearchInput:focus {
+  outline: none;
+}
+
+.productsIndexSearchInput:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+/* Nested toolbar: single panel segment (no second floating card) */
+.productsIndexFilters {
+  margin-bottom: 0;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 1rem 1.25rem 1.1rem;
+  border-bottom: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+}
+
+.productsIndexTableShell {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0 0 0.5rem;
+  background: var(--white);
+}
+
+.productsIndexTableShell .productTable {
+  min-width: 720px;
+}
+
+.indexTableTh {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gray-100);
+  background: var(--main-05);
+  border-bottom: var(--border-width) solid var(--gray-100);
+  box-shadow: 0 4px 0 0 var(--main-30);
+}
+
+.indexTableThNarrow {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.indexTableThRight,
+.indexTableCellNum {
+  text-align: right;
+}
+
+.productIndexRow:hover {
+  background: var(--main-05);
+  box-shadow: inset 4px 0 0 0 var(--main-100);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .productIndexRow {
+    transition: background-color 0.1s ease, box-shadow 0.1s ease;
+  }
+}
+
+.indexProductCell {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  max-width: 420px;
+}
+
+.indexProductThumbBox {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.indexProductThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: var(--surface-muted);
+}
+
+.indexProductText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Chonky “tile” product title — matches list emphasis + .button energy */
+.indexProductTitleLink {
+  display: inline-block;
+  margin: 0;
+  max-width: 100%;
+  padding: 5px 10px 4px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gray-100);
+  word-break: break-word;
+  background: var(--main-50);
+  border: var(--border-width) solid var(--main-100);
+  box-shadow: 4px 4px 0 0 var(--main-100);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.indexProductTitleLink:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--main-100);
+}
+
+.indexProductTitleLink:focus {
+  outline: none;
+}
+
+.indexProductTitleLink:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  z-index: 1;
+}
+
+.indexProductTitleLink:focus-visible:hover {
+  transform: translate(2px, 2px);
+}
+
+.indexProductMeta {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--admin-text-aux);
+}
+
+.indexStatusPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 4.5rem;
+  padding: 4px 10px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-100);
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: 3px 3px 0 0 var(--gray-100);
+}
+
+.indexCategoryText {
+  display: inline-block;
+  padding: 4px 8px;
+  max-width: 12rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gray-100);
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+  word-break: break-word;
+}
+
+.indexInventoryBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.indexInventoryPrimary {
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+  letter-spacing: 0.02em;
+}
+
+.indexInventorySub {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--admin-text-aux);
+}
+
+.indexActionsCell {
+  vertical-align: middle;
+  text-align: right;
+}
+
+.indexRowActions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 10px;
+}
+
+.indexActionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gray-100);
+  background: var(--secondary-30);
+  border: var(--border-width) solid var(--secondary-100);
+  box-shadow: 4px 4px 0 0 var(--secondary-100);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.indexActionLink:hover {
+  color: var(--gray-100);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--secondary-100);
+}
+
+.indexActionLink:focus {
+  outline: none;
+}
+
+.indexActionLink:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  z-index: 1;
+}
+
+.indexActionLink:focus-visible:hover {
+  transform: translate(2px, 2px);
+}
+
+.indexActionSep {
+  color: var(--gray-100);
+  font-weight: 900;
+  user-select: none;
+  line-height: 1;
+  opacity: 0.4;
+}
+
+/* Empty / no results inside the index card */
+.productsIndexTableShell .emptyState {
+  margin: 1rem 1.25rem 1.25rem;
+  padding: 2rem 1.25rem;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--main-05);
+  box-shadow: 4px 4px 0 0 var(--gray-100);
+  color: var(--gray-100);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.productsIndexTableShell .emptyState p {
+  margin: 0 0 0.5rem;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ----- Warehouse list / detail ----- */
+.pageSectionSpaced {
+  margin-top: 24px;
+}
+
+.warehouseInfoText {
+  color: var(--admin-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.warehouseDetailStats {
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.zoneProductBlock {
+  margin-bottom: 16px;
+}
+
+.zoneProductMetaRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.zoneProductThemeLine {
+  font-size: 0.9rem;
+  color: var(--admin-text-muted);
+}
+
+.stockQtyMono {
+  font-weight: 700;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. RESPONSIVE — breakpoints at 1024, 768, 480
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .dashboardMain {
+    padding: 24px 20px;
+  }
+
+  .dashboardTitle {
+    font-size: 28px;
+  }
+
+  .itemDetail {
+    grid-template-columns: 1fr;
+  }
+
+  .productEditLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .itemDetailCard {
+    padding: 20px;
+  }
+
+  .listHeader {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .listHeaderTitle {
+    font-size: 18px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+
+  .userDetailFormGrid,
+  .passwordFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .profileHeaderContent {
+    flex-wrap: wrap;
+  }
+
+  .filterInput {
+    min-width: 120px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .dashboardMetricsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .dashboardDetailsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .flexRow {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardSidebar {
+    position: fixed;
+    left: 0;
+    /* Sit below the demo banner so its content (Overview link, close button)
+       is never hidden under the banner. The banner publishes its measured
+       height as --demo-banner-height; falls back to 0px when unmounted. */
+    top: var(--demo-banner-height, 0px);
+    height: calc(100vh - var(--demo-banner-height, 0px));
+    width: 280px;
+    max-width: 85vw;
+    z-index: 1002;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-out;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    /* Match desktop: tighter chrome + shadow room */
+    padding: 18px 24px 18px 18px;
+  }
+
+  .dashboardSidebarOpen {
+    transform: translateX(0);
+  }
+
+  .sidebarCloseButton {
+    display: flex;
+  }
+
+  .dashboardMain {
+    padding: 16px 12px 16px 16px;
+    min-width: 0;
+  }
+
+  .dashboardHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+
+  .productsIndexPageHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboardTitle {
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .dashboardSubtitle {
+    font-size: 14px;
+  }
+
+  .pageActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .filterToolbar {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .filterInput {
+    min-width: 0;
+    flex: 1 1 120px;
+  }
+
+  .table th,
+  .table td,
+  .productTableCell {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .table th {
+    font-size: 0.75rem;
+  }
+
+  .listHeader {
+    padding: 12px 16px;
+  }
+
+  .listHeaderTitle {
+    font-size: 16px;
+  }
+
+  .itemDetailCard {
+    padding: 16px;
+  }
+
+  .itemDetailTitle {
+    font-size: 20px;
+  }
+
+  .button {
+    padding: 10px 18px;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .adminLoginCard {
+    padding: 24px 20px 28px;
+  }
+
+  .adminLoginTitle {
+    font-size: 26px;
+  }
+
+  .tabsContainer {
+    gap: 6px;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .userDetailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .userDetailFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeaderFlex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardMain {
+    padding: 12px 10px 12px 10px;
+  }
+
+  .dashboardTitle {
+    font-size: 20px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterInput {
+    flex: 1 1 auto;
+  }
+
+  .productImageContainer {
+    width: 48px;
+    height: 48px;
+  }
+
+  .avatarSmall {
+    width: 36px;
+    height: 36px;
+  }
+
+  .avatarLarge {
+    width: 80px;
+    height: 80px;
+  }
+
+  .roleBadge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
+
+/* Sidebar close button - visible only on mobile when sidebar is open */
+.sidebarCloseButton {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 1.25rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.sidebarCloseButton:hover {
+  background: var(--main-05);
+  color: var(--main-100);
+  border-color: var(--main-100);
+}
+
+.sidebarCloseButton:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+}
+
+/* Backdrop when sidebar is open on mobile */
+.sidebarBackdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@media (max-width: 768px) {
+  .sidebarBackdropVisible {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. REDUCED MOTION — disable transforms, transitions, animations
+   Note: glyph-spinner and brand-stagger fallbacks live in section 3
+   alongside their @keyframes for co-location.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all interactive transitions */
+  .button,
+  .button:hover,
+  .button:active,
+  .actionLink,
+  .actionLink:hover,
+  .actionLink:active,
+  .input,
+  .dashboardNavLink,
+  .adminHeaderHamburger,
+  .adminHeaderAccountTrigger,
+  .adminHeaderCaret,
+  .adminHeaderAccountMenuItem,
+  .adminLoginPasswordToggle,
+  .tab,
+  .filterInput,
+  .categorySelect,
+  .galleryThumbnail,
+  .indexProductTitleLink,
+  .indexActionLink,
+  .productsIndexSearchInput,
+  .productIndexRow {
+    transition: none;
+  }
+
+  /* Disable all hover/active transforms */
+  .button:hover,
+  .button:active,
+  .actionLink:hover,
+  .actionLink:active,
+  .adminHeaderHamburger:hover,
+  .adminHeaderAccountTrigger:hover,
+  .adminLoginPasswordToggle:hover,
+  .dashboardNavLink:hover,
+  .tab:hover,
+  .tabActive,
+  .tabActive:hover,
+  .indexProductTitleLink:hover,
+  .indexActionLink:hover,
+  .productsIndexSearchInput:focus-visible {
+    transform: none;
+  }
+
+  /* Disable slide/fade animations */
+  .dashboardSidebar {
+    transition: none;
+  }
+
+  .sidebarBackdropVisible {
+    animation: none;
+  }
+
+  .adminHeaderAccountMenu {
+    animation: none;
+  }
+}
+
+/* --- New Backline Status Styles --- */
+
+.dashboardSectionGap {
+  margin-top: 2rem;
+}
+
+.dashboardStatusBar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.dashboardStatCardPending {
+  border-color: var(--warning-50);
+  background-color: var(--warning-05);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--warning-50);
+}
+
+.dashboardStatCardPending .dashboardStatTitle,
+.dashboardStatCardPending .dashboardStatValue {
+  color: var(--warning-100);
+}
+
+.dashboardStatCardCustomers {
+  border-color: var(--info-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--info-50);
+}
+
+.dashboardStatCardRevenue {
+  border-color: var(--success-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--success-50);
+}
+
+.boldHighlight {
+  color: var(--main-100);
+  font-weight: 900;
+  background-color: var(--main-05);
+  padding: 0 4px;
+}
