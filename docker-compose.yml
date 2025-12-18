@@ -31,6 +31,9 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # For activating the 'docker' profile to load application-docker.properties
+      SPRING_PROFILES_ACTIVE: docker
+      # For setting the environment variables for the backend app
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bandstoredb
       SPRING_DATASOURCE_USERNAME: postgres 
       SPRING_DATASOURCE_PASSWORD: bandstoredb123postgres 
