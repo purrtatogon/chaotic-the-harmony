@@ -20,6 +20,9 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
+    @Column
+    private String profileImageUrl; // Stores the Cloudinary URL
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -77,6 +80,14 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
     public Role getRole() {
