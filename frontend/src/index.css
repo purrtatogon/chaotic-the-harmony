@@ -30,5 +30,39 @@ body {
   min-height: 100vh;
 }
 
+
+/* Global Loading & Utility Styles */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: var(--border-width) solid var(--gray-30);
+  border-top-color: var(--main-100);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-message {
+  margin-top: 16px;
+  color: var(--gray-50);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Component styles are now in CSS Modules (admin.module.css, client.module.css) */
 /* This file only contains base/reset styles */
