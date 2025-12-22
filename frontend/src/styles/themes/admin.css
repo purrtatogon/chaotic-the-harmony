@@ -1,0 +1,46 @@
+/* Admin Theme - Soda Pop, Pink Strawberry Edition */
+/* CSS Variables (not modules, these are global) */
+
+/* Default to admin theme (fallback) */
+:root {
+  /* Gray Palette */
+  --gray-100: #391E34;
+  --gray-50: #797277;
+  --gray-30: #DFDADE;
+  --white: #FFFFFF;
+
+  /* Yellow (Main) Palette */
+  --main-100: #635700;
+  --main-50: #FFF838;
+  --main-30: #FEFC8F;
+  --main-05: #FFFFCD;
+
+  /* Pink (Secondary) Palette */
+  --secondary-100: #66004A;
+  --secondary-50: #B51C87;
+  --secondary-30: #EDBCD0;
+  --secondary-05: #FFE8F3;
+}
+
+/* Override when admin theme is explicitly set */
+:root[data-theme="admin"] {
+  /* Gray Palette */
+  --gray-100: #391E34;
+  --gray-50: #797277;
+  --gray-30: #DFDADE;
+  --white: #FFFFFF;
+
+  /* Yellow (Main) Palette */
+  --main-100: #635700;
+  --main-50: #FFF838;
+  --main-30: #FEFC8F;
+  --main-05: #FFFFCD;
+
+  /* Pink (Secondary) Palette */
+  --secondary-100: #66004A;
+  --secondary-50: #B51C87;
+  --secondary-30: #EDBCD0;
+  --secondary-05: #FFE8F3;
+}
+
+

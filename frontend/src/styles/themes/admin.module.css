@@ -1,0 +1,405 @@
+/* Admin Theme Component Classes - CSS Modules */
+
+.button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  cursor: pointer;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  transition: all 0.1s ease;
+  font-family: inherit;
+}
+
+.button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.button:active {
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  box-shadow: 0 0 0 0 var(--gray-100);
+}
+
+.buttonPrimary {
+  background-color: var(--main-50);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+}
+
+.buttonPrimary:hover {
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--main-100);
+}
+
+.buttonSecondary {
+  background-color: var(--secondary-30);
+  color: var(--secondary-100);
+  border-color: var(--secondary-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--secondary-100);
+}
+
+.buttonSecondary:hover {
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--secondary-100);
+}
+
+.input {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  color: var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  font-family: inherit;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 0 var(--gray-100);
+}
+
+.card {
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  padding: 24px;
+}
+
+.statCard {
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  padding: 24px;
+}
+
+.statValue {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--main-100);
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-50);
+  font-weight: 700;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.table th {
+  background-color: var(--main-05);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--main-100);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover {
+  background-color: var(--secondary-05);
+}
+
+/* Admin Login Styles */
+.adminLoginContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-05);
+  padding: 20px;
+}
+
+.adminLoginCard {
+  width: 100%;
+  max-width: 400px;
+  border: var(--border-width) solid var(--gray-100);
+  background-color: var(--white);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  padding: 40px;
+}
+
+.adminLoginTitle {
+  font-size: 32px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--main-100);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.adminLoginSubtitle {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-50);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.adminLoginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroupLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  color: var(--gray-100);
+}
+
+/* Dashboard Layout Styles */
+.dashboardContainer {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--white);
+}
+
+.dashboardSidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: var(--main-05);
+  border-right: var(--border-width) solid var(--gray-100);
+  padding: 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.dashboardSidebarHeader {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.dashboardSidebarTitle {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--main-100);
+  margin-bottom: 4px;
+}
+
+.dashboardSidebarSubtitle {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-50);
+}
+
+.dashboardNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dashboardNavLink {
+  display: block;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--gray-100);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid transparent;
+  background-color: transparent;
+  transition: all 0.1s ease;
+  font-size: 14px;
+}
+
+.dashboardNavLink:hover {
+  background-color: var(--white);
+  border-color: var(--gray-100);
+  box-shadow: 4px 4px 0 0 var(--gray-100);
+  transform: translate(-2px, -2px);
+}
+
+.dashboardNavLinkActive {
+  background-color: var(--main-50);
+  border-color: var(--main-100);
+  color: var(--main-100);
+  box-shadow: 4px 4px 0 0 var(--main-100);
+}
+
+.dashboardMain {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.dashboardHeader {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.dashboardTitle {
+  font-size: 36px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--gray-100);
+  margin-bottom: 8px;
+}
+
+.dashboardSubtitle {
+  font-size: 16px;
+  color: var(--gray-50);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Page Content Styles */
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageActions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Form Styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 600px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+/* List/Table Styles */
+.listContainer {
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  overflow: hidden;
+}
+
+.listHeader {
+  padding: 20px 24px;
+  background-color: var(--main-05);
+  border-bottom: var(--border-width) solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listHeaderTitle {
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--main-100);
+}
+
+.listContent {
+  padding: 0;
+}
+
+/* Item Detail Styles */
+.itemDetail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.itemDetailCard {
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  background-color: var(--white);
+  padding: 24px;
+}
+
+.itemDetailCardFullWidth {
+  grid-column: 1 / -1;
+}
+
+.itemDetailHeader {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: var(--border-width) solid var(--gray-100);
+}
+
+.itemDetailTitle {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-100);
+  margin-bottom: 4px;
+}
+
+.itemDetailLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  color: var(--gray-50);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.itemDetailValue {
+  font-size: 16px;
+  color: var(--gray-100);
+  margin-bottom: 16px;
+}
+
+/* Stats/Grid Styles */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
