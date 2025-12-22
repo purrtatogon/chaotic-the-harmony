@@ -12,6 +12,10 @@ import java.util.List;
 @Configuration
 public class DatabaseSeeder {
 
+    // Define the constant for the placeholder image URL
+    private static final String DEFAULT_PROFILE_IMAGE_URL =
+            "https://res.cloudinary.com/dlqadfo7q/image/upload/v1766342168/image_placeholder_square_black_c0ckgb.svg";
+
     @Bean
     public CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
@@ -21,20 +25,20 @@ public class DatabaseSeeder {
                 // Define the demo users
                 List<User> dummyUsers = List.of(
                         // Managers
-                        new User("Manager One", "manager1@store.com", passwordEncoder.encode("managerpass"), Role.MANAGER),
-                        new User("Manager Two", "manager2@store.com", passwordEncoder.encode("managerpass"), Role.MANAGER),
+                        new User("Manager One", "manager1@store.com", passwordEncoder.encode("managerpass"), Role.MANAGER, DEFAULT_PROFILE_IMAGE_URL),
+                        new User("Manager Two", "manager2@store.com", passwordEncoder.encode("managerpass"), Role.MANAGER, DEFAULT_PROFILE_IMAGE_URL),
 
                         // Staff
-                        new User("Staff One", "staff1@store.com", passwordEncoder.encode("staffpass"), Role.STAFF),
-                        new User("Staff Two", "staff2@store.com", passwordEncoder.encode("staffpass"), Role.STAFF),
+                        new User("Staff One", "staff1@store.com", passwordEncoder.encode("staffpass"), Role.STAFF, DEFAULT_PROFILE_IMAGE_URL),
+                        new User("Staff Two", "staff2@store.com", passwordEncoder.encode("staffpass"), Role.STAFF, DEFAULT_PROFILE_IMAGE_URL),
 
                         // Clients
-                        new User("Client One", "client1@store.com", passwordEncoder.encode("clientpass"), Role.CLIENT),
-                        new User("Client Two", "client2@store.com", passwordEncoder.encode("clientpass"), Role.CLIENT)
+                        new User("Client One", "client1@store.com", passwordEncoder.encode("clientpass"), Role.CLIENT, DEFAULT_PROFILE_IMAGE_URL),
+                        new User("Client Two", "client2@store.com", passwordEncoder.encode("clientpass"), Role.CLIENT, DEFAULT_PROFILE_IMAGE_URL)
                 );
 
                 userRepository.saveAll(dummyUsers);
-                System.out.println("Seeded 6 dummy users into the database.");
+                System.out.println("Seeded 6 dummy users with default profile images into the database.");
 
             } else {
                 System.out.println("Database already contains users. Seeding skipped.");

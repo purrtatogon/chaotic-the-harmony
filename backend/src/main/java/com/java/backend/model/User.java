@@ -41,11 +41,12 @@ public class User {
     }
 
     // For Admin/Staff creation
-    public User(String fullName, String email, String password, Role role) {
+    public User(String fullName, String email, String password, Role role, String profileImageUrl) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.profileImageUrl = profileImageUrl;
     }
 
 
