@@ -1,16 +1,20 @@
-// MUST import Outlet to render nested routes
-import { Outlet } from 'react-router-dom'; 
+import { Outlet } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeStyles } from '../../utils/themeStyles';
+import Sidebar from '../../components/Sidebar';
 
 const DashboardLayout = () => {
-    return (
-        <div style={{ display: 'flex' }}>
-            {/* sidebar code goes here */}
-            
-            <main>
-                {/* this renders nested content */}
-                <Outlet /> 
-            </main>
-        </div>
-    );
+  const theme = useTheme();
+  const styles = getThemeStyles(theme);
+
+  return (
+    <div className={styles.dashboardContainer}>
+      <Sidebar />
+      <main className={styles.dashboardMain}>
+        <Outlet />
+      </main>
+    </div>
+  );
 };
+
 export default DashboardLayout;
