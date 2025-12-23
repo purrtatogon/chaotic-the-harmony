@@ -28,14 +28,42 @@ public class Category {
     // one category can have many products
     // 'mappedBy' tells JPA that the 'category' field in the Product entity owns the foreign key.
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<Product> products = new HashSet<>();
+
 
 
     public Category() {
     }
 
-    public Category(String name, String description) {
+    public Category(String name, String code, String description) {
         this.name = name;
+        this.code = code;
+        this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
         this.description = description;
     }
 }

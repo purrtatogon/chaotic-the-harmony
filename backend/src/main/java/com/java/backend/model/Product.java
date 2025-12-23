@@ -40,10 +40,11 @@ public class Product {
     private Set<ProductImage> images = new HashSet<>();
 
     // added JsonIgnoreProperties to prevent infinite loop
-    @ManyToOne(fetch = FetchType.EAGER) // changed to EAGER for simple JSON serialization in POC
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER) // This creates the JOIN
+    @JoinColumn(name = "category_id", nullable = false) // This matches your DB column name
     @JsonIgnoreProperties("products") // this prevents infinite loop if Category has a list of products
     private Category category;
+
 
     @Convert(converter = ProductTypeConverter.class)
     @Column(name = "product_type", nullable = false)
