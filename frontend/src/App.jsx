@@ -7,6 +7,9 @@ import AdminLoginPage from './pages/Admin/AdminLoginPage';
 // Admin components
 import DashboardLayout from './pages/Admin/DashboardLayout';
 import DashboardPage from './pages/Admin/DashboardPage';
+import ProductsListPage from './pages/Admin/ProductsListPage';
+import ProductDetailPage from './pages/Admin/ProductDetailPage';
+import UsersPage from './pages/Admin/UsersListPage';
 
 function App() {
   const isAuthenticated = true; 
@@ -23,14 +26,15 @@ function App() {
         {/* PROTECTED ADMIN ROUTES */}
         <Route 
           path="/admin" 
-          element={
-            isAuthenticated && isAdmin ? <DashboardLayout /> : <Navigate to="/admin/login" replace />
-          }
+          element={isAuthenticated && isAdmin ? <DashboardLayout /> : <Navigate to="/admin/login" replace />}
         >
-           <Route index element={<DashboardPage />} />
-           {/* Future Children: The Layout stays, only this part changes */}
-           {/* <Route path="products" element={<ProductsPage />} /> */}
-           {/* <Route path="users" element={<UsersPage />} /> */}
+          <Route index element={<DashboardPage />} />
+          
+          <Route path="products" element={<ProductsListPage />} />
+
+          <Route path="products/:id" element={<ProductDetailPage />} />
+          
+          <Route path="users" element={<UsersPage />} />
         </Route>
 
         <Route path="*" element={<h1>404: Whoopsy daisy! Page Not Found.</h1>} />

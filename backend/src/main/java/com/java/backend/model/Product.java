@@ -1,32 +1,22 @@
 package com.java.backend.model;
 
-import com.java.backend.model.enums.MusicStyle;
-import com.java.backend.model.enums.ProductType;
-import com.java.backend.model.enums.Size;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Import this
+import com.java.backend.model.enums.*;
 import jakarta.persistence.*;
-/* Maps the primary key auto-generation strategy to PostgreSQL's SERIAL/BIGSERIAL type.
- * This is essential for preventing schema validation errors when using ddl-auto=validate
- * and ensuring new records get an auto-generated ID from the database.
- */
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "product")
-
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Common attributes
     @Column(nullable = false, unique = true)
-    private String sku; // like "MUS-CD-STD-0001"
+    private String sku;
 
     @Column(nullable = false)
     private String title;
@@ -49,30 +39,68 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductImage> images = new HashSet<>();
 
-    public Set<ProductImage> getImages() {
-        return images;
-    }
-    public void setImages(Set<ProductImage> images) {
-        this.images = images;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    // added JsonIgnoreProperties to prevent infinite loop
+    @ManyToOne(fetch = FetchType.EAGER) // changed to EAGER for simple JSON serialization in POC
     @JoinColumn(name = "category_id", nullable = false)
-    public Category category;
+    @JsonIgnoreProperties("products") // this prevents infinite loop if Category has a list of products
+    private Category category;
 
-
-    // Specific attributes (nullable)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ProductTypeConverter.class)
     @Column(name = "product_type", nullable = false)
-    private ProductType productType; // CD, VINYL, TEE, etc
+    private ProductType productType;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MusicStyleConverter.class)
     @Column(name = "music_style")
-    private MusicStyle musicStyle; // STD, DLX or CLR (null for apparel)
+    private MusicStyle musicStyle;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = SizeConverter.class)
     @Column(name = "item_size")
-    private Size size; // M, L, XL... (null for music)
+    private Size size;
 
-    private String color; // "Black", "Blue" (null for music)
+    private String color;
+
+
+    // GETTERS AND SETTERS
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getSku() { return sku; }
+    public void setSku(String sku) { this.sku = sku; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getMaterialsSpecs() { return materialsSpecs; }
+    public void setMaterialsSpecs(String materialsSpecs) { this.materialsSpecs = materialsSpecs; }
+
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
+
+    public String getShippingInfo() { return shippingInfo; }
+    public void setShippingInfo(String shippingInfo) { this.shippingInfo = shippingInfo; }
+
+    public Integer getStockQuantity() { return stockQuantity; }
+    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
+
+    public Set<ProductImage> getImages() { return images; }
+    public void setImages(Set<ProductImage> images) { this.images = images; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+
+    public ProductType getProductType() { return productType; }
+    public void setProductType(ProductType productType) { this.productType = productType; }
+
+    public MusicStyle getMusicStyle() { return musicStyle; }
+    public void setMusicStyle(MusicStyle musicStyle) { this.musicStyle = musicStyle; }
+
+    public Size getSize() { return size; }
+    public void setSize(Size size) { this.size = size; }
+
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
 }

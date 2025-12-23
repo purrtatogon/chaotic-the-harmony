@@ -1,6 +1,7 @@
 package com.java.backend.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 // I will give these sizes a custom property (descriptor) so that they can hold values like "2XL"
 public enum Size {
@@ -17,9 +18,9 @@ public enum Size {
     XXXXXL("5XL"),
 
     // for Accessories
-    SML("Small"),
-    MED("Medium"),
-    LRG("Large"),
+    Small("SML"),
+    Medium("MED"),
+    Large("LRG"),
 
     NA("N/A");
 
@@ -29,9 +30,17 @@ public enum Size {
         this.descriptor = descriptor;
     }
 
-    // This annotation is MAGIC. It ensures "2XL" is stored in DB/JSON, not "XXL"
     @JsonValue
-    public String getDescriptor() {
-        return descriptor;
+    public String getDescriptor() { return descriptor; }
+
+    @JsonCreator
+    public static Size fromString(String value) {
+        if (value == null) return null;
+        for (Size s : Size.values()) {
+            if (s.descriptor.equalsIgnoreCase(value) || s.name().equalsIgnoreCase(value)) {
+                return s;
+            }
+        }
+        return NA; // Safe fallback
     }
 }

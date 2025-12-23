@@ -37,7 +37,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Access Rules and CORS - telling Spring Security to ignore the security checks temporarily for the API endpoints I want to access
+    // Access Rules and CORS
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -46,42 +46,40 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // allowing public access to storefront data
+                        // PUBLIC READ-ONLY ACCESS (Storefront)
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
 
-                        // allowing public/unsecured endpoints (login/auth and frontend routes)
+                        // AUTHENTICATION ENDPOINTS (Login/Register)
                         .requestMatchers("/api/v1/auth/**").permitAll()
 
-                        // TEMPORARY OPEN ACCESS FOR FRONTEND TESTING: changing these lines to permitAll() so the API calls go through.
+                        // TEMPORARY OPEN ACCESS (For Development/Frontend Testing)
+                        .requestMatchers("/api/v1/dashboard/**").permitAll()
+                        .requestMatchers("/api/v1/categories/**").permitAll() // Categories must be open for your dropdown to work
 
-                        // Dashboard
-                        .requestMatchers("/api/v1/dashboard/**").permitAll() // TEMPORARILY OPEN
+                        // Note: Since we have specific GET rules for products above,
+                        // this covers POST/PUT/DELETE for products if we want them open for now:
+                        .requestMatchers("/api/v1/products/**").permitAll()
 
-                        // product/inventory management
-                        .requestMatchers("/api/v1/products/**").permitAll() // TEMPORARILY OPEN
+                        // RESTRICTED ENDPOINTS (Must come BEFORE anyRequest)
 
-                        // ADMIN ENDPOINT RULES
-
-                        // User Management (CRUD) - ONLY MANAGER (STILL LOCKED)
+                        // User Management (CRUD) - ONLY MANAGER
                         .requestMatchers("/api/v1/users/**").hasAuthority("MANAGER")
 
-                        // Category CRUD - ONLY MANAGER (STILL LOCKED)
-                        .requestMatchers("/api/v1/categories/**").hasAuthority("MANAGER")
+                        // Category CRUD - Locked to MANAGER (Currently commented out to allow open access above)
+                        // .requestMatchers("/api/v1/categories/**").hasAuthority("MANAGER")
 
-
-                        // Deny all other requests by default (fail-safe)
+                        // CATCH-ALL (must be the VERY LAST line)
                         .anyRequest().authenticated()
                 );
 
         return http.build();
     }
 
-    // 2. Define the CORS configuration to allow React to connect
+    // Define the CORS configuration to allow React to connect
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Adjust this if your frontend port changes
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
@@ -92,7 +90,7 @@ public class SecurityConfig {
         return source;
     }
 
-    // --- 3. Define UserDetailsService (How to load User data) ---
+    // Define UserDetailsService (The "User Repo Bean")
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
@@ -100,7 +98,7 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
     }
 
-    // --- 4. Expose AuthenticationManager (Needed for Login Controller) ---
+    // Expose AuthenticationManager (needed for login controller)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

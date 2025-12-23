@@ -22,7 +22,7 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
     private String code; // Stores "MUS", "APL" or "ACC"
-    private String description; // do i need this?
+    private String description;
 
 
     // one category can have many products
