@@ -71,7 +71,7 @@ const ProductsListPage = () => {
                 
                 {/* Fixed: access the .name property of the category object */}
                 <td style={{ padding: '1rem' }}>
-                  {product.category ? product.category.name : 'Uncategorized'}
+                  {product.category?.name || 'Uncategorized'}
                 </td>
 
                 <td style={{ padding: '1rem' }}>{formatCurrency(product.price)}</td>
