@@ -14,7 +14,7 @@ const Sidebar = () => {
 
   const navItems = [
     { to: '/admin', label: 'Dashboard', end: true },
-    { to: '/admin/user', label: 'My Profile' },
+    { to: '/admin/users/me', label: 'My Profile' },
     { to: '/admin/users', label: 'Users' },
     { to: '/admin/products', label: 'Products' },
     { to: '/admin/categories', label: 'Categories' },
