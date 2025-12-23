@@ -1,7 +1,9 @@
 package com.java.backend.controller;
 
 import com.java.backend.model.Category;
+import com.java.backend.model.Product;
 import com.java.backend.repository.CategoryRepository;
+import com.java.backend.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,11 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    public CategoryController(CategoryRepository categoryRepository) {
+    public CategoryController(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     @GetMapping
@@ -28,6 +32,12 @@ public class CategoryController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/{id}/products")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long id) {
+        List<Product> products = productRepository.findByCategoryId(id);
+        return ResponseEntity.ok(products);
+    }
+
 
     @PostMapping
     public Category createCategory(@RequestBody Category category) {
@@ -37,9 +47,8 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
         return categoryRepository.findById(id).map(category -> {
-            // Assuming setters exist in your model (you might need to add them)
-            // category.setName(categoryDetails.getName());
-            // category.setDescription(categoryDetails.getDescription());
+            category.setName(categoryDetails.getName());
+            category.setDescription(categoryDetails.getDescription());
             return ResponseEntity.ok(categoryRepository.save(category));
         }).orElse(ResponseEntity.notFound().build());
     }

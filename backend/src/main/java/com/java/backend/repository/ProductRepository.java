@@ -9,6 +9,8 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    List<Product> findByCategoryId(Long categoryId);
+
     // Find a Product by its unique SKU
     Optional<Product> findBySku(String sku);
 
@@ -17,7 +19,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Find by Category Object's Name (search bars)
     List<Product> findByCategoryName(String categoryName);
-
-    // Find by Category ID (frontend dropdowns/filters)
-    List<Product> findByCategoryId(Long categoryId);
 }
