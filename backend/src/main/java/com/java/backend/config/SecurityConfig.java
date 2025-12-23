@@ -64,7 +64,9 @@ public class SecurityConfig {
                         // RESTRICTED ENDPOINTS (Must come BEFORE anyRequest)
 
                         // User Management (CRUD) - ONLY MANAGER
-                        .requestMatchers("/api/v1/users/**").hasAuthority("MANAGER")
+                        // TEMPORARILY ALLOW USER ACCESS until implementing the JWT Filter logic.
+                        // .hasAuthority("MANAGER")
+                        .requestMatchers("/api/v1/users/**").permitAll()
 
                         // Category CRUD - Locked to MANAGER (Currently commented out to allow open access above)
                         // .requestMatchers("/api/v1/categories/**").hasAuthority("MANAGER")
