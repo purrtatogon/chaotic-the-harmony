@@ -19,13 +19,16 @@ const UserListPage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
   const { data: users, loading, error, refetch } = useApi(() => userApi.getAll());
+  
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  
+  // FIX 1: Updated initial state to match Backend Entity (fullName instead of name)
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '', 
     email: '',
-    role: 'Staff',
-    status: 'Active',
+    role: 'STAFF', // Uppercase to match Java Enum if strict, or handle in backend
+    password: '', // Needed for creation
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -38,12 +41,19 @@ const UserListPage = () => {
 
   const handleCreate = () => {
     setIsCreating(true);
-    setFormData({ name: '', email: '', role: 'Staff', status: 'Active' });
+    // FIX 2: Clear form with correct fields
+    setFormData({ fullName: '', email: '', role: 'STAFF', password: '' });
   };
 
   const handleEdit = (user) => {
     setEditingId(user.id);
-    setFormData(user);
+    // FIX 3: Map backend data to form data
+    setFormData({
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        password: '' // Don't show hash, leave empty
+    });
     setIsCreating(false);
   };
 
@@ -65,14 +75,21 @@ const UserListPage = () => {
     e.preventDefault();
     try {
       setSubmitting(true);
+      
+      // FIX 4: Handle Password logic
+      // If creating, password is required. If editing, send only if changed.
+      const payload = { ...formData };
+      if (!isCreating && !payload.password) {
+          delete payload.password; // Don't send empty string on edit
+      }
+
       if (isCreating) {
-        await userApi.create(formData);
+        await userApi.create(payload);
       } else {
-        await userApi.update(editingId, formData);
+        await userApi.update(editingId, payload);
       }
       setIsCreating(false);
       setEditingId(null);
-      setFormData({ name: '', email: '', role: 'Staff', status: 'Active' });
       refetch();
     } catch (err) {
       alert('Failed to save user: ' + err.message);
@@ -84,19 +101,14 @@ const UserListPage = () => {
   const handleCancel = () => {
     setIsCreating(false);
     setEditingId(null);
-    setFormData({ name: '', email: '', role: 'Staff', status: 'Active' });
   };
 
-  if (loading) {
-    return <Loading message="Loading users..." />;
-  }
-
-  if (error) {
-    return <Error message={error} onRetry={refetch} />;
-  }
+  if (loading) return <Loading message="Loading users..." />;
+  if (error) return <Error message={error} onRetry={refetch} />;
 
   const userList = users || [];
-  const columns = ['ID', 'Name', 'Email', 'Role', 'Status'];
+  // FIX 5: Remove 'Status', Change 'Name' to 'Full Name'
+  const columns = ['ID', 'Full Name', 'Email', 'Role']; 
 
   return (
     <div className={styles.pageContent}>
@@ -116,10 +128,10 @@ const UserListPage = () => {
           <Form onSubmit={handleSubmit}>
             <FormRow>
               <Input
-                label="Name"
-                name="name"
+                label="Full Name" 
+                name="fullName" 
                 type="text"
-                value={formData.name}
+                value={formData.fullName}
                 onChange={handleChange}
                 required
                 disabled={submitting}
@@ -144,22 +156,22 @@ const UserListPage = () => {
                 required
                 disabled={submitting}
               >
-                <option value="Staff">Staff</option>
-                <option value="Manager">Manager</option>
-                <option value="Admin">Admin</option>
+                <option value="STAFF">Staff</option>
+                <option value="MANAGER">Manager</option>
+                <option value="ADMIN">Admin</option>
               </Input>
+              
+              {/* Added Password Field for Creation */}
               <Input
-                label="Status"
-                name="status"
-                type="select"
-                value={formData.status}
+                label={isCreating ? "Password" : "New Password (Optional)"}
+                name="password"
+                type="password"
+                value={formData.password || ''}
                 onChange={handleChange}
-                required
+                required={isCreating} 
                 disabled={submitting}
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </Input>
+                placeholder={isCreating ? "" : "Leave blank to keep current"}
+              />
             </FormRow>
             <FormActions>
               <Button type="submit" variant="primary" disabled={submitting}>
@@ -179,10 +191,9 @@ const UserListPage = () => {
           data={userList}
           renderRow={(user) => [
             <td key="id">{user.id}</td>,
-            <td key="name">{user.name}</td>,
+            <td key="name">{user.fullName}</td>,
             <td key="email">{user.email}</td>,
             <td key="role">{user.role}</td>,
-            <td key="status">{user.status}</td>,
           ]}
           actions={(user) => (
             <div style={{ display: 'flex', gap: '8px' }}>
