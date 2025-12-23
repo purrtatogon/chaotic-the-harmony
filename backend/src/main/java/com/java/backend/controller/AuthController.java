@@ -1,46 +1,52 @@
 package com.java.backend.controller;
 
+import com.java.backend.model.UserPrincipal; // Required to cast the principal
+import com.java.backend.service.JwtService;   // Required to generate real tokens
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-import org.springframework.web.bind.annotation.RestController; // <--- CRITICAL
-import org.springframework.web.bind.annotation.RequestMapping; // <--- CRITICAL
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService; // <--- 1. Inject the Token Service
 
-    public AuthController(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            // 1. Attempt to authenticate the user (uses UserDetailsService and PasswordEncoder)
+            // 1. Attempt to authenticate the user
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email, request.password)
             );
 
-            // 2. If authentication succeeds, get the role and return a dummy token/info
-            // NOTE: I'm using a dummy token/role for initial testing.
-            String role = auth.getAuthorities().stream().findFirst().orElseThrow().getAuthority();
+            // 2. Get the User Object (Principal)
+            UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+
+            // 3. GENERATE THE REAL TOKEN (The "Passport")
+            // This generates the signed JWT string containing the user's email
+            String jwtToken = jwtService.generateToken(userPrincipal);
+
+            // 4. Get Role
+            String role = userPrincipal.getAuthorities().stream().findFirst().orElseThrow().getAuthority();
 
             return ResponseEntity.ok(Map.of(
-                    "token", "DUMMY_TOKEN_FOR_TESTING_ONLY",
+                    "token", jwtToken,
                     "role", role
             ));
         } catch (Exception e) {
-            // this will catche BadCredentialsException and other authentication failures
             return ResponseEntity.status(401).body(Map.of("message", "Invalid email or password."));
         }
     }
 
-    // Small DTO for the request body
     public record LoginRequest(String email, String password) {}
 }

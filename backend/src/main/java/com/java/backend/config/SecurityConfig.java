@@ -1,43 +1,28 @@
 package com.java.backend.config;
 
-import com.java.backend.model.UserPrincipal;
-import com.java.backend.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity // Enables Spring Security's web support
+@EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserRepository userRepository;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
-    // Constructor Injection for the UserRepository
-    public SecurityConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    // Password Encoder
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // Access Rules and CORS
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -46,39 +31,33 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // PUBLIC READ-ONLY ACCESS (Storefront)
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-
-                        // AUTHENTICATION ENDPOINTS (Login/Register)
+                        // THE ONLY PUBLIC ENDPOINT: Login/Register
                         .requestMatchers("/api/v1/auth/**").permitAll()
 
-                        // TEMPORARY OPEN ACCESS (For Development/Frontend Testing)
-                        .requestMatchers("/api/v1/dashboard/**").permitAll()
-                        .requestMatchers("/api/v1/categories/**").permitAll() // Categories must be open for your dropdown to work
+                        // ROFILE: Any authenticated user can see their own data
+                        .requestMatchers("/api/v1/users/me").authenticated()
 
-                        // Note: Since we have specific GET rules for products above,
-                        // this covers POST/PUT/DELETE for products if we want them open for now:
-                        .requestMatchers("/api/v1/products/**").permitAll()
+                        // PRODUCTS: Viewable by everyone (Staff/Manager/Admin),
+                        // CRUD by everyone (Staff/Manager/Admin)
+                        .requestMatchers("/api/v1/products/**").hasAnyAuthority("ADMIN", "MANAGER", "STAFF")
 
-                        // RESTRICTED ENDPOINTS (Must come BEFORE anyRequest)
+                        // CATEGORIES: Viewable by everyone (Staff/Manager/Admin),
+                        // BUT: Creation/Update/Deletion ONLY by ADMIN or MANAGER
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").hasAnyAuthority("ADMIN", "MANAGER", "STAFF")
+                        .requestMatchers("/api/v1/categories/**").hasAnyAuthority("ADMIN", "MANAGER")
 
-                        // User Management (CRUD) - ONLY MANAGER
-                        // TEMPORARILY ALLOW USER ACCESS until implementing the JWT Filter logic.
-                        // .hasAuthority("MANAGER")
-                        .requestMatchers("/api/v1/users/**").permitAll()
+                        // USERS & DASHBOARD: Strictly higher-level access
+                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("ADMIN", "MANAGER")
+                        .requestMatchers("/api/v1/dashboard/**").hasAnyAuthority("ADMIN", "MANAGER", "STAFF")
 
-                        // Category CRUD - Locked to MANAGER (Currently commented out to allow open access above)
-                        // .requestMatchers("/api/v1/categories/**").hasAuthority("MANAGER")
-
-                        // CATCH-ALL (must be the VERY LAST line)
+                        // CATCH-ALL: Lock everything else down
                         .anyRequest().authenticated()
-                );
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Define the CORS configuration to allow React to connect
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -90,19 +69,5 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    // Define UserDetailsService (The "User Repo Bean")
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .map(UserPrincipal::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
-    }
-
-    // Expose AuthenticationManager (needed for login controller)
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 }
