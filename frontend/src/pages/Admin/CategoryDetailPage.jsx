@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { categoriesApi } from '../../api/categories';
+import { categoryApi } from '../../api/category';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
 import PageHeader from '../../components/PageHeader';
@@ -14,7 +14,7 @@ import Table from '../../components/Table';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 
-const CategoryPage = () => {
+const CategoryDetailPage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
   const { id } = useParams();
@@ -33,8 +33,8 @@ const CategoryPage = () => {
         setLoading(true);
         setError(null);
         const [categoryData, productsData] = await Promise.all([
-          categoriesApi.getById(id),
-          categoriesApi.getProducts(id),
+          categoryApi.getById(id),
+          categoryApi.getProducts(id),
         ]);
         setCategory(categoryData);
         setFormData(categoryData);
@@ -62,7 +62,7 @@ const CategoryPage = () => {
     e.preventDefault();
     try {
       setSubmitting(true);
-      const updated = await categoriesApi.update(id, formData);
+      const updated = await categoryApi.update(id, formData);
       setCategory(updated);
       setIsEditing(false);
     } catch (err) {
@@ -81,7 +81,7 @@ const CategoryPage = () => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
         setSubmitting(true);
-        await categoriesApi.delete(id);
+        await categoryApi.delete(id);
         navigate('/admin/categories');
       } catch (err) {
         alert('Failed to delete category: ' + err.message);
@@ -192,4 +192,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default CategoryDetailPage;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { productsApi } from '../../api/products';
-import { categoriesApi } from '../../api/categories';
+import { productApi } from '../../api/product';
+import { categoryApi } from '../../api/category';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
 import PageHeader from '../../components/PageHeader';
@@ -23,7 +23,7 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   
   const [product, setProduct] = useState(null);
-  const [categories, setCategories] = useState([]); // STATE FOR CATEGORIES
+  const [category, setCategory] = useState([]); // STATE FOR CATEGORIES
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,13 +38,13 @@ const ProductDetailPage = () => {
         setError(null);
 
         // FETCH BOTH PRODUCT AND CATEGORIES
-        const [productData, categoriesData] = await Promise.all([
-          productsApi.getById(id),
-          categoriesApi.getAll()
+        const [productData, categoryData] = await Promise.all([
+          productApi.getById(id),
+          categoryApi.getAll()
         ]);
 
         setProduct(productData);
-        setCategories(categoriesData);
+        setCategory(categoryData);
         setFormData(productData);
       } catch (err) {
         setError(err.message || 'Failed to load data');
@@ -69,7 +69,7 @@ const ProductDetailPage = () => {
     e.preventDefault();
     try {
       setSubmitting(true);
-      const updated = await productsApi.update(id, formData);
+      const updated = await productApi.update(id, formData);
       setProduct(updated);
       setIsEditing(false);
     } catch (err) {
@@ -88,7 +88,7 @@ const ProductDetailPage = () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         setSubmitting(true);
-        await productsApi.delete(id);
+        await productApi.delete(id);
         navigate('/admin/products');
       } catch (err) {
         alert('Failed to delete product: ' + err.message);
@@ -166,7 +166,7 @@ const ProductDetailPage = () => {
                     disabled={submitting}
                   >
                     <option value="">Select Category</option>
-                    {categories.map(cat => (
+                    {category.map(cat => (
                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
