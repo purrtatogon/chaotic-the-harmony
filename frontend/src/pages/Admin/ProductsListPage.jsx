@@ -7,6 +7,7 @@ import PageHeader from '../../components/PageHeader';
 import Button from '../../components/Button';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
+import { formatCurrency } from '../../utils/formatters';
 
 const ProductsListPage = () => {
   const theme = useTheme();
@@ -16,6 +17,7 @@ const ProductsListPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,7 +51,6 @@ const ProductsListPage = () => {
         }
       />
 
-      {/* Simple Table Layout */}
       <div style={{ overflowX: 'auto', background: theme === 'dark' ? '#1e1e1e' : '#fff', borderRadius: '8px', padding: '1rem' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', color: theme === 'dark' ? '#eee' : '#333' }}>
           <thead>
@@ -73,7 +74,7 @@ const ProductsListPage = () => {
                   {product.category ? product.category.name : 'Uncategorized'}
                 </td>
 
-                <td style={{ padding: '1rem' }}>${product.price?.toFixed(2)}</td>
+                <td style={{ padding: '1rem' }}>{formatCurrency(product.price)}</td>
                 <td style={{ padding: '1rem' }}>{product.stockQuantity}</td>
                 <td style={{ padding: '1rem' }}>
                   <Button 

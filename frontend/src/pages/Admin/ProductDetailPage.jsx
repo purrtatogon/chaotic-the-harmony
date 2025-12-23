@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productsApi } from '../../api/products';
-import { categoriesApi } from '../../api/categories'; // <--- 1. ADD THIS IMPORT
+import { categoriesApi } from '../../api/categories';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
 import PageHeader from '../../components/PageHeader';
@@ -14,6 +14,7 @@ import FormActions from '../../components/FormActions';
 import FormRow from '../../components/FormRow';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
+import { formatCurrency } from '../../utils/formatters';
 
 const ProductDetailPage = () => {
   const theme = useTheme();
@@ -22,12 +23,13 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   
   const [product, setProduct] = useState(null);
-  const [categories, setCategories] = useState([]); // <--- 2. ADD STATE FOR CATEGORIES
+  const [categories, setCategories] = useState([]); // STATE FOR CATEGORIES
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,7 +37,7 @@ const ProductDetailPage = () => {
         setLoading(true);
         setError(null);
 
-        // <--- 3. FETCH BOTH PRODUCT AND CATEGORIES
+        // FETCH BOTH PRODUCT AND CATEGORIES
         const [productData, categoriesData] = await Promise.all([
           productsApi.getById(id),
           categoriesApi.getAll()
@@ -128,7 +130,7 @@ const ProductDetailPage = () => {
             <Form onSubmit={handleSubmit}>
               <Input
                 label="Product Name"
-                name="title" // Ensure this matches backend field (title vs name)
+                name="title"
                 type="text"
                 value={formData.title || formData.name || ''}
                 onChange={handleChange}
@@ -145,16 +147,16 @@ const ProductDetailPage = () => {
                 disabled={submitting}
               />
 
-              {/* <--- 4. YOUR NEW DROPDOWN CODE GOES HERE ---> */}
+              {/* NEW DROPDOWN CODE GOES HERE */}
               <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.5rem', color: theme === 'dark' ? '#aaa' : '#666' }}>Category</label>
                   <select 
                     name="categoryId"
-                    // If formData.category is an object, use its ID.
+                    // if formData.category is an object, use its ID.
                     value={formData.category?.id || ''} 
                     onChange={(e) => {
                        const selectedId = e.target.value;
-                       // We must reconstruct the object for the backend
+                       // I reconstruct the object for the backend
                        setFormData({
                           ...formData,
                           category: { id: selectedId } 
@@ -194,8 +196,7 @@ const ProductDetailPage = () => {
 
         <ItemDetailCard title="Inventory & Pricing">
           <ItemDetailField label="Stock Quantity" value={`${product.stockQuantity ?? 0} units`} />
-          <ItemDetailField label="Price" value={`$${product.price ? product.price.toFixed(2) : '0.00'}`} />
-          {/* ... other fields ... */}
+          <ItemDetailField label="Price" value={formatCurrency(product.price)} />
         </ItemDetailCard>
 
         <ItemDetailCard title="Metadata" fullWidth>
