@@ -3,6 +3,8 @@ package com.java.backend.controller;
 import com.java.backend.model.User;
 import com.java.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication; // Added
+import org.springframework.security.core.context.SecurityContextHolder; // Added
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,20 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // FETCH CURRENT LOGGED-IN PROFILE
+    @GetMapping("/me")
+    public ResponseEntity<User> getMyProfile() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // getName() returns the 'Subject' of the JWT (the user's email)
+        String currentEmail = authentication.getName();
+
+        return userRepository.findByEmail(currentEmail)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -34,7 +50,6 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        // HASH THE PASSWORD before saving!
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -46,7 +61,6 @@ public class UserController {
             existingUser.setEmail(userDetails.getEmail());
             existingUser.setRole(userDetails.getRole());
 
-            // Only update password if a new one is provided
             if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(userDetails.getPassword()));
             }
