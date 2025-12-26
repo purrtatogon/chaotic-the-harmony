@@ -11,6 +11,7 @@ import Form from '../../components/Form';
 import FormActions from '../../components/FormActions';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
+import ImageUpload from '../../components/ImageUpload';
 
 const UserDetailPage = () => {
   const theme = useTheme();
@@ -32,6 +33,7 @@ const UserDetailPage = () => {
       try {
         setLoading(true);
         setError(null);
+        // Fetching "Me" context for the current logged-in user profile
         const data = await userApi.getMe();
         setUser(data);
         setFormData(data);
@@ -52,6 +54,13 @@ const UserDetailPage = () => {
     });
   };
 
+  const handleAvatarUpload = (url) => {
+    setFormData({
+      ...formData,
+      profileImageUrl: url,
+    });
+  };
+
   const handlePasswordChange = (e) => {
     setPasswordData({
       ...passwordData,
@@ -63,6 +72,7 @@ const UserDetailPage = () => {
     e.preventDefault();
     try {
       setSubmitting(true);
+      // Ensure we are sending 'fullName' as per Java Entity
       const updated = await userApi.updateProfile(formData);
       setUser(updated);
       setIsEditing(false);
@@ -96,72 +106,100 @@ const UserDetailPage = () => {
     setIsEditing(false);
   };
 
-  if (loading) {
-    return <Loading message="Loading profile..." />;
-  }
-
-  if (error) {
-    return <Error message={error} />;
-  }
-
-  if (!user) {
-    return <Error message="User not found" />;
-  }
+  if (loading) return <Loading message="Loading profile..." />;
+  if (error) return <Error message={error} />;
+  if (!user) return <Error message="User not found" />;
 
   return (
     <div className={styles.pageContent}>
       <PageHeader title="My Profile" subtitle="Manage Your Account" />
 
       <ItemDetailCard title="Personal Information" fullWidth>
+        {/* --- PROFILE PICTURE SECTION --- */}
+        <div style={{ 
+          display: 'flex', 
+          gap: '2rem', 
+          marginBottom: '2rem', 
+          alignItems: 'center',
+          flexWrap: 'wrap' 
+        }}>
+          <div style={{ 
+            width: '120px', 
+            height: '120px', 
+            borderRadius: '50%', 
+            overflow: 'hidden', 
+            border: `3px solid ${theme === 'dark' ? '#3b82f6' : '#eee'}`,
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          }}>
+            <img 
+              src={isEditing ? (formData.profileImageUrl || '/default-avatar.png') : (user.profileImageUrl || '/default-avatar.png')} 
+              alt="Profile" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
+          
+          {isEditing && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.9rem', color: theme === 'dark' ? '#aaa' : '#666' }}>
+                Update Profile Photo
+              </span>
+              <ImageUpload onUploadSuccess={handleAvatarUpload} />
+            </div>
+          )}
+        </div>
+
+        {/* --- FORM SECTION --- */}
         {!isEditing ? (
-          <div>
-            <ItemDetailField label="Name" value={user.name || 'N/A'} />
-            <ItemDetailField label="Email" value={user.email || 'N/A'} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+            <ItemDetailField label="Full Name" value={user.fullName || 'N/A'} />
+            <ItemDetailField label="Email Address" value={user.email || 'N/A'} />
             <ItemDetailField label="Role" value={user.role || 'N/A'} />
-            <ItemDetailField label="Phone" value={user.phone || 'N/A'} />
+            <ItemDetailField label="Phone Number" value={user.phone || 'N/A'} />
             <ItemDetailField label="Department" value={user.department || 'N/A'} />
-            <Button variant="primary" onClick={() => setIsEditing(true)} disabled={submitting}>
-              Edit Profile
-            </Button>
+            <div style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
+              <Button variant="primary" onClick={() => setIsEditing(true)} disabled={submitting}>
+                Edit Profile
+              </Button>
+            </div>
           </div>
         ) : (
           <Form onSubmit={handleSubmit}>
-            <Input
-              label="Name"
-              name="name"
-              type="text"
-              value={formData.name || ''}
-              onChange={handleChange}
-              required
-              disabled={submitting}
-            />
-            <Input
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email || ''}
-              onChange={handleChange}
-              required
-              disabled={submitting}
-            />
-            <Input
-              label="Phone"
-              name="phone"
-              type="tel"
-              value={formData.phone || ''}
-              onChange={handleChange}
-              required
-              disabled={submitting}
-            />
-            <Input
-              label="Department"
-              name="department"
-              type="text"
-              value={formData.department || ''}
-              onChange={handleChange}
-              required
-              disabled={submitting}
-            />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <Input
+                label="Full Name"
+                name="fullName"
+                type="text"
+                value={formData.fullName || ''}
+                onChange={handleChange}
+                required
+                disabled={submitting}
+              />
+              <Input
+                label="Email Address"
+                name="email"
+                type="email"
+                value={formData.email || ''}
+                onChange={handleChange}
+                required
+                disabled={submitting}
+              />
+              <Input
+                label="Phone Number"
+                name="phone"
+                type="tel"
+                value={formData.phone || ''}
+                onChange={handleChange}
+                disabled={submitting}
+              />
+              <Input
+                label="Department"
+                name="department"
+                type="text"
+                value={formData.department || ''}
+                onChange={handleChange}
+                disabled={submitting}
+              />
+            </div>
             <FormActions>
               <Button type="submit" variant="primary" disabled={submitting}>
                 Save Changes
@@ -174,38 +212,42 @@ const UserDetailPage = () => {
         )}
       </ItemDetailCard>
 
-      <ItemDetailCard title="Change Password" fullWidth>
+      <ItemDetailCard title="Security & Password" fullWidth>
         <Form onSubmit={handlePasswordSubmit}>
-          <Input
-            label="Current Password"
-            name="currentPassword"
-            type="password"
-            value={passwordData.currentPassword}
-            onChange={handlePasswordChange}
-            required
-            disabled={submitting}
-          />
-          <Input
-            label="New Password"
-            name="newPassword"
-            type="password"
-            value={passwordData.newPassword}
-            onChange={handlePasswordChange}
-            required
-            disabled={submitting}
-          />
-          <Input
-            label="Confirm New Password"
-            name="confirmPassword"
-            type="password"
-            value={passwordData.confirmPassword}
-            onChange={handlePasswordChange}
-            required
-            disabled={submitting}
-          />
-          <Button type="submit" variant="primary" disabled={submitting}>
-            Update Password
-          </Button>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            <Input
+              label="Current Password"
+              name="currentPassword"
+              type="password"
+              value={passwordData.currentPassword}
+              onChange={handlePasswordChange}
+              required
+              disabled={submitting}
+            />
+            <Input
+              label="New Password"
+              name="newPassword"
+              type="password"
+              value={passwordData.newPassword}
+              onChange={handlePasswordChange}
+              required
+              disabled={submitting}
+            />
+            <Input
+              label="Confirm New Password"
+              name="confirmPassword"
+              type="password"
+              value={passwordData.confirmPassword}
+              onChange={handlePasswordChange}
+              required
+              disabled={submitting}
+            />
+          </div>
+          <div style={{ marginTop: '1rem' }}>
+            <Button type="submit" variant="primary" disabled={submitting}>
+              Update Password
+            </Button>
+          </div>
         </Form>
       </ItemDetailCard>
     </div>

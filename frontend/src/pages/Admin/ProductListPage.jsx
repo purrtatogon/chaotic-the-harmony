@@ -55,8 +55,9 @@ const ProductListPage = () => {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', color: theme === 'dark' ? '#eee' : '#333' }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${theme === 'dark' ? '#333' : '#eee'}` }}>
+              <th style={{ padding: '1rem' }}>Image</th>
               <th style={{ padding: '1rem' }}>SKU</th>
-              <th style={{ padding: '1rem' }}>Name</th>
+              <th style={{ padding: '1rem' }}>Title</th>
               <th style={{ padding: '1rem' }}>Category</th>
               <th style={{ padding: '1rem' }}>Price</th>
               <th style={{ padding: '1rem' }}>Stock</th>
@@ -66,26 +67,42 @@ const ProductListPage = () => {
           <tbody>
             {products.map(product => (
               <tr key={product.id} style={{ borderBottom: `1px solid ${theme === 'dark' ? '#333' : '#eee'}` }}>
-                <td style={{ padding: '1rem' }}>{product.sku}</td>
-                <td style={{ padding: '1rem', fontWeight: 'bold' }}>{product.title}</td>
-                
-                {/* Fixed: access the .name property of the category object */}
-                <td style={{ padding: '1rem' }}>
-                  {product.category?.name || 'Uncategorized'}
-                </td>
+              {/* 1. Added a specific cell for the Photo */}
+              <td style={{ padding: '1rem' }}>
+                <div style={{ 
+                  width: '60px', 
+                  height: '60px', 
+                  borderRadius: '4px', 
+                  overflow: 'hidden', 
+                  border: `1px solid ${theme === 'dark' ? '#444' : '#ddd'}` 
+                }}>
+                  <img 
+                    src={product.images && product.images.length > 0 ? product.images[0].imageUrl : '/placeholder.jpg'} 
+                    alt={product.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} // 👈 This keeps it from stretching
+                  />
+                </div>
+              </td>
+              
+              <td style={{ padding: '1rem' }}>{product.sku}</td>
+              <td style={{ padding: '1rem', fontWeight: 'bold' }}>{product.title}</td>
+              
+              <td style={{ padding: '1rem' }}>
+                {product.category?.name || 'Uncategorized'}
+              </td>
 
-                <td style={{ padding: '1rem' }}>{formatCurrency(product.price)}</td>
-                <td style={{ padding: '1rem' }}>{product.stockQuantity}</td>
-                <td style={{ padding: '1rem' }}>
-                  <Button 
-                    variant="secondary" 
-                    size="small"
-                    onClick={() => navigate(`/admin/products/${product.id}`)}
-                  >
-                    View / Edit
-                  </Button>
-                </td>
-              </tr>
+              <td style={{ padding: '1rem' }}>{formatCurrency(product.price)}</td>
+              <td style={{ padding: '1rem' }}>{product.stockQuantity}</td>
+              <td style={{ padding: '1rem' }}>
+                <Button 
+                  variant="secondary" 
+                  size="small"
+                  onClick={() => navigate(`/admin/products/${product.id}`)}
+                >
+                  View / Edit
+                </Button>
+              </td>
+            </tr>
             ))}
           </tbody>
         </table>
