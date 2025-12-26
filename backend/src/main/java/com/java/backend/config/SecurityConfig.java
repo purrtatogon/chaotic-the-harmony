@@ -31,10 +31,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // THE ONLY PUBLIC ENDPOINT: Login/Register
+                        // THE ONLY PUBLIC ENDPOINT
                         .requestMatchers("/api/v1/auth/**").permitAll()
-
-                        // ROFILE: Any authenticated user can see their own data
                         .requestMatchers("/api/v1/users/me").authenticated()
 
                         // PRODUCTS: Viewable by everyone (Staff/Manager/Admin),
