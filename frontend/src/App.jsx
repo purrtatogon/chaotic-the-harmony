@@ -39,7 +39,7 @@ function App() {
           <Route path="products" element={<ProductListPage />} />
           <Route path="products/:id" element={<ProductDetailPage />} />
           <Route path="categories" element={<CategoryListPage />} />
-          <Route path="categories/:id" element={<CategoryDetailPage />} />          
+          <Route path="categories/:id" element={<CategoryDetailPage />} />       
         </Route>
 
         <Route path="*" element={<h1>404: Whoopsy daisy! Page Not Found.</h1>} />
