@@ -1,6 +1,7 @@
 package com.java.backend.controller;
 
 import com.java.backend.model.Product;
+import com.java.backend.model.ProductImage;
 import com.java.backend.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProductController {
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productRepository.findAll(); // This comes from JpaRepository automatically
+        return productRepository.findAll();
     }
 
     @GetMapping("/{id}")
@@ -29,7 +30,6 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Supports /api/v1/products/search?q=query
     @GetMapping("/search")
     public List<Product> searchProducts(@RequestParam("q") String query) {
         return productRepository.findByTitleContainingIgnoreCase(query);
@@ -37,7 +37,13 @@ public class ProductController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        // Ensure the Category object inside 'product' has a valid ID
+        // RELATIONSHIP LINKING
+        // Link images to the product so product_id is saved correctly
+        if (product.getImages() != null) {
+            for (ProductImage image : product.getImages()) {
+                image.setProduct(product);
+            }
+        }
         return productRepository.save(product);
     }
 
@@ -58,8 +64,20 @@ public class ProductController {
             existingProduct.setCategory(productDetails.getCategory());
             existingProduct.setProductType(productDetails.getProductType());
             existingProduct.setMusicStyle(productDetails.getMusicStyle());
-            existingProduct.setSize(productDetails.getSize());
+            existingProduct.setItemSize(productDetails.getItemSize()); // Note: I must ensure this matches my Entity field (size vs item_size)
             existingProduct.setColor(productDetails.getColor());
+
+            // IMAGE GALLERY UPDATE
+            if (productDetails.getImages() != null) {
+                // clear existing images (orphanRemoval = true in Entity will delete them from DB)
+                existingProduct.getImages().clear();
+
+                // add new images and re-establish the link
+                for (ProductImage image : productDetails.getImages()) {
+                    image.setProduct(existingProduct);
+                    existingProduct.getImages().add(image);
+                }
+            }
 
             return ResponseEntity.ok(productRepository.save(existingProduct));
         }).orElse(ResponseEntity.notFound().build());

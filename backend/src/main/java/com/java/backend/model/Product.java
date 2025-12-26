@@ -1,11 +1,10 @@
 package com.java.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Import this
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.java.backend.model.enums.*;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -36,12 +35,14 @@ public class Product {
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ProductImage> images = new HashSet<>();
+    @OrderBy("displayOrder ASC") // this automatically sorts images to my frontend
+    private List<ProductImage> images;
 
     // added JsonIgnoreProperties to prevent infinite loop
-    @ManyToOne(fetch = FetchType.EAGER) // This creates the JOIN
-    @JoinColumn(name = "category_id", nullable = false) // This matches your DB column name
+    @ManyToOne(fetch = FetchType.EAGER) // this creates the JOIN
+    @JoinColumn(name = "category_id", nullable = false) // matches my DB column name
     @JsonIgnoreProperties("products") // this prevents infinite loop if Category has a list of products
     private Category category;
 
@@ -56,7 +57,7 @@ public class Product {
 
     @Convert(converter = SizeConverter.class)
     @Column(name = "item_size")
-    private Size size;
+    private Size itemSize;
 
     private String color;
 
@@ -87,8 +88,8 @@ public class Product {
     public Integer getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
 
-    public Set<ProductImage> getImages() { return images; }
-    public void setImages(Set<ProductImage> images) { this.images = images; }
+    public List<ProductImage> getImages() { return images; }
+    public void setImages(List<ProductImage> images) { this.images = images; }
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
@@ -99,8 +100,8 @@ public class Product {
     public MusicStyle getMusicStyle() { return musicStyle; }
     public void setMusicStyle(MusicStyle musicStyle) { this.musicStyle = musicStyle; }
 
-    public Size getSize() { return size; }
-    public void setSize(Size size) { this.size = size; }
+    public Size getItemSize() { return itemSize; }
+    public void setItemSize(Size itemSize) { this.itemSize = itemSize; }
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }

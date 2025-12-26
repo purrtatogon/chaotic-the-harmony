@@ -1,5 +1,6 @@
 package com.java.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,20 +12,20 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Stores the Cloudinary URL
-    @Column(nullable = false)
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    // used to control which image appears first (like in a gallery)
+    @Column(name = "display_order")
     private Integer displayOrder;
 
-    // one product can have many images
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     @JsonIgnore
+    @JsonBackReference // Prevents infinite loop when serializing to JSON
     private Product product;
 
-    // CONSTRUCTORS
+
     public ProductImage() {}
 
     public ProductImage(String imageUrl, Integer displayOrder, Product product) {
@@ -33,7 +34,7 @@ public class ProductImage {
         this.product = product;
     }
 
-    // GETTERS and SETTERS
+
     public Long getId() {
         return id;
     }
