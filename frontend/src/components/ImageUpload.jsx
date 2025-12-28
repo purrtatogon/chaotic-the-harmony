@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ImageUpload = ({ onUploadSuccess }) => {
+// a 'preset' prop with a default value
+const ImageUpload = ({ onUploadSuccess, preset = 'bandstorecth_user_preset' }) => {
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = async (e) => {
@@ -13,11 +14,13 @@ const ImageUpload = ({ onUploadSuccess }) => {
     // Cloudinary requires FormData
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'your_preset_name'); // Replace with your Cloudinary preset
+    
+    // dynamic preset passed from the parent component
+    formData.append('upload_preset', preset); 
 
     try {
       const res = await axios.post(
-        'https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', // Replace your_cloud_name
+        'https://api.cloudinary.com/v1_1/dlqadfo7q/image/upload', 
         formData
       );
       
@@ -34,7 +37,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
   return (
     <div className="upload-container">
       <input type="file" onChange={handleFileChange} disabled={uploading} />
-      {uploading && <span>Uploading to Cloudinary...</span>}
+      {uploading && <span style={{ marginLeft: '10px', color: '#666' }}>Uploading...</span>}
     </div>
   );
 };

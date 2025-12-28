@@ -123,7 +123,7 @@ const UserListPage = () => {
                 <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '2px solid #ddd' }}>
                     <img src={formData.profileImageUrl || '/default-avatar.png'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
-                <ImageUpload onUploadSuccess={handleAvatarUpload} />
+                <ImageUpload onUploadSuccess={handleAvatarUpload} preset="bandstorecth_user_preset" />
             </div>
             
             <FormRow>

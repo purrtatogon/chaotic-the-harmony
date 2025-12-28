@@ -1,56 +1,212 @@
-// src/pages/Admin/ProfilePage.jsx
-import React from 'react';
-import { useApi } from '../../hooks/useApi';
+import React, { useState, useEffect } from 'react';
 import { userApi } from '../../api/user';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
 import ItemDetailCard from '../../components/ItemDetailCard';
 import ItemDetailField from '../../components/ItemDetailField';
 import Loading from '../../components/Loading';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import Form from '../../components/Form';
+import FormActions from '../../components/FormActions';
+import ImageUpload from '../../components/ImageUpload';
 
 const ProfilePage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
   
-  // Correct function: userApi.getMe()
-  const { data: user, loading, error } = useApi(() => userApi.getMe());
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  if (loading) return <Loading message="Fetching your profile..." />;
-  
-  // Better error handling
-  if (error) {
-    return (
-        <div style={{ color: 'red', padding: '20px' }}>
-            <h3>Error loading profile</h3>
-            <p>{error}</p>
-            <p style={{fontSize: '0.8rem'}}>Tip: Try logging out and logging back in to refresh your token.</p>
-        </div>
-    );
-  }
+  // Granular editing states
+  const [editAvatar, setEditAvatar] = useState(false);
+  const [editInfo, setEditInfo] = useState(false);
+  const [editSecurity, setEditSecurity] = useState(false);
 
-  // Safety check: if API returns null but no error
-  if (!user) return <div>User not found</div>;
+  const [formData, setFormData] = useState({});
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+  useEffect(() => { fetchProfile(); }, []);
+
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const data = await userApi.getMe();
+      setUser(data);
+      setFormData(data);
+    } catch (err) {
+      setError(err.message || 'Failed to load profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = async (type) => {
+    try {
+      setSubmitting(true);
+      const updatedUser = await userApi.updateProfile(formData);
+      setUser(updatedUser);
+      if (type === 'avatar') setEditAvatar(false);
+      if (type === 'info') setEditInfo(false);
+      alert('Updated successfully!');
+    } catch (err) {
+      alert('Update failed: ' + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSecuritySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setSubmitting(true);
+      
+      // 1. If password fields are filled, update password
+      if (passwordData.newPassword) {
+          if (passwordData.newPassword !== passwordData.confirmPassword) {
+              alert("New passwords do not match!");
+              return;
+          }
+          await userApi.changePassword(passwordData.currentPassword, passwordData.newPassword);
+      }
+
+      // 2. Update Email if it changed
+      if (formData.email !== user.email) {
+          await userApi.updateProfile({ email: formData.email });
+      }
+
+      setEditSecurity(false);
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      fetchProfile();
+      alert('Security details updated!');
+    } catch (err) {
+      alert('Failed: ' + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return <Loading message="Fetching profile..." />;
+  if (error) return <div style={{ color: 'red', padding: '20px' }}>{error}</div>;
 
   return (
     <div className={styles.pageContent}>
-      <h1>My Profile</h1>
+      
+      {/* SECTION 1: HEADER & PHOTO */}
+      <div style={{ 
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px',
+          background: theme === 'dark' ? '#1e1e1e' : '#fff',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ 
+              width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', 
+              border: `3px solid ${theme === 'dark' ? '#3b82f6' : '#eee'}`, flexShrink: 0 
+          }}>
+             <img 
+               src={formData.profileImageUrl || '/default-avatar.png'} 
+               alt="Avatar"
+               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+             />
+          </div>
+          <div>
+            {!editAvatar ? (
+              <>
+                <h1 style={{ margin: 0 }}>{user.fullName}</h1>
+                <span style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '8px' }}>{user.role}</span>
+                <Button variant="secondary" size="small" onClick={() => setEditAvatar(true)}>CHANGE PHOTO</Button>
+              </>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <ImageUpload 
+                    onUploadSuccess={(url) => setFormData({...formData, profileImageUrl: url})} 
+                    preset="bandstorecth_user_preset" 
+                />
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <Button size="small" onClick={() => handleUpdate('avatar')} disabled={submitting}>SAVE PHOTO</Button>
+                    <Button size="small" variant="secondary" onClick={() => setEditAvatar(false)}>CANCEL</Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className={styles.itemDetail}>
-        <ItemDetailCard title="Account Details">
-          <ItemDetailField label="Full Name" value={user?.fullName || 'N/A'} />
-          <ItemDetailField label="Email Address" value={user?.email || 'N/A'} />
-          <ItemDetailField label="Role" value={user?.role || 'N/A'} />
-          <ItemDetailField label="User ID" value={user?.id || 'N/A'} />
-        </ItemDetailCard>
         
-        <ItemDetailCard title="Security">
-          <p>Password: ••••••••••••</p>
+        {/* SECTION 2: PERSONAL INFO */}
+        <ItemDetailCard 
+          title={
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <span>PERSONAL INFORMATION</span>
+              {!editInfo && <Button size="small" variant="secondary" onClick={() => setEditInfo(true)}>EDIT</Button>}
+            </div>
+          }
+        >
+          {!editInfo ? (
+            <>
+              <ItemDetailField label="FULL NAME" value={user.fullName || 'N/A'} />
+              <ItemDetailField label="PHONE" value={user.phoneNumber || 'Not provided'} />
+              <ItemDetailField label="ADDRESS" value={user.address || 'Not provided'} />
+            </>
+          ) : (
+            <Form onSubmit={(e) => { e.preventDefault(); handleUpdate('info'); }}>
+              <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} required />
+              <Input label="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
+              <Input label="Address" name="address" value={formData.address} onChange={handleChange} />
+              <FormActions>
+                <Button type="submit" size="small" disabled={submitting}>SAVE INFO</Button>
+                <Button type="button" variant="secondary" size="small" onClick={() => { setEditInfo(false); setFormData(user); }}>CANCEL</Button>
+              </FormActions>
+            </Form>
+          )}
         </ItemDetailCard>
 
-        {/* Optional: Show address if it exists */}
-         <ItemDetailCard title="Contact Info">
-          <ItemDetailField label="Phone" value={user?.phoneNumber || 'Not provided'} />
-          <ItemDetailField label="Address" value={user?.address || 'Not provided'} />
+        {/* SECTION 3: ACCOUNT SECURITY */}
+        <ItemDetailCard 
+          title={
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <span>ACCOUNT SECURITY</span>
+              {!editSecurity && <Button size="small" variant="secondary" onClick={() => setEditSecurity(true)}>EDIT</Button>}
+            </div>
+          }
+        >
+          {!editSecurity ? (
+            <>
+              <ItemDetailField label="EMAIL ADDRESS" value={user.email} />
+              <ItemDetailField label="PASSWORD" value="••••••••••••" />
+              <ItemDetailField label="ACCOUNT ROLE" value={user.role} />
+            </>
+          ) : (
+            <Form onSubmit={handleSecuritySubmit}>
+              <Input label="Email Address" name="email" value={formData.email} onChange={handleChange} required />
+              <div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f9f9f9', borderRadius: '8px', border: '1px dashed #ccc' }}>
+                <p style={{ fontSize: '0.8rem', marginBottom: '1rem', color: '#666' }}>Change Password (optional)</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
+                  <Input label="Current Password" name="currentPassword" type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})} />
+                  <Input label="New Password" name="newPassword" type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})} />
+                  <Input label="Confirm New Password" name="confirmPassword" type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})} />
+                </div>
+              </div>
+              <FormActions>
+                <Button type="submit" size="small" disabled={submitting}>UPDATE SECURITY</Button>
+                <Button type="button" variant="secondary" size="small" onClick={() => { setEditSecurity(false); setPasswordData({currentPassword:'', newPassword:'', confirmPassword:''}); }}>CANCEL</Button>
+              </FormActions>
+            </Form>
+          )}
         </ItemDetailCard>
+
       </div>
     </div>
   );

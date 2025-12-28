@@ -33,7 +33,6 @@ const UserDetailPage = () => {
       try {
         setLoading(true);
         setError(null);
-        // Fetching "Me" context for the current logged-in user profile
         const data = await userApi.getMe();
         setUser(data);
         setFormData(data);
@@ -57,7 +56,7 @@ const UserDetailPage = () => {
   const handleAvatarUpload = (url) => {
     setFormData({
       ...formData,
-      profileImageUrl: url,
+      profileImageUrl: url, // Matches Java entity field
     });
   };
 
@@ -72,7 +71,6 @@ const UserDetailPage = () => {
     e.preventDefault();
     try {
       setSubmitting(true);
-      // Ensure we are sending 'fullName' as per Java Entity
       const updated = await userApi.updateProfile(formData);
       setUser(updated);
       setIsEditing(false);
@@ -115,7 +113,6 @@ const UserDetailPage = () => {
       <PageHeader title="My Profile" subtitle="Manage Your Account" />
 
       <ItemDetailCard title="Personal Information" fullWidth>
-        {/* --- PROFILE PICTURE SECTION --- */}
         <div style={{ 
           display: 'flex', 
           gap: '2rem', 
@@ -143,18 +140,20 @@ const UserDetailPage = () => {
               <span style={{ fontSize: '0.9rem', color: theme === 'dark' ? '#aaa' : '#666' }}>
                 Update Profile Photo
               </span>
-              <ImageUpload onUploadSuccess={handleAvatarUpload} />
+              <ImageUpload 
+                onUploadSuccess={handleAvatarUpload} 
+                preset="bandstore_user_preset" 
+              />
             </div>
           )}
         </div>
 
-        {/* --- FORM SECTION --- */}
         {!isEditing ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
             <ItemDetailField label="Full Name" value={user.fullName || 'N/A'} />
             <ItemDetailField label="Email Address" value={user.email || 'N/A'} />
             <ItemDetailField label="Role" value={user.role || 'N/A'} />
-            <ItemDetailField label="Phone Number" value={user.phone || 'N/A'} />
+            <ItemDetailField label="Phone Number" value={user.phoneNumber || 'N/A'} />
             <ItemDetailField label="Department" value={user.department || 'N/A'} />
             <div style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
               <Button variant="primary" onClick={() => setIsEditing(true)} disabled={submitting}>
@@ -165,6 +164,8 @@ const UserDetailPage = () => {
         ) : (
           <Form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              
+              {/* 1. FIXED: Matches 'fullName' in User.java */}
               <Input
                 label="Full Name"
                 name="fullName"
@@ -174,6 +175,7 @@ const UserDetailPage = () => {
                 required
                 disabled={submitting}
               />
+              
               <Input
                 label="Email Address"
                 name="email"
@@ -183,14 +185,17 @@ const UserDetailPage = () => {
                 required
                 disabled={submitting}
               />
+
+              {/* 2. FIXED: Matches 'phoneNumber' in User.java */}
               <Input
                 label="Phone Number"
-                name="phone"
+                name="phoneNumber" 
                 type="tel"
-                value={formData.phone || ''}
+                value={formData.phoneNumber || ''}
                 onChange={handleChange}
                 disabled={submitting}
               />
+
               <Input
                 label="Department"
                 name="department"
