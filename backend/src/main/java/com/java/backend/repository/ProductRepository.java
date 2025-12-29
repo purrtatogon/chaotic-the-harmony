@@ -14,7 +14,13 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Optional<Product> findBySku(String sku);
 
-    List<Product> findByTitleContainingIgnoreCase(String title);
+    List<Product> findByTitleContainingIgnoreCase(String query);
+
+    // NEW: Count products with low stock (e.g., less than 10)
+    long countByStockQuantityLessThan(int threshold);
+
+    // NEW: Count products that are completely out of stock
+    long countByStockQuantity(int stock);
 
     List<Product> findByCategoryName(String categoryName);
 }
