@@ -17,7 +17,6 @@ const Sidebar = () => {
     { to: '/admin/users/me', label: 'My Profile' },
     { to: '/admin/users', label: 'Users', end: true },
     { to: '/admin/products', label: 'Products' },
-    { to: '/admin/categories', label: 'Categories' },
     { to: '/admin/warehouses', label: 'Warehouses' },
   ];
 

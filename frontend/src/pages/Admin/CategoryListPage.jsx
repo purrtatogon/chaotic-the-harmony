@@ -19,7 +19,11 @@ const CategoryListPage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
   const navigate = useNavigate();
+  
+  // Fetch Data
   const { data: categories, loading, error, refetch } = useApi(() => categoryApi.getAll());
+  
+  // Local State
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
@@ -28,6 +32,7 @@ const CategoryListPage = () => {
   });
   const [submitting, setSubmitting] = useState(false);
 
+  // Form Handlers
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -37,17 +42,23 @@ const CategoryListPage = () => {
 
   const handleCreate = () => {
     setIsCreating(true);
+    setEditingId(null);
     setFormData({ name: '', description: '' });
   };
 
   const handleEdit = (category) => {
     setEditingId(category.id);
-    setFormData({ name: category.name, description: category.description });
     setIsCreating(false);
+    setFormData({ 
+      name: category.name, 
+      description: category.description || '' 
+    });
+    // Scroll to top to see the form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this category?')) {
+    if (window.confirm('Are you sure you want to delete this category? Products in this category may become uncategorized.')) {
       try {
         setSubmitting(true);
         await categoryApi.delete(id);
@@ -69,6 +80,7 @@ const CategoryListPage = () => {
       } else {
         await categoryApi.update(editingId, formData);
       }
+      // Reset State
       setIsCreating(false);
       setEditingId(null);
       setFormData({ name: '', description: '' });
@@ -86,101 +98,113 @@ const CategoryListPage = () => {
     setFormData({ name: '', description: '' });
   };
 
-  if (loading) {
-    return <Loading message="Loading categories..." />;
-  }
-
-  if (error) {
-    return <Error message={error} onRetry={refetch} />;
-  }
+  if (loading) return <Loading message="Loading categories..." />;
+  if (error) return <Error message={error} onRetry={refetch} />;
 
   const categoryList = categories || [];
   const columns = ['ID', 'Name', 'Description', 'Products'];
 
   return (
     <div className={styles.pageContent}>
-      <PageHeader title="Categories" subtitle="Product Categories" />
+      <PageHeader 
+        title="Category Manager" 
+        subtitle="Create, edit, or remove product categories"
+        actions={
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Button variant="secondary" onClick={() => navigate('/admin/products')}>
+              ← Back to Products
+            </Button>
+            {/* Hide "Add" button if we are already showing the form */}
+            {!isCreating && !editingId && (
+              <Button variant="primary" onClick={handleCreate} disabled={submitting}>
+                + Add New Category
+              </Button>
+            )}
+          </div>
+        } 
+      />
 
-      <div className={styles.pageActions}>
-        <Button variant="primary" onClick={handleCreate} disabled={submitting}>
-          + Add New Category
-        </Button>
-      </div>
-
+      {/*███████ Inline Form for Create / Edit ███████*/}
       {(isCreating || editingId) && (
-        <ItemDetailCard
-          title={isCreating ? 'Create New Category' : 'Edit Category'}
-          fullWidth
-        >
-          <Form onSubmit={handleSubmit}>
-            <Input
-              label="Category Name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              disabled={submitting}
-            />
-            <Input
-              label="Description"
-              name="description"
-              type="textarea"
-              value={formData.description}
-              onChange={handleChange}
-              rows={4}
-              required
-              disabled={submitting}
-            />
-            <FormActions>
-              <Button type="submit" variant="primary" disabled={submitting}>
-                {isCreating ? 'Create Category' : 'Save Changes'}
-              </Button>
-              <Button type="button" onClick={handleCancel} disabled={submitting}>
-                Cancel
-              </Button>
-            </FormActions>
-          </Form>
-        </ItemDetailCard>
+        <div style={{ marginBottom: '2rem' }}>
+          <ItemDetailCard
+            title={isCreating ? 'Create New Category' : 'Edit Category'}
+            fullWidth
+          >
+            <Form onSubmit={handleSubmit}>
+              <Input
+                label="Category Name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                disabled={submitting}
+                placeholder="e.g. Electric Guitars"
+              />
+              <Input
+                label="Description"
+                name="description"
+                type="textarea"
+                value={formData.description}
+                onChange={handleChange}
+                rows={3}
+                disabled={submitting}
+                placeholder="Optional description..."
+              />
+              <FormActions>
+                <Button type="submit" variant="primary" disabled={submitting}>
+                  {isCreating ? 'Create Category' : 'Save Changes'}
+                </Button>
+                <Button type="button" onClick={handleCancel} disabled={submitting}>
+                  Cancel
+                </Button>
+              </FormActions>
+            </Form>
+          </ItemDetailCard>
+        </div>
       )}
 
+      {/*███████ Category List ███████*/}
       <ListContainer title="All Categories" count={categoryList.length}>
         <Table
           columns={columns}
           data={categoryList}
           renderRow={(category) => [
-            <td key="id">{category.id}</td>,
-            <td key="name">{category.name}</td>,
-            <td key="description">{category.description}</td>,
-            <td key="products">{category.productCount ?? 0}</td>,
+            <td key="id" style={{ width: '50px', color: '#888' }}>{category.id}</td>,
+            <td key="name" style={{ fontWeight: 'bold' }}>{category.name}</td>,
+            <td key="desc" style={{ color: '#666', fontSize: '0.9rem' }}>{category.description || '-'}</td>,
+            <td key="count">
+                {/* Safely check for products list length or explicit count field */}
+                {category.products?.length ?? category.productCount ?? 0}
+            </td>,
           ]}
           actions={(category) => (
             <div style={{ display: 'flex', gap: '8px' }}>
               <Button
-                onClick={() => navigate(`/admin/categories/${category.id}`)}
-                style={{ padding: '8px 16px', fontSize: '12px' }}
-                disabled={submitting}
-              >
-                View
-              </Button>
-              <Button
+                size="small"
                 onClick={() => handleEdit(category)}
-                style={{ padding: '8px 16px', fontSize: '12px' }}
-                disabled={submitting}
+                disabled={submitting || editingId === category.id}
               >
                 Edit
               </Button>
               <Button
-                variant="secondary"
+                size="small"
+                variant="danger" // Changed from secondary to danger for clarity
                 onClick={() => handleDelete(category.id)}
-                style={{ padding: '8px 16px', fontSize: '12px' }}
-                disabled={submitting}
+                disabled={submitting || editingId === category.id}
               >
                 Delete
               </Button>
             </div>
           )}
         />
+        
+        {categoryList.length === 0 && (
+           <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>
+              No categories found. Click "Add New Category" to start.
+           </div>
+        )}
       </ListContainer>
     </div>
   );

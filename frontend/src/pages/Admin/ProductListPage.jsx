@@ -125,9 +125,14 @@ const ProductListPage = () => {
         title="Products" 
         subtitle="Manage your inventory"
         actions={
+          <div style={{ display: 'flex', gap: '1rem' }}>
             <Button variant="primary" onClick={() => navigate('/admin/products/new')}>
-              + Add Product
+              + Add New Product
             </Button>
+            <Button variant="secondary" onClick={() => navigate('/admin/categories')}>
+              Manage Categories
+            </Button>
+          </div>
         }
       />
 
