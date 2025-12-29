@@ -1,21 +1,28 @@
 package com.java.backend.controller;
 
+import com.java.backend.dto.ProductDTO;
 import com.java.backend.model.Product;
 import com.java.backend.model.ProductImage;
+import com.java.backend.model.Category;
 import com.java.backend.repository.ProductRepository;
+import com.java.backend.repository.CategoryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductController(ProductRepository productRepository) {
+    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -36,46 +43,47 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        // RELATIONSHIP LINKING
-        // Link images to the product so product_id is saved correctly
-        if (product.getImages() != null) {
-            for (ProductImage image : product.getImages()) {
-                image.setProduct(product);
+    public ResponseEntity<Product> createProduct(@RequestBody ProductDTO dto) {
+        Product product = new Product();
+        mapDtoToEntity(dto, product);
+
+        // Fetch and set Category
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        product.setCategory(category);
+
+        // Convert String URLs to ProductImage entities
+        if (dto.getImageUrls() != null) {
+            List<ProductImage> productImages = new ArrayList<>();
+            for (int i = 0; i < dto.getImageUrls().size(); i++) {
+                productImages.add(new ProductImage(dto.getImageUrls().get(i), i, product));
             }
+            product.setImages(productImages);
         }
-        return productRepository.save(product);
+
+        return ResponseEntity.ok(productRepository.save(product));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductDTO dto) {
         return productRepository.findById(id).map(existingProduct -> {
+            mapDtoToEntity(dto, existingProduct);
 
-            // Standard fields
-            existingProduct.setSku(productDetails.getSku());
-            existingProduct.setTitle(productDetails.getTitle());
-            existingProduct.setPrice(productDetails.getPrice());
-            existingProduct.setDescription(productDetails.getDescription());
-            existingProduct.setMaterialsSpecs(productDetails.getMaterialsSpecs());
-            existingProduct.setShippingInfo(productDetails.getShippingInfo());
-            existingProduct.setStockQuantity(productDetails.getStockQuantity());
-
-            // Enum/Category fields
-            existingProduct.setCategory(productDetails.getCategory());
-            existingProduct.setProductType(productDetails.getProductType());
-            existingProduct.setMusicStyle(productDetails.getMusicStyle());
-            existingProduct.setItemSize(productDetails.getItemSize()); // Note: I must ensure this matches my Entity field (size vs item_size)
-            existingProduct.setColor(productDetails.getColor());
+            // Update Category if changed
+            if (dto.getCategoryId() != null) {
+                Category category = categoryRepository.findById(dto.getCategoryId())
+                        .orElseThrow(() -> new RuntimeException("Category not found"));
+                existingProduct.setCategory(category);
+            }
 
             // IMAGE GALLERY UPDATE
-            if (productDetails.getImages() != null) {
-                // clear existing images (orphanRemoval = true in Entity will delete them from DB)
+            if (dto.getImageUrls() != null) {
+                // orphanRemoval = true in Product.java will handle the DB cleanup
                 existingProduct.getImages().clear();
 
-                // add new images and re-establish the link
-                for (ProductImage image : productDetails.getImages()) {
-                    image.setProduct(existingProduct);
-                    existingProduct.getImages().add(image);
+                for (int i = 0; i < dto.getImageUrls().size(); i++) {
+                    ProductImage newImg = new ProductImage(dto.getImageUrls().get(i), i, existingProduct);
+                    existingProduct.getImages().add(newImg);
                 }
             }
 
@@ -90,5 +98,20 @@ public class ProductController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // Helper method to keep code clean
+    private void mapDtoToEntity(ProductDTO dto, Product product) {
+        product.setSku(dto.getSku());
+        product.setTitle(dto.getTitle());
+        product.setDescription(dto.getDescription());
+        product.setMaterialsSpecs(dto.getMaterialsSpecs());
+        product.setPrice(dto.getPrice());
+        product.setShippingInfo(dto.getShippingInfo());
+        product.setStockQuantity(dto.getStockQuantity());
+        product.setProductType(dto.getProductType());
+        product.setMusicStyle(dto.getMusicStyle());
+        product.setItemSize(dto.getItemSize());
+        product.setColor(dto.getColor());
     }
 }
