@@ -13,7 +13,7 @@ const Sidebar = () => {
   };
 
   const navItems = [
-    { to: '/admin', label: 'Dashboard', end: true },
+    { to: '/admin', label: 'Overview', end: true },
     { to: '/admin/users/me', label: 'My Profile' },
     { to: '/admin/users', label: 'Users', end: true },
     { to: '/admin/products', label: 'Products' },
