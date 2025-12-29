@@ -14,7 +14,7 @@ import FormActions from '../../components/FormActions';
 import FormRow from '../../components/FormRow';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
-import ImageUpload from '../../components/ImageUpload'; // 👈 Import our new component
+import ProductImageGallery from '../../components/ProductImageGallery';
 import { formatCurrency } from '../../utils/formatters';
 
 const ProductDetailPage = () => {
@@ -24,13 +24,17 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   
   const [product, setProduct] = useState(null);
-  const [category, setCategory] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [activeImageIndex, setActiveImageIndex] = useState(0); // 👈 For gallery control
+  
+  // --- GRANULAR EDIT STATES ---
+  const [editGallery, setEditGallery] = useState(false);
+  const [editInfo, setEditInfo] = useState(false);
+
+  const [formData, setFormData] = useState({});
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -41,8 +45,13 @@ const ProductDetailPage = () => {
           categoryApi.getAll()
         ]);
         setProduct(productData);
-        setCategory(categoryData);
-        setFormData(productData);
+        setCategories(categoryData);
+        
+        setFormData({
+          ...productData,
+          categoryId: productData.category?.id || '',
+          imageUrls: productData.images?.map(img => img.imageUrl) || []
+        });
       } catch (err) {
         setError(err.message || 'Failed to load data');
       } finally {
@@ -56,41 +65,42 @@ const ProductDetailPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 👈 New Handler: Adding an image from Cloudinary
-  const handleAddImage = (url) => {
-    const newImage = {
-      imageUrl: url,
-      displayOrder: (formData.images?.length || 0)
-    };
-    setFormData({
-      ...formData,
-      images: [...(formData.images || []), newImage]
-    });
+  const handleGalleryChange = (newUrls) => {
+    setFormData({ ...formData, imageUrls: newUrls });
   };
 
-  // 👈 New Handler: Removing an image
-  const handleRemoveImage = (index) => {
-    const updatedImages = formData.images.filter((_, i) => i !== index);
-    setFormData({ ...formData, images: updatedImages });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleUpdate = async (section) => {
     try {
       setSubmitting(true);
       const updated = await productApi.update(id, formData);
+      
       setProduct(updated);
-      setIsEditing(false);
+      setFormData({
+        ...updated,
+        categoryId: updated.category?.id,
+        imageUrls: updated.images?.map(img => img.imageUrl) || []
+      });
+
+      if (section === 'gallery') setEditGallery(false);
+      if (section === 'info') setEditInfo(false);
+
+      alert(`${section === 'gallery' ? 'Gallery' : 'Product details'} updated successfully!`);
     } catch (err) {
-      alert('Failed to update product: ' + err.message);
+      alert('Update failed: ' + err.message);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleCancel = () => {
-    setFormData(product);
-    setIsEditing(false);
+  const handleCancel = (section) => {
+    setFormData({
+      ...product,
+      categoryId: product.category?.id,
+      imageUrls: product.images?.map(img => img.imageUrl) || []
+    });
+    
+    if (section === 'gallery') setEditGallery(false);
+    if (section === 'info') setEditInfo(false);
   };
 
   const handleDelete = async () => {
@@ -110,14 +120,14 @@ const ProductDetailPage = () => {
   if (error) return <Error message={error} />;
   if (!product) return <Error message="Product not found" />;
 
-  const images = product.images && product.images.length > 0 
+  const displayImages = product.images && product.images.length > 0 
     ? product.images 
     : [{ imageUrl: '/placeholder.jpg' }];
 
   return (
     <div className={styles.pageContent}>
       <PageHeader
-        title={isEditing ? "Edit Product" : "Product Details"}
+        title="Details"
         subtitle={`SKU: ${product.sku || 'N/A'}`}
         actions={
           <Button onClick={() => navigate('/admin/products')}>
@@ -127,126 +137,183 @@ const ProductDetailPage = () => {
       />
 
       <div className={styles.itemDetail}>
-        {/* --- 1. GALLERY SECTION --- */}
-        <ItemDetailCard title="Product Gallery">
-          {!isEditing ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ textAlign: 'center' }}>
+        
+        {/* GALLERY SECTION */}
+        <ItemDetailCard 
+          title={
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <span>Gallery</span>
+              {!editGallery && (
+                <Button size="small" variant="secondary" onClick={() => setEditGallery(true)}>
+                  Edit
+                </Button>
+              )}
+            </div>
+          }
+        >
+          {!editGallery ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ 
+                textAlign: 'center', 
+                height: '400px', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: theme === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                borderRadius: '12px', overflow: 'hidden', border: '1px solid #eee'
+              }}>
                 <img 
-                  src={images[activeImageIndex].imageUrl} 
-                  alt="" 
-                  style={{ maxHeight: '300px', borderRadius: '8px' }} 
+                  src={displayImages[activeImageIndex]?.imageUrl} 
+                  alt={product.title} 
+                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
                 />
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
-                {images.map((img, i) => (
+              <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '10px' }}>
+                {displayImages.map((img, i) => (
                   <img 
-                    key={i} src={img.imageUrl} 
+                    key={i} 
+                    src={img.imageUrl} 
                     onClick={() => setActiveImageIndex(i)}
                     style={{ 
-                      width: '60px', height: '60px', cursor: 'pointer',
-                      border: activeImageIndex === i ? '2px solid #3b82f6' : '1px solid #ddd' 
+                      width: '70px', height: '70px', cursor: 'pointer', borderRadius: '6px', objectFit: 'cover',
+                      border: activeImageIndex === i ? '3px solid #3b82f6' : '1px solid #ddd',
+                      opacity: activeImageIndex === i ? 1 : 0.6
                     }} 
                   />
                 ))}
               </div>
             </div>
           ) : (
-            <div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                {formData.images?.map((img, i) => (
-                  <div key={i} style={{ position: 'relative' }}>
-                    <img src={img.imageUrl} style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
-                    <button 
-                      type="button"
-                      onClick={() => handleRemoveImage(i)}
-                      style={{ position: 'absolute', top: 0, right: 0, background: 'red', color: 'white', border: 'none' }}
-                    >X</button>
-                  </div>
-                ))}
-              </div>
-              <ImageUpload onUploadSuccess={handleAddImage} />
-            </div>
+            <>
+              <ProductImageGallery 
+                images={formData.imageUrls || []} 
+                onImagesChange={handleGalleryChange}
+                submitting={submitting}
+              />
+              <FormActions>
+                <Button onClick={() => handleUpdate('gallery')} variant="primary" disabled={submitting}>Save Gallery</Button>
+                <Button onClick={() => handleCancel('gallery')} disabled={submitting}>Cancel</Button>
+              </FormActions>
+            </>
           )}
         </ItemDetailCard>
 
-        {/* --- 2. BASIC INFO --- */}
-        <ItemDetailCard title="Basic Information">
-          {!isEditing ? (
+        {/* DETAILS SECTION */}
+        <ItemDetailCard 
+          title={
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <span>Details</span>
+              {!editInfo && (
+                <Button size="small" variant="secondary" onClick={() => setEditInfo(true)}>
+                  Edit
+                </Button>
+              )}
+            </div>
+          }
+        >
+          {!editInfo ? (
+            /* VIEW MODE */
             <div>
-              <ItemDetailField label="Product Name" value={product.title || 'N/A'} />
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
               <ItemDetailField label="SKU" value={product.sku || 'N/A'} />
-              <ItemDetailField label="Category" value={product.category?.name || 'N/A'} />
-              
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <FormRow>
+                <ItemDetailField label="Category" value={product.category?.name || 'N/A'} />
+                <ItemDetailField label="Product Type" value={product.type?.name || 'N/A'} />
+              </FormRow>
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <ItemDetailField label="Title" value={product.title || 'N/A'} />
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <FormRow>
+                <ItemDetailField label="Music Style" value={product.musicStyle || 'N/A'} />
+                <ItemDetailField label="Color" value={product.color || 'N/A'} />
+                <ItemDetailField label="Size" value={product.itemSize || 'N/A'} />
+              </FormRow>
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
               <FormRow>
                 <ItemDetailField label="Price" value={formatCurrency(product.price)} />
                 <ItemDetailField label="Stock Quantity" value={`${product.stockQuantity || 0} units`} />
               </FormRow>
-              
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
               <ItemDetailField label="Description" value={product.description || 'N/A'} />
-              
-              <Button variant="primary" onClick={() => setIsEditing(true)} disabled={submitting}>
-                Edit Information
-              </Button>
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <ItemDetailField label="Materials + Specs" value={product.materialsSpecs || 'N/A'} />
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <ItemDetailField label="Shipping Info" value={product.shippingInfo || 'N/A'} />
             </div>
           ) : (
-            <Form onSubmit={handleSubmit}>
-              <Input label="Title" name="title" value={formData.title || ''} onChange={handleChange} required />
+            /* EDIT MODE - UPDATED TO MATCH VIEW ORDER */
+            <Form onSubmit={(e) => { e.preventDefault(); handleUpdate('info'); }}>
+              
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
               <Input label="SKU" name="sku" value={formData.sku || ''} onChange={handleChange} required />
               
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Category</label>
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              {/* Category Selection */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Category</label>
                 <select 
                   name="categoryId"
-                  value={formData.category?.id || ''} 
-                  onChange={(e) => setFormData({...formData, category: { id: e.target.value }})}
-                  style={{ width: '100%', padding: '0.5rem' }}
+                  value={formData.categoryId || ''} 
+                  onChange={handleChange}
+                  style={{ 
+                    width: '100%', padding: '0.75rem', borderRadius: '8px',
+                    border: '1px solid #ccc', background: theme === 'dark' ? '#222' : '#fff',
+                    color: theme === 'dark' ? '#fff' : '#000'
+                  }}
+                  required
                 >
                   <option value="">Select Category</option>
-                  {category.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                  {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                 </select>
               </div>
 
-              <Input label="Description" name="description" type="textarea" value={formData.description || ''} onChange={handleChange} rows={3} />
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <Input label="Title" name="title" value={formData.title || ''} onChange={handleChange} required />
               
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
               <FormRow>
-                <Input label="Price" name="price" type="number" step="0.01" value={formData.price || ''} onChange={handleChange} />
-                <Input label="Stock" name="stockQuantity" type="number" value={formData.stockQuantity || ''} onChange={handleChange} />
+                <Input label="Music Style" name="musicStyle" value={formData.musicStyle || ''} onChange={handleChange} />
+                <Input label="Color" name="color" value={formData.color || ''} onChange={handleChange} />
+                <Input label="Size" name="itemSize" value={formData.itemSize || ''} onChange={handleChange} />
               </FormRow>
 
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <FormRow>
+                <Input label="Price (€)" name="price" type="number" step="0.01" value={formData.price || ''} onChange={handleChange} required />
+                <Input label="Stock Quantity" name="stockQuantity" type="number" value={formData.stockQuantity || ''} onChange={handleChange} required />
+              </FormRow>
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <Input label="Description" name="description" type="textarea" value={formData.description || ''} onChange={handleChange} rows={4} />
+              
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <Input label="Materials + Specs" name="materialsSpecs" type="textarea" value={formData.materialsSpecs || ''} onChange={handleChange} rows={3} />
+
+              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <Input label="Shipping Info" name="shippingInfo" type="textarea" value={formData.shippingInfo || ''} onChange={handleChange} rows={2} />
+
               <FormActions>
-                <Button type="submit" variant="primary" disabled={submitting}>Save</Button>
-                <Button type="button" onClick={handleCancel}>Cancel</Button>
+                <Button type="submit" variant="primary" disabled={submitting}>Save Details</Button>
+                <Button type="button" onClick={() => handleCancel('info')} disabled={submitting}>Cancel</Button>
               </FormActions>
             </Form>
           )}
         </ItemDetailCard>
 
-        {/* --- 3. SPECS (Using itemSize now) --- */}
-        <ItemDetailCard title="Specifications">
-          {!isEditing ? (
-            <FormRow>
-              <ItemDetailField label="Size" value={product.itemSize || 'N/A'} />
-              <ItemDetailField label="Color" value={product.color || 'N/A'} />
-              <ItemDetailField label="Style" value={product.musicStyle || 'N/A'} />
-            </FormRow>
-          ) : (
-            <FormRow>
-              <Input label="Size" name="itemSize" value={formData.itemSize || ''} onChange={handleChange} />
-              <Input label="Color" name="color" value={formData.color || ''} onChange={handleChange} />
-              <Input label="Music Style" name="musicStyle" value={formData.musicStyle || ''} onChange={handleChange} />
-            </FormRow>
-          )}
+        {/* --- 3. DANGER ZONE --- */}
+        <ItemDetailCard title="Administrative Actions">
+          <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>
+            Warning: Deleting a product is permanent and cannot be undone.
+          </p>
+          <Button variant="danger" onClick={handleDelete} disabled={submitting}>
+            Delete Product Permanently
+          </Button>
         </ItemDetailCard>
 
-        {/* --- 4. DANGER ZONE --- */}
-        {!isEditing && (
-          <ItemDetailCard title="Administrative">
-            <Button variant="secondary" onClick={handleDelete} disabled={submitting}>
-              Delete Product Permanentely
-            </Button>
-          </ItemDetailCard>
-        )}
       </div>
     </div>
   );
