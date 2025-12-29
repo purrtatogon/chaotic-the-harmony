@@ -5,18 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
     List<Product> findByCategoryId(Long categoryId);
 
-    // Find a Product by its unique SKU
     Optional<Product> findBySku(String sku);
 
-    // Find all Products by title (case insensitive search)
     List<Product> findByTitleContainingIgnoreCase(String title);
 
-    // Find by Category Object's Name (search bars)
     List<Product> findByCategoryName(String categoryName);
 }

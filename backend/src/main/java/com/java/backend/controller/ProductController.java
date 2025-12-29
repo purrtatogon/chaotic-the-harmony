@@ -4,14 +4,21 @@ import com.java.backend.dto.ProductDTO;
 import com.java.backend.model.Product;
 import com.java.backend.model.ProductImage;
 import com.java.backend.model.Category;
+import com.java.backend.model.enums.ProductType;
 import com.java.backend.repository.ProductRepository;
 import com.java.backend.repository.CategoryRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import com.java.backend.repository.ProductSpecification;
+import com.java.backend.model.enums.ProductType;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -26,8 +33,33 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Product> getAllProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false, name = "productType") String typeCode,
+            @RequestParam(required = false) String availability,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortDir
+    ) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        // manually convert the code (e.g., "TSH") to the enum (ProductType.Tee)
+        ProductType type = null;
+        if (typeCode != null && !typeCode.isEmpty()) {
+            try {
+                type = ProductType.fromString(typeCode);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid Product Type Code: " + typeCode);
+            }
+        }
+
+        // pass the resolved enum to specification
+        Specification<Product> spec = ProductSpecification.filterProducts(categoryId, type, availability, size, color);
+
+        return productRepository.findAll(spec, Sort.by(direction, sortBy));
     }
 
     @GetMapping("/{id}")
@@ -40,6 +72,16 @@ public class ProductController {
     @GetMapping("/search")
     public List<Product> searchProducts(@RequestParam("q") String query) {
         return productRepository.findByTitleContainingIgnoreCase(query);
+    }
+
+    @GetMapping("/types")
+    public List<Map<String, String>> getProductTypes() {
+        return Arrays.stream(ProductType.values())
+                .map(type -> Map.of(
+                        "name", type.name(),      // Display Label: "Tee", "Vinyl"
+                        "code", type.getCode()    // Value: "TSH", "VNL"
+                ))
+                .collect(Collectors.toList());
     }
 
     @PostMapping
