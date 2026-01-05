@@ -2,9 +2,13 @@ package com.java.backend.model;
 
 import com.java.backend.model.enums.Role;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "app_user") // <--- bc 'user' is a reserved keyword in postgres
+@Table(name = "app_users")
 public class User {
 
     @Id
@@ -20,99 +24,89 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
-    @Column
-    private String profileImageUrl; // Stores the Cloudinary URL
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    // Client-specific attributes (will be null for admin users)
     @Column
     private String phoneNumber;
 
     @Column(columnDefinition = "TEXT")
     private String address;
 
+    /**
+     * This field stores the URL for the user's avatar.
+     * Since we are removing manual uploads, this will hold the UI-Avatars link.
+     */
+    @Column
+    private String profileImageUrl;
+
+    // AUDIT FIELDS
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     // CONSTRUCTORS
-    // Default
     public User() {
     }
 
-    // For Admin/Staff creation
-    public User(String fullName, String email, String password, Role role, String profileImageUrl) {
+    public User(String fullName, String email, String password, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.profileImageUrl = profileImageUrl;
     }
 
-
-    // GETTERS and SETTERS
-    public Long getId() {
-        return id;
+    /**
+     * JPA Lifecycle Hook: Runs automatically before a new User is saved.
+     * This ensures every user has a default avatar based on their name.
+     */
+    @PrePersist
+    protected void onCreate() {
+        if (this.profileImageUrl == null && this.fullName != null) {
+            String encodedName = this.fullName.replace(" ", "+");
+            this.profileImageUrl = "https://ui-avatars.com/api/?name=" + encodedName;
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // GETTERS AND SETTERS
+    public Long getId() { return id; }
 
-    public String getEmail() {
-        return email;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getEmail() { return email; }
 
-    public String getPassword() {
-        return password;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getPassword() { return password; }
 
-    public String getFullName() {
-        return fullName;
-    }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public String getFullName() { return fullName; }
 
-    public String getProfileImageUrl() {
-        return profileImageUrl;
-    }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
+    public Role getRole() { return role; }
 
-    public Role getRole() {
-        return role;
-    }
+    public void setRole(Role role) { this.role = role; }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public String getPhoneNumber() { return phoneNumber; }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+    public String getAddress() { return address; }
 
-    public String getAddress() {
-        return address;
-    }
+    public void setAddress(String address) { this.address = address; }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public String getProfileImageUrl() { return profileImageUrl; }
 
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
+
+    public LocalDateTime getCreatedAt() { return this.createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return this.updatedAt; }
 }

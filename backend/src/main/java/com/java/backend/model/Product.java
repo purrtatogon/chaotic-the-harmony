@@ -36,10 +36,6 @@ public class Product {
     private Integer stockQuantity;
 
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("displayOrder ASC") // this automatically sorts images to my frontend
-    private List<ProductImage> images;
-
     // added JsonIgnoreProperties to prevent infinite loop
     @ManyToOne(fetch = FetchType.EAGER) // this creates the JOIN
     @JoinColumn(name = "category_id", nullable = false) // matches my DB column name
@@ -87,9 +83,6 @@ public class Product {
 
     public Integer getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
-
-    public List<ProductImage> getImages() { return images; }
-    public void setImages(List<ProductImage> images) { this.images = images; }
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
