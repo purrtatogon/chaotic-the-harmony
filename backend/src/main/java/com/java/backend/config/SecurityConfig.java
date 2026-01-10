@@ -3,6 +3,7 @@ package com.java.backend.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.List;
 
 @Configuration
@@ -18,6 +20,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
@@ -30,28 +33,35 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        // THE ONLY PUBLIC ENDPOINT
+                        // 1. PUBLIC ENDPOINTS
                         .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        // 2. USER PROFILE (Authenticated Users)
+                        // This allows Customers, Staff, Admins to see their own profile
                         .requestMatchers("/api/v1/users/me").authenticated()
 
-                        // PRODUCTS: Viewable by everyone (Staff/Manager/Admin),
-                        // CRUD by everyone (Staff/Manager/Admin)
-                        .requestMatchers("/api/v1/products/**").hasAnyAuthority("ADMIN", "MANAGER", "STAFF")
+                        // 3. PRODUCTS
+                        // Everyone (except Customers) can VIEW products
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER", "WAREHOUSE_STAFF", "SUPPORT_AGENT", "AUDITOR")
+                        // Only Admins & Managers can CREATE/DELETE products
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER")
+                        // Warehouse & Managers can UPDATE (e.g. stock levels)
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER", "WAREHOUSE_STAFF")
 
-                        // CATEGORIES: Viewable by everyone (Staff/Manager/Admin),
-                        // BUT: Creation/Update/Deletion ONLY by ADMIN or MANAGER
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").hasAnyAuthority("ADMIN", "MANAGER", "STAFF")
-                        .requestMatchers("/api/v1/categories/**").hasAnyAuthority("ADMIN", "MANAGER")
+                        // 4. CATEGORIES
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER", "WAREHOUSE_STAFF", "SUPPORT_AGENT", "AUDITOR")
+                        .requestMatchers("/api/v1/categories/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER")
 
-                        // USERS & DASHBOARD: Strictly higher-level access
-                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("ADMIN", "MANAGER")
-                        .requestMatchers("/api/v1/dashboard/**").hasAnyAuthority("ADMIN", "MANAGER", "STAFF")
+                        // 5. USER MANAGEMENT (Strictly Admin)
+                        // Note: The /users/me endpoint above takes precedence over this because it's defined earlier
+                        .requestMatchers("/api/v1/users/**").hasAnyRole("SUPER_ADMIN")
 
-                        // CATCH-ALL: Lock everything else down
+                        // 6. CATCH-ALL
                         .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }
@@ -59,8 +69,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Allow Frontend
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 

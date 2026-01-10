@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-// This class adapts your custom 'User' entity to Spring Security's 'UserDetails' interface.
+// This class adapts my custom 'User' entity to Spring Security's 'UserDetails' interface.
 public class UserPrincipal implements UserDetails {
 
     private final User user;
@@ -18,8 +18,10 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Enum is ADMIN
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        // FIX: Spring Security requires the "ROLE_" prefix for hasRole() to work
+        return Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+        );
     }
 
     @Override
@@ -51,5 +53,10 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // New helper method to access the entity's full name
+    public String getFullName() {
+        return user.getFullName();
     }
 }

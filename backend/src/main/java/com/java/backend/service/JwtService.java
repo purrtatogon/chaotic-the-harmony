@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,14 +17,14 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Inject the value from application.properties
+    // Injecting the value from application.properties
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
-    // --- Token Generation ---
+    // Token Generation
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -36,13 +35,13 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                // Use the injected expiration value
+                // Using the injected expiration value
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // --- Token Validation ---
+    // Token Validation
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
@@ -53,7 +52,7 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    // --- Extracting Data (Claims) ---
+    // Extracting Data (Claims)
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
