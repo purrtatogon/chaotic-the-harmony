@@ -1,0 +1,220 @@
+/* Neo-brutalist split editor / preview — matches admin .card / .tab vocabulary */
+
+.mdField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.mdFieldLabel {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  color: var(--gray-100);
+}
+
+/* ~7:1 on white (AAA) — matches admin .pageContentProductAaa token when wrapped there */
+.mdFieldHint {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--admin-text-aux);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mdToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+  max-width: 100%;
+}
+
+.mdToolBtn {
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gray-100);
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.mdToolBtn:hover:not(:disabled) {
+  background: var(--main-05);
+}
+
+.mdToolBtn:focus {
+  outline: none;
+}
+
+.mdToolBtn:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  border-color: var(--main-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+}
+
+.mdToolBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: 1px 1px 0 0 var(--gray-30);
+}
+
+.mdToolBtnText {
+  pointer-events: none;
+}
+
+.mdFieldGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .mdFieldGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mdTextarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--gray-100);
+  background: var(--white);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  resize: vertical;
+}
+
+.mdTextarea:focus {
+  outline: none;
+}
+
+.mdTextarea:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 3px;
+  border-color: var(--main-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--main-100);
+}
+
+.mdTextarea:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  box-shadow: 2px 2px 0 0 var(--gray-30);
+}
+
+.mdPreviewLabel {
+  margin: 0 0 6px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--admin-text-aux);
+}
+
+.mdPreviewBox {
+  min-height: 120px;
+  max-height: 320px;
+  overflow: auto;
+  padding: 12px 14px;
+  background: var(--main-05);
+  border: var(--border-width) solid var(--gray-100);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+}
+
+/* Rendered markdown inside preview */
+.mdPreviewBox :global(p) {
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+  font-size: 0.875rem;
+  color: var(--gray-100);
+}
+
+.mdPreviewBox :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.mdPreviewBox :global(ul),
+.mdPreviewBox :global(ol) {
+  margin: 0.25rem 0 0.5rem 1.1rem;
+  padding: 0;
+}
+
+.mdPreviewBox :global(li) {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.mdPreviewBox :global(strong) {
+  font-weight: 900;
+}
+
+.mdPreviewBox :global(a) {
+  color: var(--main-100);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mdPreviewBox :global(code) {
+  font-size: 0.8em;
+  padding: 1px 4px;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+}
+
+.mdPreviewBox :global(pre) {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  overflow: auto;
+  font-size: 0.8rem;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+}
+
+.mdPreviewBox :global(pre code) {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
+.mdPreviewBox :global(del) {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.mdPreviewBox :global(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+  font-size: 0.8rem;
+  border: var(--border-width) solid var(--gray-100);
+}
+
+.mdPreviewBox :global(th),
+.mdPreviewBox :global(td) {
+  border: var(--border-width) solid var(--gray-100);
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+}
