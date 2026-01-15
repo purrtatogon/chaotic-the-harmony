@@ -2,7 +2,6 @@ package com.java.backend.controller;
 
 import com.java.backend.dto.ProductDTO;
 import com.java.backend.model.Product;
-import com.java.backend.model.ProductImage;
 import com.java.backend.model.Category;
 import com.java.backend.model.enums.ProductType;
 import com.java.backend.repository.ProductRepository;
@@ -94,15 +93,6 @@ public class ProductController {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         product.setCategory(category);
 
-        // Convert String URLs to ProductImage entities
-        if (dto.getImageUrls() != null) {
-            List<ProductImage> productImages = new ArrayList<>();
-            for (int i = 0; i < dto.getImageUrls().size(); i++) {
-                productImages.add(new ProductImage(dto.getImageUrls().get(i), i, product));
-            }
-            product.setImages(productImages);
-        }
-
         return ResponseEntity.ok(productRepository.save(product));
     }
 
@@ -116,17 +106,6 @@ public class ProductController {
                 Category category = categoryRepository.findById(dto.getCategoryId())
                         .orElseThrow(() -> new RuntimeException("Category not found"));
                 existingProduct.setCategory(category);
-            }
-
-            // IMAGE GALLERY UPDATE
-            if (dto.getImageUrls() != null) {
-                // orphanRemoval = true in Product.java will handle the DB cleanup
-                existingProduct.getImages().clear();
-
-                for (int i = 0; i < dto.getImageUrls().size(); i++) {
-                    ProductImage newImg = new ProductImage(dto.getImageUrls().get(i), i, existingProduct);
-                    existingProduct.getImages().add(newImg);
-                }
             }
 
             return ResponseEntity.ok(productRepository.save(existingProduct));

@@ -13,7 +13,6 @@ public class ProductDTO {
     private String shippingInfo;
     private Integer stockQuantity;
     private Long categoryId;
-    private List<String> imageUrls;
     private ProductType productType;
     private MusicStyle musicStyle;
     private Size itemSize;
@@ -43,9 +42,6 @@ public class ProductDTO {
 
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
-
-    public List<String> getImageUrls() { return imageUrls; }
-    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
 
     public ProductType getProductType() { return productType; }
     public void setProductType(ProductType productType) { this.productType = productType; }
