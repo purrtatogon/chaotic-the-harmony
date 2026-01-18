@@ -7,8 +7,9 @@ export const authApi = {
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userRole', response.data.role);
-            // Save the email/username so it can be seen on the Dashboard
-            localStorage.setItem('username', email); 
+            
+            const nameToDisplay = response.data.fullName || email;
+            localStorage.setItem('username', nameToDisplay);
         }
         return response.data;
     },
@@ -16,7 +17,7 @@ export const authApi = {
     logout: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('userRole');
-        localStorage.removeItem('username'); // Clean up
+        localStorage.removeItem('username');
         window.location.href = '/login';
     }
 };
