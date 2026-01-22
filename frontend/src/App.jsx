@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// Client components
-import ClientLoginPage from './pages/Client/ClientLoginPage';
-import HomePage from './pages/Client/HomePage';
+// Customer components
+import CustomerLoginPage from './pages/Customer/CustomerLoginPage';
+import HomePage from './pages/Customer/HomePage';
 import AdminLoginPage from './pages/Admin/AdminLoginPage';
 // Admin components
 import DashboardLayout from './pages/Admin/DashboardLayout';
@@ -14,6 +14,8 @@ import ProductListPage from './pages/Admin/ProductListPage';
 import ProductDetailPage from './pages/Admin/ProductDetailPage';
 import CategoryListPage from './pages/Admin/CategoryListPage';
 import CategoryDetailPage from './pages/Admin/CategoryDetailPage';
+import OrderListPage from './pages/Admin/OrderListPage';
+import WarehouseListPage from './pages/Admin/WarehouseListPage';
 
 function App() {
   const isAuthenticated = true; 
@@ -24,7 +26,7 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<ClientLoginPage />} />
+        <Route path="/login" element={<CustomerLoginPage />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />
 
         {/* PROTECTED ADMIN ROUTES */}
@@ -40,6 +42,8 @@ function App() {
           <Route path="products/:id" element={<ProductDetailPage />} />
           <Route path="categories" element={<CategoryListPage />} />
           <Route path="categories/:id" element={<CategoryDetailPage />} />       
+          <Route path="orders" element={<OrderListPage />} />
+          <Route path="warehouses" element={<WarehouseListPage />} />
         </Route>
 
         <Route path="*" element={<h1>404: Whoopsy daisy! Page Not Found.</h1>} />

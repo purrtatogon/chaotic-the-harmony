@@ -1,7 +1,7 @@
-/* Client Theme - Stephanie's Yellow with a vibrant purple twist */
+/* Customer Theme - Stephanie's Yellow with a vibrant purple twist */
 /* CSS Variables (not modules, these are global) */
 
-:root[data-theme="client"] {
+:root[data-theme="customer"] {
   /* Gray Palette */
   --gray-100: #2F253A;
   --gray-50: #5D5A60;

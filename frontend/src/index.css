@@ -1,4 +1,4 @@
-/* Color variables are now defined in theme files (admin.css, client.css) */
+/* Color variables are now defined in theme files (admin.css, customer.css) */
 /* Base design tokens - these are shared across themes */
 :root {
   /* Neo-brutalist design tokens */
@@ -64,5 +64,5 @@ body {
   }
 }
 
-/* Component styles are now in CSS Modules (admin.module.css, client.module.css) */
+/* Component styles are now in CSS Modules (admin.module.css, customer.module.css) */
 /* This file only contains base/reset styles */
