@@ -4,13 +4,13 @@ import { getThemeStyles } from '../../utils/themeStyles';
 import PageHeader from '../../components/PageHeader';
 import ItemDetailCard from '../../components/ItemDetailCard';
 
-const WarehouseListPage = () => {
+const OrderListPage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
 
   return (
     <div className={styles.pageContent}>
-      <PageHeader title="Warehouses" subtitle="Manage Storage Locations" />
+      <PageHeader title="Orders" subtitle="Manage Customer Orders" />
       
       <ItemDetailCard fullWidth>
         <div style={{ padding: '40px 20px', textAlign: 'center' }}>
@@ -24,4 +24,4 @@ const WarehouseListPage = () => {
   );
 };
 
-export default WarehouseListPage;
+export default OrderListPage;

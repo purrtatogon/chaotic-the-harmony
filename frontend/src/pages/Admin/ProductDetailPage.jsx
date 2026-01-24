@@ -141,7 +141,7 @@ const ProductDetailPage = () => {
         {/* GALLERY SECTION */}
         <ItemDetailCard 
           title={
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <div className={styles.cardHeaderFlex}>
               <span>Gallery</span>
               {!editGallery && (
                 <Button size="small" variant="secondary" onClick={() => setEditGallery(true)}>
@@ -152,31 +152,20 @@ const ProductDetailPage = () => {
           }
         >
           {!editGallery ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ 
-                textAlign: 'center', 
-                height: '400px', 
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: theme === 'dark' ? '#1a1a1a' : '#f5f5f5',
-                borderRadius: '12px', overflow: 'hidden', border: '1px solid #eee'
-              }}>
+            <div className={styles.galleryContainer}>
+              <div className={styles.galleryMainImage}>
                 <img 
                   src={displayImages[activeImageIndex]?.imageUrl} 
                   alt={product.title} 
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
                 />
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '10px' }}>
+              <div className={styles.galleryThumbnails}>
                 {displayImages.map((img, i) => (
                   <img 
                     key={i} 
                     src={img.imageUrl} 
                     onClick={() => setActiveImageIndex(i)}
-                    style={{ 
-                      width: '70px', height: '70px', cursor: 'pointer', borderRadius: '6px', objectFit: 'cover',
-                      border: activeImageIndex === i ? '3px solid #3b82f6' : '1px solid #ddd',
-                      opacity: activeImageIndex === i ? 1 : 0.6
-                    }} 
+                    className={`${styles.galleryThumbnail} ${activeImageIndex === i ? styles.galleryThumbnailActive : ''}`}
                   />
                 ))}
               </div>
@@ -199,7 +188,7 @@ const ProductDetailPage = () => {
         {/* DETAILS SECTION */}
         <ItemDetailCard 
           title={
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <div className={styles.cardHeaderFlex}>
               <span>Details</span>
               {!editInfo && (
                 <Button size="small" variant="secondary" onClick={() => setEditInfo(true)}>
@@ -212,88 +201,84 @@ const ProductDetailPage = () => {
           {!editInfo ? (
             /* VIEW MODE */
             <div>
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <ItemDetailField label="SKU" value={product.sku || 'N/A'} />
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <FormRow>
                 <ItemDetailField label="Category" value={product.category?.name || 'N/A'} />
                 <ItemDetailField label="Product Type" value={product.type?.name || 'N/A'} />
               </FormRow>
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <ItemDetailField label="Title" value={product.title || 'N/A'} />
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <FormRow>
                 <ItemDetailField label="Music Style" value={product.musicStyle || 'N/A'} />
                 <ItemDetailField label="Color" value={product.color || 'N/A'} />
                 <ItemDetailField label="Size" value={product.itemSize || 'N/A'} />
               </FormRow>
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <FormRow>
                 <ItemDetailField label="Price" value={formatCurrency(product.price)} />
                 <ItemDetailField label="Stock Quantity" value={`${product.stockQuantity || 0} units`} />
               </FormRow>
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <ItemDetailField label="Description" value={product.description || 'N/A'} />
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <ItemDetailField label="Materials + Specs" value={product.materialsSpecs || 'N/A'} />
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <ItemDetailField label="Shipping Info" value={product.shippingInfo || 'N/A'} />
             </div>
           ) : (
             /* EDIT MODE - UPDATED TO MATCH VIEW ORDER */
             <Form onSubmit={(e) => { e.preventDefault(); handleUpdate('info'); }}>
               
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <Input label="SKU" name="sku" value={formData.sku || ''} onChange={handleChange} required />
               
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               {/* Category Selection */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Category</label>
+                <label className={styles.categorySelectLabel}>Category</label>
                 <select 
                   name="categoryId"
                   value={formData.categoryId || ''} 
                   onChange={handleChange}
-                  style={{ 
-                    width: '100%', padding: '0.75rem', borderRadius: '8px',
-                    border: '1px solid #ccc', background: theme === 'dark' ? '#222' : '#fff',
-                    color: theme === 'dark' ? '#fff' : '#000'
-                  }}
+                  className={styles.categorySelect}
                   required
                 >
-                  <option value="">Select Category</option>
-                  {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                  <option value="">SELECT CATEGORY</option>
+                  {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name.toUpperCase()}</option>)}
                 </select>
               </div>
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <Input label="Title" name="title" value={formData.title || ''} onChange={handleChange} required />
               
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <FormRow>
                 <Input label="Music Style" name="musicStyle" value={formData.musicStyle || ''} onChange={handleChange} />
                 <Input label="Color" name="color" value={formData.color || ''} onChange={handleChange} />
                 <Input label="Size" name="itemSize" value={formData.itemSize || ''} onChange={handleChange} />
               </FormRow>
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <FormRow>
                 <Input label="Price (€)" name="price" type="number" step="0.01" value={formData.price || ''} onChange={handleChange} required />
                 <Input label="Stock Quantity" name="stockQuantity" type="number" value={formData.stockQuantity || ''} onChange={handleChange} required />
               </FormRow>
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <Input label="Description" name="description" type="textarea" value={formData.description || ''} onChange={handleChange} rows={4} />
               
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <Input label="Materials + Specs" name="materialsSpecs" type="textarea" value={formData.materialsSpecs || ''} onChange={handleChange} rows={3} />
 
-              <hr style={{ margin: '1.5rem 0', opacity: 0.2 }} />
+              <hr className={styles.divider} />
               <Input label="Shipping Info" name="shippingInfo" type="textarea" value={formData.shippingInfo || ''} onChange={handleChange} rows={2} />
 
               <FormActions>
@@ -306,7 +291,7 @@ const ProductDetailPage = () => {
 
         {/* --- 3. DANGER ZONE --- */}
         <ItemDetailCard title="Administrative Actions">
-          <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>
+          <p className={styles.warningText}>
             Warning: Deleting a product is permanent and cannot be undone.
           </p>
           <Button variant="danger" onClick={handleDelete} disabled={submitting}>

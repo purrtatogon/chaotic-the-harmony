@@ -12,8 +12,7 @@ import { formatCurrency } from '../../utils/formatters';
 
 
 const ProductListPage = () => {
-  const theme = useTheme();
-  const styles = getThemeStyles(theme);
+  const styles = getThemeStyles(useTheme());
   const navigate = useNavigate();
 
   // Data State
@@ -106,15 +105,6 @@ const ProductListPage = () => {
     });
   };
 
-  const inputStyle = {
-    padding: '0.6rem',
-    borderRadius: '6px',
-    border: `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
-    backgroundColor: theme === 'dark' ? '#2c2c2c' : '#fff',
-    color: theme === 'dark' ? '#fff' : '#333',
-    fontSize: '0.9rem',
-    minWidth: '140px'
-  };
 
   if (loading && products.length === 0) return <Loading message="Loading inventory..." />;
   if (error) return <Error message={error} />;
@@ -125,7 +115,7 @@ const ProductListPage = () => {
         title="Products" 
         subtitle="Manage your inventory"
         actions={
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <div className={styles.flexRow}>
             <Button variant="primary" onClick={() => navigate('/admin/products/new')}>
               + Add New Product
             </Button>
@@ -137,48 +127,38 @@ const ProductListPage = () => {
       />
 
       {/*███████ FILTER TOOLBAR ███████*/}
-      <div style={{ 
-        marginBottom: '1.5rem', 
-        padding: '1rem', 
-        backgroundColor: theme === 'dark' ? '#1e1e1e' : '#fff', 
-        borderRadius: '8px',
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '1rem',
-        alignItems: 'center',
-        border: `1px solid ${theme === 'dark' ? '#333' : '#eee'}`
-      }}>
+      <div className={styles.filterToolbar}>
         
         {/* Sorting */}
-        <select style={inputStyle} onChange={handleSortChange} defaultValue="newest">
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
+        <select className={styles.filterInput} onChange={handleSortChange} defaultValue="newest">
+          <option value="newest">NEWEST FIRST</option>
+          <option value="oldest">OLDEST FIRST</option>
+          <option value="price_asc">PRICE: LOW TO HIGH</option>
+          <option value="price_desc">PRICE: HIGH TO LOW</option>
         </select>
 
         {/* Availability */}
-        <select name="availability" style={inputStyle} value={filters.availability} onChange={handleFilterChange}>
-          <option value="">All Stock Status</option>
-          <option value="in_stock">In Stock</option>
-          <option value="out_of_stock">Out of Stock</option>
+        <select name="availability" className={styles.filterInput} value={filters.availability} onChange={handleFilterChange}>
+          <option value="">ALL STOCK STATUS</option>
+          <option value="in_stock">IN STOCK</option>
+          <option value="out_of_stock">OUT OF STOCK</option>
         </select>
 
         {/* Category Dropdown */}
-        <select name="categoryId" style={inputStyle} value={filters.categoryId} onChange={handleFilterChange}>
-          <option value="">All Categories</option>
+        <select name="categoryId" className={styles.filterInput} value={filters.categoryId} onChange={handleFilterChange}>
+          <option value="">ALL CATEGORIES</option>
           {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
+            <option key={cat.id} value={cat.id}>{cat.name.toUpperCase()}</option>
           ))}
         </select>
 
         {/* Product Type Dropdown */}
-        <select name="productType" style={inputStyle} value={filters.productType} onChange={handleFilterChange}>
-          <option value="">All Product Types</option>
+        <select name="productType" className={styles.filterInput} value={filters.productType} onChange={handleFilterChange}>
+          <option value="">ALL PRODUCT TYPES</option>
           {productTypes.map(type => (
             // using type.code ("TSH") for the value, and type.name ("Tee") for display
             <option key={type.code} value={type.code}>
-                {type.name}
+                {type.name.toUpperCase()}
             </option>
           ))}
         </select>
@@ -187,20 +167,20 @@ const ProductListPage = () => {
         <input 
             type="text" 
             name="size" 
-            placeholder="Size" 
+            placeholder="SIZE" 
             value={filters.size} 
             onChange={handleFilterChange} 
-            style={{ ...inputStyle, minWidth: '80px', width: '100px' }} 
+            className={`${styles.filterInput} ${styles.filterInputSmall}`}
         />
 
         {/* Color Input */}
         <input 
             type="text" 
             name="color" 
-            placeholder="Color" 
+            placeholder="COLOR" 
             value={filters.color} 
             onChange={handleFilterChange} 
-            style={{ ...inputStyle, minWidth: '80px', width: '100px' }} 
+            className={`${styles.filterInput} ${styles.filterInputSmall}`}
         />
         
         {/* Reset */}
@@ -210,61 +190,51 @@ const ProductListPage = () => {
       </div>
 
       {/*███████ TABLE ███████*/}
-      <div style={{ overflowX: 'auto', background: theme === 'dark' ? '#1e1e1e' : '#fff', borderRadius: '8px', padding: '1rem' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', color: theme === 'dark' ? '#eee' : '#333' }}>
+      <div className={styles.tableContainer}>
+        <table className={styles.productTable}>
           <thead>
-            <tr style={{ borderBottom: `1px solid ${theme === 'dark' ? '#333' : '#eee'}` }}>
-              <th style={{ padding: '1rem' }}>Image</th>
-              <th style={{ padding: '1rem' }}>SKU</th>
-              <th style={{ padding: '1rem' }}>Title</th>
-              <th style={{ padding: '1rem' }}>Category</th>
-              <th style={{ padding: '1rem' }}>Price</th>
-              <th style={{ padding: '1rem' }}>Stock</th>
-              <th style={{ padding: '1rem' }}>Actions</th>
+            <tr className={styles.productTableHeader}>
+              <th className={styles.productTableCell}>Image</th>
+              <th className={styles.productTableCell}>SKU</th>
+              <th className={styles.productTableCell}>Title</th>
+              <th className={styles.productTableCell}>Category</th>
+              <th className={styles.productTableCell}>Price</th>
+              <th className={styles.productTableCell}>Stock</th>
+              <th className={styles.productTableCell}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {products.map(product => (
-              <tr key={product.id} style={{ borderBottom: `1px solid ${theme === 'dark' ? '#333' : '#eee'}` }}>
+              <tr key={product.id} className={styles.productTableRow}>
               {/* Photo Cell */}
-              <td style={{ padding: '1rem' }}>
-                <div style={{ 
-                  width: '60px', 
-                  height: '60px', 
-                  borderRadius: '4px', 
-                  overflow: 'hidden', 
-                  border: `1px solid ${theme === 'dark' ? '#444' : '#ddd'}`,
-                  backgroundColor: '#f9f9f9'
-                }}>
+              <td className={styles.productTableCell}>
+                <div className={styles.productImageContainer}>
                   <img 
                     src={product.images && product.images.length > 0 ? product.images[0].imageUrl : '/placeholder.jpg'} 
                     alt={product.title}
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    className={styles.productImage}
                   />
                 </div>
               </td>
               
-              <td style={{ padding: '1rem', color: '#888', fontSize: '0.9rem' }}>{product.sku}</td>
-              <td style={{ padding: '1rem', fontWeight: 'bold' }}>{product.title}</td>
+              <td className={`${styles.productTableCell} ${styles.textMuted}`} style={{ fontSize: '0.9rem' }}>{product.sku}</td>
+              <td className={styles.productTableCell} style={{ fontWeight: 'bold' }}>{product.title}</td>
               
-              <td style={{ padding: '1rem' }}>
-                <span style={{ 
-                    padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem',
-                    background: theme === 'dark' ? '#333' : '#f0f0f0' 
-                }}>
+              <td className={styles.productTableCell}>
+                <span className={styles.categoryBadge}>
                     {product.category?.name || 'Uncategorized'}
                 </span>
               </td>
 
-              <td style={{ padding: '1rem', fontFamily: 'monospace', fontWeight: 'bold' }}>{formatCurrency(product.price)}</td>
-              <td style={{ padding: '1rem' }}>
+              <td className={styles.productTableCell} style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>{formatCurrency(product.price)}</td>
+              <td className={styles.productTableCell}>
                 {product.stockQuantity === 0 ? (
-                    <span style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '0.85rem' }}>Out of Stock</span>
+                    <span className={styles.textError}>Out of Stock</span>
                 ) : (
                     <span>{product.stockQuantity}</span>
                 )}
               </td>
-              <td style={{ padding: '1rem' }}>
+              <td className={styles.productTableCell}>
                 <Button 
                   variant="secondary" 
                   size="small"
@@ -279,11 +249,13 @@ const ProductListPage = () => {
         </table>
         
         {products.length === 0 && !loading && (
-            <div style={{ padding: '3rem', textAlign: 'center', color: '#888' }}>
+            <div className={styles.emptyState}>
                 <p>No products match your filters.</p>
-                <Button size="small" variant="secondary" onClick={handleReset} style={{ marginTop: '1rem' }}>
-                    Clear Filters
-                </Button>
+                <div className={styles.emptyStateActions}>
+                  <Button size="small" variant="secondary" onClick={handleReset}>
+                      Clear Filters
+                  </Button>
+                </div>
             </div>
         )}
       </div>

@@ -14,35 +14,65 @@ import ListContainer from '../../components/ListContainer';
 import Table from '../../components/Table';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
-import ImageUpload from '../../components/ImageUpload';
+import StatCard from '../../components/StatCard';
+import { getAvatarUrl } from '../../utils/userUtils';
 
 const UserListPage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
   const { data: users, loading, error, refetch } = useApi(() => userApi.getAll());
   
+  const [activeTab, setActiveTab] = useState('ALL');
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '', 
     email: '',
-    role: 'STAFF',
-    password: '',
-    profileImageUrl: ''
+    role: 'CUSTOMER',
+    password: ''
   });
   const [submitting, setSubmitting] = useState(false);
+
+  const roles = [
+    { id: 'ALL', label: 'All Users' },
+    { id: 'SUPER_ADMIN', label: 'Super Admins' },
+    { id: 'STORE_MANAGER', label: 'Store Managers' },
+    { id: 'WAREHOUSE_STAFF', label: 'Warehouse Staff' },
+    { id: 'SUPPORT_AGENT', label: 'Support Agents' },
+    { id: 'AUDITOR', label: 'Auditors' },
+    { id: 'CUSTOMER', label: 'Customers' },
+  ];
+
+  const filteredUsers = users?.filter(user => {
+    if (activeTab === 'ALL') return true;
+    const role = user.role?.toUpperCase() || '';
+    
+    // Exact matches with fallbacks for safety
+    if (activeTab === 'SUPER_ADMIN') return role === 'SUPER_ADMIN' || role === 'ADMIN';
+    if (activeTab === 'STORE_MANAGER') return role === 'STORE_MANAGER' || role === 'MANAGER';
+    if (activeTab === 'WAREHOUSE_STAFF') return role === 'WAREHOUSE_STAFF' || role === 'WAREHOUSE';
+    if (activeTab === 'SUPPORT_AGENT') return role === 'SUPPORT_AGENT' || role === 'SUPPORT';
+    
+    return role === activeTab;
+  }) || [];
+
+  const stats = {
+    admins: users?.filter(u => u.role !== 'CUSTOMER').length || 0,
+    customers: users?.filter(u => u.role === 'CUSTOMER').length || 0,
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAvatarUpload = (url) => {
-    setFormData({ ...formData, profileImageUrl: url });
-  };
-
   const handleCreate = () => {
     setIsCreating(true);
-    setFormData({ fullName: '', email: '', role: 'STAFF', password: '', profileImageUrl: '' });
+    setFormData({ 
+      fullName: '', 
+      email: '', 
+      role: activeTab === 'ALL' ? 'CUSTOMER' : activeTab, 
+      password: '' 
+    });
   };
 
   const handleEdit = (user) => {
@@ -51,7 +81,6 @@ const UserListPage = () => {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
-        profileImageUrl: user.profileImageUrl || '',
         password: '' 
     });
     setIsCreating(false);
@@ -103,39 +132,52 @@ const UserListPage = () => {
   if (loading) return <Loading message="Loading users..." />;
   if (error) return <Error message={error} onRetry={refetch} />;
 
-  // Added Avatar
-  const columns = ['Avatar', 'Full Name', 'Email', 'Role']; 
+  // Column definition
+  const columns = ['', 'Full Name', 'Email', 'Role']; 
 
   return (
     <div className={styles.pageContent}>
       <PageHeader title="Users" subtitle="Manage System Users" />
 
+      <div className={styles.statsGrid}>
+        <StatCard value={stats.admins} label="Administrative Users" />
+        <StatCard value={stats.customers} label="Total Customers" />
+      </div>
+
+      <div className={styles.tabsContainer}>
+        {roles.map((role) => (
+          <button
+            key={role.id}
+            className={`${styles.tab} ${activeTab === role.id ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab(role.id)}
+          >
+            {role.label}
+          </button>
+        ))}
+      </div>
+
       <div className={styles.pageActions}>
         <Button variant="primary" onClick={handleCreate} disabled={submitting}>
-          + Add New User
+          + Add New {activeTab === 'ALL' ? 'User' : roles.find(r => r.id === activeTab).label.slice(0, -1)}
         </Button>
       </div>
 
       {(isCreating || editingId) && (
         <ItemDetailCard title={isCreating ? 'Create New User' : 'Edit User'} fullWidth>
           <Form onSubmit={handleSubmit}>
-            <div style={{ display: 'flex', gap: '2rem', marginBottom: '1rem', alignItems: 'center' }}>
-                <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '2px solid #ddd' }}>
-                    <img src={formData.profileImageUrl || '/default-avatar.png'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <ImageUpload onUploadSuccess={handleAvatarUpload} preset="bandstorecth_user_preset" />
-            </div>
-            
             <FormRow>
               <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} required />
               <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required />
             </FormRow>
-            
+
             <FormRow>
               <Input label="Role" name="role" type="select" value={formData.role} onChange={handleChange} required>
-                <option value="STAFF">Staff</option>
-                <option value="MANAGER">Manager</option>
-                <option value="ADMIN">Admin</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="STORE_MANAGER">Store Manager</option>
+                <option value="WAREHOUSE_STAFF">Warehouse Staff</option>
+                <option value="SUPPORT_AGENT">Support Agent</option>
+                <option value="AUDITOR">Auditor</option>
+                <option value="CUSTOMER">Customer</option>
               </Input>
               <Input label={isCreating ? "Password" : "New Password (Optional)"} name="password" type="password" value={formData.password} onChange={handleChange} required={isCreating} />
             </FormRow>
@@ -147,29 +189,35 @@ const UserListPage = () => {
         </ItemDetailCard>
       )}
 
-      <ListContainer title="All Users" count={users?.length || 0}>
+      <ListContainer title={`${roles.find(r => r.id === activeTab).label}`} count={filteredUsers.length}>
         <Table
           columns={columns}
-          data={users || []}
+          data={filteredUsers}
           renderRow={(user) => [
-            // RENDER AVATAR CELL
-            <td key="avatar" style={{ padding: '1rem' }}>
-                <div style={{ width: '45px', height: '45px', borderRadius: '50%', overflow: 'hidden', border: '1px solid #eee' }}>
-                    <img src={user.profileImageUrl || '/default-avatar.png'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
+            <td key="avatar">
+              <div className={styles.avatarSmall}>
+                <img src={user.profileImageUrl || getAvatarUrl(user.fullName)} alt={user.fullName} />
+              </div>
             </td>,
             <td key="name">{user.fullName}</td>,
             <td key="email">{user.email}</td>,
             <td key="role">
-                <span style={{ 
-                    padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold',
-                    background: user.role === 'ADMIN' ? '#fee2e2' : '#e0f2fe',
-                    color: user.role === 'ADMIN' ? '#991b1b' : '#075985'
-                }}>{user.role}</span>
+                <span className={`
+                  ${styles.roleBadge} 
+                  ${(user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') ? styles.roleBadgeAdmin : 
+                    (user.role === 'STORE_MANAGER' || user.role === 'MANAGER') ? styles.roleBadgeManager :
+                    (user.role === 'WAREHOUSE_STAFF' || user.role === 'WAREHOUSE') ? styles.roleBadgeWarehouse :
+                    (user.role === 'SUPPORT_AGENT' || user.role === 'SUPPORT') ? styles.roleBadgeSupport :
+                    user.role === 'AUDITOR' ? styles.roleBadgeAuditor :
+                    user.role === 'CUSTOMER' ? styles.roleBadgeCustomer :
+                    styles.roleBadgeStaff}
+                `}>
+                  {user.role}
+                </span>
             </td>,
           ]}
           actions={(user) => (
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className={styles.flexRow}>
               <Button onClick={() => handleEdit(user)} size="small">Edit</Button>
               <Button variant="secondary" onClick={() => handleDelete(user.id)} size="small">Delete</Button>
             </div>

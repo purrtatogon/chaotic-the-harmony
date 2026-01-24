@@ -1,16 +1,9 @@
 import React from 'react';
-import ImageUpload from './ImageUpload';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from './Button';
 
 const ProductImageGallery = ({ images = [], onImagesChange, submitting }) => {
   const theme = useTheme();
-
-  const handleUploadSuccess = (url) => {
-    // Add the new URL to the existing array
-    const updatedImages = [...images, url];
-    onImagesChange(updatedImages);
-  };
 
   const removeImage = (indexToRemove) => {
     const updatedImages = images.filter((_, index) => index !== indexToRemove);
@@ -70,22 +63,6 @@ const ProductImageGallery = ({ images = [], onImagesChange, submitting }) => {
             </button>
           </div>
         ))}
-
-        {/* 2. THE UPLOAD BUTTON (Inside the grid) */}
-        <div style={{ 
-          aspectRatio: '1/1', 
-          border: '2px dashed #ccc', 
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: theme === 'dark' ? '#222' : '#f9f9f9'
-        }}>
-          <ImageUpload 
-            onUploadSuccess={handleUploadSuccess} 
-            preset="bandstorecth_inventory_preset" 
-          />
-        </div>
       </div>
       
       <p style={{ fontSize: '0.8rem', color: '#666' }}>

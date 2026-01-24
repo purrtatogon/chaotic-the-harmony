@@ -9,7 +9,7 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Form from '../../components/Form';
 import FormActions from '../../components/FormActions';
-import ImageUpload from '../../components/ImageUpload';
+import { getAvatarUrl } from '../../utils/userUtils';
 
 const ProfilePage = () => {
   const theme = useTheme();
@@ -21,7 +21,6 @@ const ProfilePage = () => {
   const [submitting, setSubmitting] = useState(false);
 
   // Granular editing states
-  const [editAvatar, setEditAvatar] = useState(false);
   const [editInfo, setEditInfo] = useState(false);
   const [editSecurity, setEditSecurity] = useState(false);
 
@@ -56,7 +55,6 @@ const ProfilePage = () => {
       setSubmitting(true);
       const updatedUser = await userApi.updateProfile(formData);
       setUser(updatedUser);
-      if (type === 'avatar') setEditAvatar(false);
       if (type === 'info') setEditInfo(false);
       alert('Updated successfully!');
     } catch (err) {
@@ -103,42 +101,17 @@ const ProfilePage = () => {
     <div className={styles.pageContent}>
       
       {/* SECTION 1: HEADER & PHOTO */}
-      <div style={{ 
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px',
-          background: theme === 'dark' ? '#1e1e1e' : '#fff',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ 
-              width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', 
-              border: `3px solid ${theme === 'dark' ? '#3b82f6' : '#eee'}`, flexShrink: 0 
-          }}>
+      <div className={styles.profileHeader}>
+        <div className={styles.profileHeaderContent}>
+          <div className={styles.profileAvatar}>
              <img 
-               src={formData.profileImageUrl || '/default-avatar.png'} 
+               src={formData.profileImageUrl || getAvatarUrl(user.fullName)} 
                alt="Avatar"
-               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
              />
           </div>
-          <div>
-            {!editAvatar ? (
-              <>
-                <h1 style={{ margin: 0 }}>{user.fullName}</h1>
-                <span style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '8px' }}>{user.role}</span>
-                <Button variant="secondary" size="small" onClick={() => setEditAvatar(true)}>CHANGE PHOTO</Button>
-              </>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <ImageUpload 
-                    onUploadSuccess={(url) => setFormData({...formData, profileImageUrl: url})} 
-                    preset="bandstorecth_user_preset" 
-                />
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <Button size="small" onClick={() => handleUpdate('avatar')} disabled={submitting}>SAVE PHOTO</Button>
-                    <Button size="small" variant="secondary" onClick={() => setEditAvatar(false)}>CANCEL</Button>
-                </div>
-              </div>
-            )}
+          <div className={styles.profileInfo}>
+            <h1 className={styles.profileName}>{user.fullName}</h1>
+            <span className={styles.profileRole}>{user.role}</span>
           </div>
         </div>
       </div>
@@ -148,7 +121,7 @@ const ProfilePage = () => {
         {/* SECTION 2: PERSONAL INFO */}
         <ItemDetailCard 
           title={
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <div className={styles.cardHeaderFlex}>
               <span>PERSONAL INFORMATION</span>
               {!editInfo && <Button size="small" variant="secondary" onClick={() => setEditInfo(true)}>EDIT</Button>}
             </div>
@@ -176,7 +149,7 @@ const ProfilePage = () => {
         {/* SECTION 3: ACCOUNT SECURITY */}
         <ItemDetailCard 
           title={
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <div className={styles.cardHeaderFlex}>
               <span>ACCOUNT SECURITY</span>
               {!editSecurity && <Button size="small" variant="secondary" onClick={() => setEditSecurity(true)}>EDIT</Button>}
             </div>
@@ -191,9 +164,9 @@ const ProfilePage = () => {
           ) : (
             <Form onSubmit={handleSecuritySubmit}>
               <Input label="Email Address" name="email" value={formData.email} onChange={handleChange} required />
-              <div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f9f9f9', borderRadius: '8px', border: '1px dashed #ccc' }}>
-                <p style={{ fontSize: '0.8rem', marginBottom: '1rem', color: '#666' }}>Change Password (optional)</p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
+              <div className={styles.passwordSection}>
+                <p className={styles.passwordSectionTitle}>Change Password (optional)</p>
+                <div className={styles.passwordSectionGrid}>
                   <Input label="Current Password" name="currentPassword" type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})} />
                   <Input label="New Password" name="newPassword" type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})} />
                   <Input label="Confirm New Password" name="confirmPassword" type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})} />

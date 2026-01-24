@@ -11,7 +11,8 @@ import Form from '../../components/Form';
 import FormActions from '../../components/FormActions';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
-import ImageUpload from '../../components/ImageUpload';
+
+import { getAvatarUrl } from '../../utils/userUtils';
 
 const UserDetailPage = () => {
   const theme = useTheme();
@@ -50,13 +51,6 @@ const UserDetailPage = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleAvatarUpload = (url) => {
-    setFormData({
-      ...formData,
-      profileImageUrl: url, // Matches Java entity field
     });
   };
 
@@ -113,49 +107,23 @@ const UserDetailPage = () => {
       <PageHeader title="My Profile" subtitle="Manage Your Account" />
 
       <ItemDetailCard title="Personal Information" fullWidth>
-        <div style={{ 
-          display: 'flex', 
-          gap: '2rem', 
-          marginBottom: '2rem', 
-          alignItems: 'center',
-          flexWrap: 'wrap' 
-        }}>
-          <div style={{ 
-            width: '120px', 
-            height: '120px', 
-            borderRadius: '50%', 
-            overflow: 'hidden', 
-            border: `3px solid ${theme === 'dark' ? '#3b82f6' : '#eee'}`,
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-          }}>
+        <div className={styles.userDetailFlex}>
+          <div className={styles.userDetailAvatar}>
             <img 
-              src={isEditing ? (formData.profileImageUrl || '/default-avatar.png') : (user.profileImageUrl || '/default-avatar.png')} 
+              src={user.profileImageUrl || getAvatarUrl(user.fullName)} 
               alt="Profile" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </div>
-          
-          {isEditing && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <span style={{ fontSize: '0.9rem', color: theme === 'dark' ? '#aaa' : '#666' }}>
-                Update Profile Photo
-              </span>
-              <ImageUpload 
-                onUploadSuccess={handleAvatarUpload} 
-                preset="bandstore_user_preset" 
-              />
-            </div>
-          )}
         </div>
 
         {!isEditing ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+          <div className={styles.userDetailGrid}>
             <ItemDetailField label="Full Name" value={user.fullName || 'N/A'} />
             <ItemDetailField label="Email Address" value={user.email || 'N/A'} />
             <ItemDetailField label="Role" value={user.role || 'N/A'} />
             <ItemDetailField label="Phone Number" value={user.phoneNumber || 'N/A'} />
             <ItemDetailField label="Department" value={user.department || 'N/A'} />
-            <div style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
+            <div className={styles.userDetailGridFull}>
               <Button variant="primary" onClick={() => setIsEditing(true)} disabled={submitting}>
                 Edit Profile
               </Button>
@@ -163,7 +131,7 @@ const UserDetailPage = () => {
           </div>
         ) : (
           <Form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className={styles.userDetailFormGrid}>
               
               {/* 1. FIXED: Matches 'fullName' in User.java */}
               <Input
@@ -219,7 +187,7 @@ const UserDetailPage = () => {
 
       <ItemDetailCard title="Security & Password" fullWidth>
         <Form onSubmit={handlePasswordSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+          <div className={styles.passwordFormGrid}>
             <Input
               label="Current Password"
               name="currentPassword"
@@ -248,7 +216,7 @@ const UserDetailPage = () => {
               disabled={submitting}
             />
           </div>
-          <div style={{ marginTop: '1rem' }}>
+          <div className={styles.passwordFormActions}>
             <Button type="submit" variant="primary" disabled={submitting}>
               Update Password
             </Button>
