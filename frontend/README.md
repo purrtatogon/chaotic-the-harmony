@@ -1,16 +1,58 @@
-# React + Vite
+# 🛍️ CTH Storefront - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the React/Vite application that serves as the UI for the CTH Band Store. It features a dual-theme system (Admin/Customer) and follows a Neo-Brutalist design aesthetic.
 
-Currently, two official plugins are available:
+## 🛠 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework:** React (Vite)
+- **Routing:** React Router
+- **HTTP Client:** Axios
+- **Styling:** CSS Modules, ThemeContext (Neo-brutalism)
 
-## React Compiler
+## ⚙️ Local Development (Non-Docker)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+If you are developing features for the UI without running the full Docker stack, follow these steps.
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Node.js:** v20+ (LTS)
+- **npm:** Included with Node
+
+### Installation
+
+```bash
+# From the /frontend directory
+npm install
+```
+
+### Running Development Server
+
+```bash
+npm run dev
+```
+
+The application will start at http://localhost:5173.
+
+Note: Ensure your backend is running (either via Docker or locally on port 8080) for API requests to work.
+
+Docker Configuration
+When running via the root docker-compose.yml:
+
+Internal Port: 5173
+
+Host Port: 3000 (Access at http://localhost:3000)
+
+Note: We map the internal Vite port to 3000 on the host to avoid conflicts.
+
+## Project Structure WIP WIP WIP
+
+/frontend
+├── /src
+│ ├── /assets # Images, Fonts, Global CSS
+│ ├── /components # Reusable UI components
+│ ├── /context # ThemeContext and global state
+│ ├── /pages # Page views (Admin/Customer)
+│ ├── /services # Axios configuration
+│ └── main.jsx # Entry point
+├── Dockerfile
+└── vite.config.js
