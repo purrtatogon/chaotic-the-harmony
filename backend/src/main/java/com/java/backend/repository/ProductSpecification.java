@@ -1,10 +1,14 @@
 package com.java.backend.repository;
 
 import com.java.backend.model.Product;
-import com.java.backend.model.Category;
+import com.java.backend.model.ProductVariant;
+import com.java.backend.model.ProductInventory;
 import com.java.backend.model.enums.ProductType;
-import org.springframework.data.jpa.domain.Specification;
+import com.java.backend.model.enums.Size;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +18,7 @@ public class ProductSpecification {
             Long categoryId,
             ProductType type,
             String availability,
-            String size,
+            String sizeStr,
             String color
     ) {
         return (root, query, criteriaBuilder) -> {
@@ -30,22 +34,34 @@ public class ProductSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("productType"), type));
             }
 
-            // Filter by Size (Exact match)
-            if (size != null && !size.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("itemSize"), size));
+            // Joins for Variant-based filtering
+            Join<Product, ProductVariant> variantJoin = null;
+
+            // Filter by Size
+            if (sizeStr != null && !sizeStr.isEmpty()) {
+                if (variantJoin == null) variantJoin = root.join("variants");
+                Size size = Size.fromString(sizeStr);
+                predicates.add(criteriaBuilder.equal(variantJoin.get("size"), size));
             }
 
-            // Filter by Color (Case insensitive search)
+            // Filter by Availability (requires join to Inventory)
+            if (availability != null && !availability.isEmpty()) {
+                if (variantJoin == null) variantJoin = root.join("variants");
+                Join<ProductVariant, ProductInventory> inventoryJoin = variantJoin.join("inventory");
+                
+                if ("in_stock".equalsIgnoreCase(availability)) {
+                    predicates.add(criteriaBuilder.greaterThan(inventoryJoin.get("stockQuantity"), 0));
+                } else if ("out_of_stock".equalsIgnoreCase(availability)) {
+                    predicates.add(criteriaBuilder.equal(inventoryJoin.get("stockQuantity"), 0));
+                }
+            }
+            
             if (color != null && !color.isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("color")), "%" + color.toLowerCase() + "%"));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("designCode")), "%" + color.toLowerCase() + "%"));
             }
 
-            // Filter by Availability
-            if ("in_stock".equalsIgnoreCase(availability)) {
-                predicates.add(criteriaBuilder.greaterThan(root.get("stockQuantity"), 0));
-            } else if ("out_of_stock".equalsIgnoreCase(availability)) {
-                predicates.add(criteriaBuilder.equal(root.get("stockQuantity"), 0));
-            }
+            // Ensure distinct results because of the joins
+            query.distinct(true);
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

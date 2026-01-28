@@ -3,22 +3,17 @@ package com.java.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.java.backend.model.enums.*;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "product")
-public class Product {
+@Table(name = "products")
+public class Product extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String sku;
+    // Removed @Id private Long id; (Inherited from BaseEntity)
 
     @Column(nullable = false)
-    private String title;
+    private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -26,48 +21,38 @@ public class Product {
     @Column(name = "materials_specs", columnDefinition = "TEXT")
     private String materialsSpecs;
 
-    @Column(nullable = false)
-    private BigDecimal price;
-
-    @Column(name = "shipping_info")
+    @Column(name = "shipping_info", columnDefinition = "TEXT")
     private String shippingInfo;
 
-    @Column(name = "stock_quantity")
-    private Integer stockQuantity;
+    @Column(name = "theme_code")
+    private String themeCode;
 
+    @Column(name = "design_code")
+    private String designCode;
 
-    // added JsonIgnoreProperties to prevent infinite loop
-    @ManyToOne(fetch = FetchType.EAGER) // this creates the JOIN
-    @JoinColumn(name = "category_id", nullable = false) // matches my DB column name
-    @JsonIgnoreProperties("products") // this prevents infinite loop if Category has a list of products
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties("products")
     private Category category;
-
 
     @Convert(converter = ProductTypeConverter.class)
     @Column(name = "product_type", nullable = false)
     private ProductType productType;
 
-    @Convert(converter = MusicStyleConverter.class)
-    @Column(name = "music_style")
-    private MusicStyle musicStyle;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("product")
+    private Set<ProductVariant> variants = new HashSet<>();
 
-    @Convert(converter = SizeConverter.class)
-    @Column(name = "item_size")
-    private Size itemSize;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("product")
+    @OrderBy("displayOrder ASC")
+    private Set<ProductImage> images = new HashSet<>();
 
-    private String color;
+    // --- GETTERS AND SETTERS ---
+    // (getId and setId are inherited from BaseEntity)
 
-
-    // GETTERS AND SETTERS
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getSku() { return sku; }
-    public void setSku(String sku) { this.sku = sku; }
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -75,14 +60,14 @@ public class Product {
     public String getMaterialsSpecs() { return materialsSpecs; }
     public void setMaterialsSpecs(String materialsSpecs) { this.materialsSpecs = materialsSpecs; }
 
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
-
     public String getShippingInfo() { return shippingInfo; }
     public void setShippingInfo(String shippingInfo) { this.shippingInfo = shippingInfo; }
 
-    public Integer getStockQuantity() { return stockQuantity; }
-    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
+    public String getThemeCode() { return themeCode; }
+    public void setThemeCode(String themeCode) { this.themeCode = themeCode; }
+
+    public String getDesignCode() { return designCode; }
+    public void setDesignCode(String designCode) { this.designCode = designCode; }
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
@@ -90,12 +75,9 @@ public class Product {
     public ProductType getProductType() { return productType; }
     public void setProductType(ProductType productType) { this.productType = productType; }
 
-    public MusicStyle getMusicStyle() { return musicStyle; }
-    public void setMusicStyle(MusicStyle musicStyle) { this.musicStyle = musicStyle; }
+    public Set<ProductVariant> getVariants() { return variants; }
+    public void setVariants(Set<ProductVariant> variants) { this.variants = variants; }
 
-    public Size getItemSize() { return itemSize; }
-    public void setItemSize(Size itemSize) { this.itemSize = itemSize; }
-
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public Set<ProductImage> getImages() { return images; }
+    public void setImages(Set<ProductImage> images) { this.images = images; }
 }

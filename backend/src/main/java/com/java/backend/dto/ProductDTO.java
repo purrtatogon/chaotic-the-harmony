@@ -1,29 +1,26 @@
 package com.java.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.java.backend.model.enums.*;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class ProductDTO {
-    private String sku;
-    private String title;
+    private String name;
     private String description;
     private String materialsSpecs;
-    private BigDecimal price;
     private String shippingInfo;
-    private Integer stockQuantity;
     private Long categoryId;
     private ProductType productType;
-    private MusicStyle musicStyle;
-    private Size itemSize;
-    private String color;
+    private String themeCode;
+    private String designCode;
+    private List<String> imageUrls; // For backward compatibility
+    private List<Map<String, Object>> images; // New format with alt text
 
     // GETTERS AND SETTERS
-    public String getSku() { return sku; }
-    public void setSku(String sku) { this.sku = sku; }
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -31,27 +28,39 @@ public class ProductDTO {
     public String getMaterialsSpecs() { return materialsSpecs; }
     public void setMaterialsSpecs(String materialsSpecs) { this.materialsSpecs = materialsSpecs; }
 
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
-
     public String getShippingInfo() { return shippingInfo; }
     public void setShippingInfo(String shippingInfo) { this.shippingInfo = shippingInfo; }
-
-    public Integer getStockQuantity() { return stockQuantity; }
-    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
 
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
 
     public ProductType getProductType() { return productType; }
-    public void setProductType(ProductType productType) { this.productType = productType; }
+    
+    @JsonProperty("productType")
+    public void setProductType(Object productType) {
+        if (productType == null) {
+            this.productType = null;
+        } else if (productType instanceof ProductType) {
+            this.productType = (ProductType) productType;
+        } else {
+            // Convert string code to ProductType using @JsonCreator method
+            this.productType = ProductType.fromString(productType.toString());
+        }
+    }
 
-    public MusicStyle getMusicStyle() { return musicStyle; }
-    public void setMusicStyle(MusicStyle musicStyle) { this.musicStyle = musicStyle; }
+    public String getThemeCode() { return themeCode; }
+    public void setThemeCode(String themeCode) { this.themeCode = themeCode; }
 
-    public Size getItemSize() { return itemSize; }
-    public void setItemSize(Size itemSize) { this.itemSize = itemSize; }
+    public String getDesignCode() { return designCode; }
+    public void setDesignCode(String designCode) { this.designCode = designCode; }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public List<String> getImageUrls() { return imageUrls; }
+    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
+
+    public List<Map<String, Object>> getImages() { return images; }
+    public void setImages(List<Map<String, Object>> images) { this.images = images; }
+    
+    // Compatibility for old code
+    public String getTitle() { return name; }
+    public void setTitle(String title) { this.name = title; }
 }
