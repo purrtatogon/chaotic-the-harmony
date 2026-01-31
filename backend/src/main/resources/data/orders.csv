@@ -1,0 +1,998 @@
+﻿id,customer_email,order_date,status,total_amount,currency,shipping_address
+1000,lucy.m@gmail.com,6/25/25 15:58,DELIVERED,311.89,GBP,"221B Baker St, London, NW1 6XE, UK"
+1001,keanu.p@yahoo.com,7/28/25 1:16,DELIVERED,24.32,EUR,"Mannerheimintie 15, 00100 Helsinki, Finland"
+1002,brian.d@hotmail.com,2/4/25 12:28,DELIVERED,75.65,CAD,"1010 Rue Catherine, Montreal, QC H3B 1E7, Canada"
+1003,tom.s@gmail.com,4/18/25 20:53,DELIVERED,277.24,EUR,"Aleksanterinkatu 52, 00100 Helsinki, Finland"
+1004,jason.s@protonmail.com,1/26/25 21:05,DELIVERED,260.36,CAD,"123 Arctic Circle, Iqaluit, NU X0A 0H0, Canada"
+1005,alice.t@gmail.com,1/22/25 9:44,DELIVERED,76.32,EUR,"10 Rue de la Paix, 75002 Paris, France"
+1006,sunisa.a@gmail.com,10/14/25 20:25,DELIVERED,136.95,EUR,"Hämeenkatu 10, 33100 Tampere, Finland"
+1007,sydney.t@gmail.com,1/28/25 11:15,DELIVERED,4200,JPY,"1-2-3 Shiba Koen, Minato-ku, Tokyo 105-0011, Japan"
+1008,marcus.a@yahoo.com,3/5/25 16:44,DELIVERED,232.8,USD,"450 W 33rd St, New York, NY 10001, USA"
+1009,nikki.n@hotmail.com,3/10/25 13:21,DELIVERED,138.05,USD,"10880 Wilshire Blvd, Los Angeles, CA 90024, USA"
+1010,ozzie.e@protonmail.com,3/25/25 15:51,DELIVERED,54.65,USD,"88 Colin P Kelly Jr St, San Francisco, CA 94107, USA"
+1011,janine.g@icloud.com,4/11/25 10:14,DELIVERED,229.33,USD,"233 S Wacker Dr, Chicago, IL 60606, USA"
+1012,gregory.b@gmail.com,4/18/25 19:04,DELIVERED,129.3,USD,"1600 Pennsylvania Avenue NW, Washington, DC 20500, USA"
+1013,willie.b@me.com,4/21/25 21:05,DELIVERED,31.48,USD,"716 W 4th Ave, Anchorage, AK 99501, USA"
+1014,cheese.m@gmail.com,5/5/25 14:21,DELIVERED,54.94,USD,"201 E Washington St, Phoenix, AZ 85004, USA"
+1015,momo.h@yahoo.com,5/12/25 17:34,DELIVERED,4200,JPY,"3-1-1 Umeda, Kita-ku, Osaka 530-0001, Japan"
+1016,helly.s@outlook.com,5/22/25 11:41,DELIVERED,194.22,USD,"2100 NW 42nd Ave, Miami, FL 33142, USA"
+1017,irving.j@gmail.com,6/5/25 13:16,DELIVERED,253,USD,"335 Adams St, Brooklyn, NY 11201, USA"
+1018,capheus.s@hotmail.com,6/15/25 15:21,DELIVERED,55.14,USD,"Harambee Ave, Nairobi, Kenya"
+1019,lito.h@protonmail.com,6/25/25 18:33,DELIVERED,152.85,USD,"Av. Paseo de la Reforma 50, Mexico City, Mexico"
+1020,nomi.o@gmail.com,7/8/25 10:14,DELIVERED,62.49,USD,"Casto St, San Francisco, CA 94114, USA"
+1021,wolfgang.k@icloud.com,7/20/25 16:41,DELIVERED,48.81,EUR,"Potsdamer Platz 1, 10785 Berlin, Germany"
+1022,riley.g@gmail.com,8/1/25 13:14,DELIVERED,344.61,USD,"Laugavegur 1, 101 Reykjavík, Iceland"
+1023,sun.s@yahoo.com,8/14/25 15:22,DELIVERED,110.05,USD,"Sejong-daero, Jung-gu, Seoul, South Korea"
+1024,kala.t@outlook.com,8/28/25 18:34,DELIVERED,249.75,USD,"Marine Drive, Mumbai, Maharashtra 400020, India"
+1025,hal.s@gmail.com,9/2/25 10:11,DELIVERED,277.24,USD,"1 Journal Square Plaza, Jersey City, NJ 07306, USA"
+1026,reese.m@hotmail.com,9/10/25 16:42,DELIVERED,56.64,USD,"Main St, Forks, WA 98331, USA"
+1027,dewey.s@me.com,9/18/25 13:12,DELIVERED,131.3,USD,"W 7th St, Los Angeles, CA 90017, USA"
+1028,lois.s@gmail.com,9/25/25 15:21,DELIVERED,97.3,USD,"Broadway St, Galveston, TX 77550, USA"
+1029,dina.w@yahoo.com,10/2/25 18:31,DELIVERED,84.28,USD,"Market St, St. Louis, MO 63103, USA"
+1030,mateo.p@gmail.com,10/14/25 10:11,DELIVERED,104.79,USD,"Ayala Ave, Makati, Metro Manila, Philippines"
+1031,cheyenne.w@outlook.com,10/30/25 19:02,DELIVERED,330.67,USD,"Woodward Ave, Detroit, MI 48226, USA"
+1032,jonah.b@protonmail.com,11/5/25 9:12,DELIVERED,57.83,USD,"Pike St, Seattle, WA 98101, USA"
+1033,karen.r@icloud.com,11/12/25 20:31,DELIVERED,148.47,USD,"Forbes Ave, Pittsburgh, PA 15213, USA"
+1034,wilson.s@gmail.com,12/28/25 11:13,SHIPPED,55.89,USD,"Central Ave, Phoenix, AZ 85003, USA"
+1035,eric.m@yahoo.com,1/5/25 16:43,DELIVERED,518.62,USD,"Water St, Jacksonville, FL 32202, USA"
+1036,allison.aj@hotmail.com,1/15/25 13:21,DELIVERED,118.82,GBP,"Deansgate, Manchester M3 3EE, UK"
+1037,robert.s@me.com,1/22/25 15:53,DELIVERED,167.22,USD,"Monument Circle, Indianapolis, IN 46204, USA"
+1038,james.k@gmail.com,2/2/25 10:14,DELIVERED,28.49,USD,"Main St, Pawnee, IN 47371, USA"
+1039,gregory.l@outlook.com,2/14/25 19:02,DELIVERED,54.27,USD,"Market St, Wilmington, DE 19801, USA"
+1040,pam.d@protonmail.com,2/28/25 21:04,DELIVERED,252.33,USD,"Cheviot Dr, Los Angeles, CA 90064, USA"
+1041,jim.p@icloud.com,3/5/25 14:24,DELIVERED,387.55,USD,"Palisades Dr, Pacific Palisades, CA 90272, USA"
+1042,ryan.d@gmail.com,3/10/25 17:33,DELIVERED,26.32,USD,"Spring St, New York, NY 10012, USA"
+1043,kelly.t@yahoo.com,3/25/25 11:42,DELIVERED,241.54,USD,"Main St, Kansas City, MO 64111, USA"
+1044,jung.s@hotmail.com,4/11/25 13:16,DELIVERED,249.06,USD,"Slutter Ave, Scranton, PA 18505, USA"
+1045,janet.h@me.com,4/18/25 15:24,DELIVERED,84.68,USD,"Linden St, Scranton, PA 18503, USA"
+1046,appa.b@gmail.com,4/21/25 18:31,DELIVERED,28.95,USD,"Adams Ave, Scranton, PA 18503, USA"
+1047,gloria.s@outlook.com,5/5/25 10:11,DELIVERED,195.02,USD,"W 57th St, New York, NY 10019, USA"
+1048,mitchell.k@protonmail.com,5/12/25 16:45,DELIVERED,67.49,USD,"Park Ave, New York, NY 10022, USA"
+1049,cameron.w@icloud.com,5/22/25 13:15,DELIVERED,4.89,USD,"Lexington Ave, New York, NY 10016, USA"
+1050,jay.t@gmail.com,6/5/25 15:22,DELIVERED,55.65,USD,"E 42nd St, New York, NY 10017, USA"
+1051,claire.h@yahoo.com,6/15/25 18:32,DELIVERED,286.28,USD,"Madison Ave, New York, NY 10021, USA"
+1052,phil.d@hotmail.com,6/25/25 10:14,DELIVERED,247.45,USD,"5th Ave, New York, NY 10011, USA"
+1053,carmy.a@me.com,7/8/25 16:43,DELIVERED,33700,JPY,"Chuo City, Tokyo 104-0061, Japan"
+1054,ebraheim.t@gmail.com,7/20/25 13:11,DELIVERED,3950,JPY,"Bunkyo City, Tokyo 112-0003, Japan"
+1055,tina.s@outlook.com,8/1/25 15:26,DELIVERED,86.79,USD,"N Orleans St, Chicago, IL 60654, USA"
+1056,richie.d@protonmail.com,8/14/25 18:34,DELIVERED,68.79,USD,"W Randolph St, Chicago, IL 60606, USA"
+1057,leia.e@icloud.com,8/28/25 10:12,DELIVERED,172.51,USD,"Central Ave NE, Albuquerque, NM 87106, USA"
+1058,gwen.r@gmail.com,9/2/25 16:45,DELIVERED,26.49,USD,"E Pratt St, Baltimore, MD 21202, USA"
+1059,laszlo.g@yahoo.com,9/10/25 13:16,DELIVERED,57.69,USD,"Bourbon St, New Orleans, LA 70130, USA"
+1060,guillermo.s@hotmail.com,9/18/25 15:22,DELIVERED,81.97,USD,"Las Vegas Blvd S, Las Vegas, NV 89109, USA"
+1061,max.w@me.com,9/25/25 18:35,DELIVERED,145.19,USD,"W Washington St, Indianapolis, IN 46204, USA"
+1062,billy.b@gmail.com,10/2/25 10:15,DELIVERED,130.77,USD,"N Meridian St, Indianapolis, IN 46208, USA"
+1063,eleanor.s@outlook.com,10/14/25 16:40,DELIVERED,26.49,USD,"Peachtree St NE, Atlanta, GA 30303, USA"
+1064,john.m@protonmail.com,10/30/25 13:10,DELIVERED,99.12,USD,"Broadway, Nashville, TN 37203, USA"
+1065,eleven.t@icloud.com,11/5/25 15:20,DELIVERED,28.49,USD,"SW 5th Ave, Portland, OR 97204, USA"
+1066,jen.r@gmail.com,11/12/25 18:31,DELIVERED,95.25,GBP,"Oxford St, London W1D 1BS, UK"
+1067,roy.e@yahoo.com,12/28/25 10:15,SHIPPED,458.26,GBP,"Regent St, London W1B 5AH, UK"
+1068,carla.h@hotmail.com,1/5/25 16:44,DELIVERED,26.89,USD,"Collins Ave, Miami Beach, FL 33139, USA"
+1069,bob.b@me.com,1/15/25 13:16,DELIVERED,56.95,USD,"Constitution Ave NW, Washington, DC 20001, USA"
+1070,troy.k@gmail.com,1/22/25 15:22,DELIVERED,148.95,USD,"Santa Monica Blvd, Santa Monica, CA 90401, USA"
+1071,shirley.r@outlook.com,2/2/25 18:31,DELIVERED,56.65,USD,"Lombard St, San Francisco, CA 94133, USA"
+1072,pierce.d@protonmail.com,2/14/25 10:14,DELIVERED,100.54,USD,"Boylston St, Boston, MA 02116, USA"
+1073,britta.s@icloud.com,2/28/25 16:41,DELIVERED,35.3,USD,"Market St, Philadelphia, PA 19106, USA"
+1074,abed.h@gmail.com,3/5/25 13:16,DELIVERED,155.23,USD,"16th St Mall, Denver, CO 80202, USA"
+1075,annie.t@yahoo.com,3/10/25 15:22,DELIVERED,140.79,USD,"Chestnut St, Philadelphia, PA 19106, USA"
+1076,jeff.h@hotmail.com,3/25/25 18:31,DELIVERED,379.4,USD,"Wilshire Blvd, Los Angeles, CA 90024, USA"
+1077,ben.s@me.com,4/11/25 10:15,DELIVERED,130.85,USD,"Walnut St, Philadelphia, PA 19103, USA"
+1078,claire.g@gmail.com,4/18/25 16:40,DELIVERED,26.32,USD,"State St, Chicago, IL 60602, USA"
+1079,brianna.n@outlook.com,4/21/25 13:14,DELIVERED,194.22,USD,"Michigan Ave, Chicago, IL 60611, USA"
+1080,roger.p@protonmail.com,5/5/25 15:20,DELIVERED,53.27,USD,"Canal St, New York, NY 10013, USA"
+1081,jamie.e@icloud.com,5/12/25 18:35,DELIVERED,107.98,USD,"Wall St, New York, NY 10005, USA"
+1082,harry.k@gmail.com,5/22/25 10:11,DELIVERED,55.89,USD,"Mass Ave, Indianapolis, IN 46204, USA"
+1083,sally.s@yahoo.com,6/5/25 16:44,DELIVERED,68.52,USD,"Delaware St, Indianapolis, IN 46204, USA"
+1084,tommy.l@hotmail.com,6/15/25 13:10,DELIVERED,28.49,USD,"Capitol Ave, Indianapolis, IN 46204, USA"
+1085,sunisa.h@gmail.com,6/25/25 15:26,DELIVERED,303.09,EUR,"Ratakatu 12, 00120 Helsinki, Finland"
+1086,barnabus.l@yahoo.com,7/8/25 18:31,DELIVERED,250,SEK,"Drottninggatan 1, 111 51 Stockholm, Sweden"
+1087,safiya.k@gmail.com,7/20/25 10:14,DELIVERED,10400,JPY,"Higashiyama-ku, Kyoto 605-0001, Japan"
+1088,moe.b@outlook.com,8/1/25 16:41,DELIVERED,5.49,EUR,"Place de la Comédie, 69001 Lyon, France"
+1089,taylor.r@hotmail.com,8/14/25 13:16,DELIVERED,26.74,USD,"Via del Corso, 00186 Rome, Italy"
+1090,yoongi.k@gmail.com,8/28/25 15:22,DELIVERED,186.6,EUR,"Eerikinkatu 15, 20100 Turku, Finland"
+1091,susie.a@me.com,9/2/25 18:31,DELIVERED,118.37,CAD,"P.O. Box 1000, Iqaluit, NU X0A 0H0, Canada"
+1092,sandra.l@gmail.com,9/10/25 10:15,DELIVERED,267.25,EUR,"Hämeenkatu 1, 33100 Tampere, Finland"
+1093,taehyung.p@yahoo.com,9/18/25 16:40,DELIVERED,224.77,EUR,"Bulevardi 2, 00120 Helsinki, Finland"
+1094,austin.k@gmail.com,9/25/25 13:14,DELIVERED,322.46,EUR,"Kirkkokatu 1, 90100 Oulu, Finland"
+1095,barbara.l@hotmail.com,10/2/25 15:20,DELIVERED,38.74,CAD,"Grande Allée Est, Québec, QC G1R 2H9, Canada"
+1096,suzuka.n@gmail.com,10/14/25 18:35,DELIVERED,124.82,CAD,"General Delivery, Pangnirtung, NU X0A 0R0, Canada"
+1097,philip.l@outlook.com,10/30/25 10:11,DELIVERED,200,SEK,"Avenyn 1, 411 36 Gothenburg, Sweden"
+1098,morgan.s@me.com,11/5/25 16:44,DELIVERED,8400,JPY,"Naka-ku, Yokohama 231-0001, Japan"
+1099,uyen.t@gmail.com,11/12/25 13:10,DELIVERED,27.89,USD,"W 4th St, New York, NY 10012, USA"
+1100,steve.p@yahoo.com,11/26/25 15:26,DELIVERED,10.47,EUR,"Mannerheimintie 1, 00100 Helsinki, Finland"
+1101,ava.d@gmail.com,12/28/25 18:31,SHIPPED,163.09,CAD,"Rideau St, Ottawa, ON K1N 5X8, Canada"
+1102,eddie.s@hotmail.com,1/5/25 10:14,DELIVERED,128.66,EUR,"Keskuskatu 1, 00100 Helsinki, Finland"
+1103,susie.s@me.com,1/15/25 16:41,DELIVERED,87.96,CAD,"Federal Rd, Iqaluit, NU X0A 0H0, Canada"
+1104,suranne.t@gmail.com,1/22/25 13:16,DELIVERED,203.67,CAD,"Rue Saint-Jean, Québec, QC G1R 1P5, Canada"
+1105,wucy.a@outlook.com,2/2/25 15:22,DELIVERED,82.31,EUR,"Unioninkatu 1, 00130 Helsinki, Finland"
+1106,ashra.t@gmail.com,2/14/25 18:31,DELIVERED,13700,JPY,"Shinjuku-ku, Tokyo 160-0022, Japan"
+1107,sujin.a@yahoo.com,2/28/25 10:15,DELIVERED,302.96,USD,"E 14th St, New York, NY 10003, USA"
+1108,austin.n@gmail.com,3/5/25 16:40,DELIVERED,152.82,USD,"W 23rd St, New York, NY 10011, USA"
+1109,safiya.e@hotmail.com,3/10/25 13:14,DELIVERED,82.16,USD,"Market St, San Francisco, CA 94103, USA"
+1110,sugar.v@protonmail.com,3/25/25 15:20,DELIVERED,136.95,EUR,"Espoonkatu 4, 02100 Espoo, Finland"
+1111,bear.o@gmail.com,4/11/25 18:35,DELIVERED,447.41,CAD,"Arctic Rd, Inuvik, NT X0E 0T0, Canada"
+1112,elora.l@yahoo.com,4/18/25 10:11,DELIVERED,25.99,EUR,"Place de la Bourse, 33000 Bordeaux, France"
+1113,nadja.i@icloud.com,4/21/25 16:44,DELIVERED,56.49,USD,"Calle Mayor, 28013 Madrid, Spain"
+1114,guillermo.d@gmail.com,5/5/25 13:10,DELIVERED,25.99,EUR,"La Canebière, 13001 Marseille, France"
+1115,colin.n@hotmail.com,5/12/25 15:26,DELIVERED,161.95,EUR,"Tehtaankatu 1, 00140 Helsinki, Finland"
+1116,mike.r@me.com,5/22/25 18:31,DELIVERED,28.74,USD,"Via Dante, 20121 Milan, Italy"
+1117,robin.k@outlook.com,6/5/25 10:14,DELIVERED,25.32,EUR,"Linnankatu 1, 20100 Turku, Finland"
+1118,amy.b@gmail.com,6/15/25 16:41,DELIVERED,91.93,EUR,"Grand Place, 59800 Lille, France"
+1119,charles.l@yahoo.com,6/25/25 13:16,DELIVERED,142.47,EUR,"Satakunnankatu 1, 33100 Tampere, Finland"
+1120,meredith.p@hotmail.com,7/8/25 15:22,DELIVERED,204.46,EUR,"Eteläesplanadi 1, 00130 Helsinki, Finland"
+1121,alex.l@protonmail.com,7/20/25 18:31,DELIVERED,425.29,CAD,"Boulevard Laurier, Québec, QC G1V 2M2, Canada"
+1122,george.k@icloud.com,8/1/25 10:15,DELIVERED,100.28,EUR,"Isokatu 1, 90100 Oulu, Finland"
+1123,moss.n@gmail.com,8/14/25 16:40,DELIVERED,486.38,CAD,"Baffin St, Arctic Bay, NU X0A 0A0, Canada"
+1124,malcolm.s@yahoo.com,8/28/25 13:14,DELIVERED,109.9,CAD,"Main St, Arviat, NU X0C 0E0, Canada"
+1125,riley.l@outlook.com,9/2/25 15:20,DELIVERED,400,SEK,"Hamngatan 1, 111 47 Stockholm, Sweden"
+1126,nomi.s@gmail.com,9/10/25 18:35,DELIVERED,36750,JPY,"Ginza, Chuo City, Tokyo 104-0061, Japan"
+1127,wolfgang.t@hotmail.com,9/18/25 10:11,DELIVERED,137.29,USD,"W 14th St, New York, NY 10011, USA"
+1128,jamie.t@me.com,9/25/25 16:44,DELIVERED,148.57,CAD,"Rue Sherbrooke, Montreal, QC H3A 1G1, Canada"
+1129,roger.a@gmail.com,10/2/25 13:10,DELIVERED,91.3,EUR,"Korkeavuorenkatu 1, 00130 Helsinki, Finland"
+1130,helly.a@yahoo.com,10/14/25 15:26,DELIVERED,59.3,CAD,"Igloolik, NU X0A 0L0, Canada"
+1131,dylan.t@outlook.com,10/30/25 18:31,DELIVERED,4850,JPY,"Namba, Chuo Ward, Osaka 542-0076, Japan"
+1132,sally.a@gmail.com,11/5/25 10:14,DELIVERED,83.39,USD,"Michigan Ave, Chicago, IL 60611, USA"
+1133,jonah.n@hotmail.com,11/12/25 16:41,DELIVERED,281.44,USD,"Sunset Blvd, Los Angeles, CA 90028, USA"
+1134,garrett.e@protonmail.com,11/26/25 13:16,DELIVERED,55.97,USD,"California St, San Francisco, CA 94104, USA"
+1135,matt.g@icloud.com,12/28/25 15:22,SHIPPED,199.8,USD,"Wacker Dr, Chicago, IL 60601, USA"
+1136,foggy.b@gmail.com,1/5/25 18:31,DELIVERED,108.25,USD,"K St NW, Washington, DC 20006, USA"
+1137,frank.b@yahoo.com,1/15/25 10:15,DELIVERED,54.32,USD,"E Northern Lights Blvd, Anchorage, AK 99503, USA"
+1138,lisa.m@outlook.com,1/22/25 16:40,DELIVERED,4050,JPY,"Nakamura Ward, Nagoya, Aichi 450-0002, Japan"
+1139,dwight.h@gmail.com,2/2/25 13:14,DELIVERED,56100,JPY,"Nakamura Ward, Nagoya, Aichi 450-0002, Japan"
+1140,ryan.s@hotmail.com,2/14/25 15:20,DELIVERED,308.24,USD,"Biscayne Blvd, Miami, FL 33132, USA"
+1141,umma.j@me.com,2/28/25 18:35,DELIVERED,208.64,USD,"Flatbush Ave, Brooklyn, NY 11217, USA"
+1142,haley.s@gmail.com,3/5/25 10:11,DELIVERED,326.95,USD,"S Broad St, Philadelphia, PA 19107, USA"
+1143,manny.h@yahoo.com,3/10/25 16:44,DELIVERED,124.22,USD,"Colfax Ave, Denver, CO 80203, USA"
+1144,abed.m@outlook.com,3/25/25 13:10,DELIVERED,135.96,EUR,"Bulevardi 1, 00120 Helsinki, Finland"
+1145,troy.v@gmail.com,4/11/25 15:26,DELIVERED,50.73,EUR,"Hämeenkatu 1, 33100 Tampere, Finland"
+1146,annie.l@hotmail.com,4/18/25 18:31,DELIVERED,25.84,EUR,"Avenue des Champs-Élysées, 75008 Paris, France"
+1147,pierce.o@me.com,4/21/25 10:14,DELIVERED,38.95,CAD,"P.O. Box 100, Iqaluit, NU X0A 0H0, Canada"
+1148,britta.i@gmail.com,5/5/25 16:41,DELIVERED,81.2,USD,"W Olympic Blvd, Los Angeles, CA 90015, USA"
+1149,jeff.o@yahoo.com,5/12/25 13:16,DELIVERED,108.97,USD,"Montgomery St, San Francisco, CA 94104, USA"
+1150,lucy.m@gmail.com,5/22/25 15:22,DELIVERED,21.65,GBP,"221B Baker St, London, NW1 6XE, UK"
+1151,keanu.p@yahoo.com,6/5/25 18:31,DELIVERED,81.64,EUR,"Mannerheimintie 15, 00100 Helsinki, Finland"
+1152,brian.d@hotmail.com,6/15/25 10:15,DELIVERED,96.78,CAD,"1010 Rue Catherine, Montreal, QC H3B 1E7, Canada"
+1153,tom.s@gmail.com,6/25/25 16:40,DELIVERED,259.96,EUR,"Aleksanterinkatu 52, 00100 Helsinki, Finland"
+1154,jason.s@protonmail.com,7/8/25 13:14,DELIVERED,502.7,CAD,"123 Arctic Circle, Iqaluit, NU X0A 0H0, Canada"
+1155,alice.t@gmail.com,7/20/25 15:20,DELIVERED,24.49,EUR,"10 Rue de la Paix, 75002 Paris, France"
+1156,sunisa.a@gmail.com,8/1/25 18:35,DELIVERED,70.9,EUR,"Hämeenkatu 10, 33100 Tampere, Finland"
+1157,sydney.t@gmail.com,8/14/25 10:11,DELIVERED,89100,JPY,"1-2-3 Shiba Koen, Minato-ku, Tokyo 105-0011, Japan"
+1158,marcus.a@yahoo.com,8/28/25 16:44,DELIVERED,83.58,USD,"450 W 33rd St, New York, NY 10001, USA"
+1159,nikki.n@hotmail.com,9/2/25 13:10,DELIVERED,99.54,USD,"10880 Wilshire Blvd, Los Angeles, CA 90024, USA"
+1160,ozzie.e@protonmail.com,9/10/25 15:26,DELIVERED,249.54,USD,"88 Colin P Kelly Jr St, San Francisco, CA 94107, USA"
+1161,janine.g@icloud.com,9/18/25 18:31,DELIVERED,55.31,USD,"233 S Wacker Dr, Chicago, IL 60606, USA"
+1162,gregory.b@gmail.com,9/25/25 10:14,DELIVERED,56.58,USD,"1600 Pennsylvania Avenue NW, Washington, DC 20500, USA"
+1163,willie.b@me.com,10/2/25 16:41,DELIVERED,50.23,USD,"716 W 4th Ave, Anchorage, AK 99501, USA"
+1164,cheese.m@gmail.com,10/14/25 13:16,DELIVERED,50.23,USD,"201 E Washington St, Phoenix, AZ 85004, USA"
+1165,momo.h@yahoo.com,10/30/25 15:22,DELIVERED,3950,JPY,"3-1-1 Umeda, Kita-ku, Osaka 530-0001, Japan"
+1166,helly.s@outlook.com,11/5/25 18:31,DELIVERED,50.23,USD,"2100 NW 42nd Ave, Miami, FL 33142, USA"
+1167,irving.j@gmail.com,11/12/25 10:15,DELIVERED,56.65,USD,"335 Adams St, Brooklyn, NY 11201, USA"
+1168,capheus.s@hotmail.com,11/26/25 16:40,DELIVERED,56.65,USD,"Harambee Ave, Nairobi, Kenya"
+1169,lito.h@protonmail.com,12/28/25 13:14,SHIPPED,50.23,USD,"Av. Paseo de la Reforma 50, Mexico City, Mexico"
+1170,nomi.o@gmail.com,1/5/25 15:20,DELIVERED,50.23,USD,"Casto St, San Francisco, CA 94114, USA"
+1171,wolfgang.k@icloud.com,1/15/25 18:35,DELIVERED,46.27,EUR,"Potsdamer Platz 1, 10785 Berlin, Germany"
+1172,riley.g@gmail.com,1/22/25 10:11,DELIVERED,56.65,USD,"Laugavegur 1, 101 Reykjavík, Iceland"
+1173,sun.s@yahoo.com,2/2/25 16:44,DELIVERED,50.23,USD,"Sejong-daero, Jung-gu, Seoul, South Korea"
+1174,kala.t@outlook.com,2/14/25 13:10,DELIVERED,50.23,USD,"Marine Drive, Mumbai, Maharashtra 400020, India"
+1175,hal.s@gmail.com,2/28/25 15:26,DELIVERED,50.23,USD,"1 Journal Square Plaza, Jersey City, NJ 07306, USA"
+1176,reese.m@hotmail.com,3/5/25 18:31,DELIVERED,56.65,USD,"Main St, Forks, WA 98331, USA"
+1177,dewey.s@me.com,3/10/25 10:14,DELIVERED,56.65,USD,"W 7th St, Los Angeles, CA 90017, USA"
+1178,lois.s@gmail.com,3/25/25 16:41,DELIVERED,56.65,USD,"Broadway St, Galveston, TX 77550, USA"
+1179,dina.w@yahoo.com,4/11/25 13:16,DELIVERED,56.65,USD,"Market St, St. Louis, MO 63103, USA"
+1180,mateo.p@gmail.com,4/18/25 15:22,DELIVERED,56.65,USD,"Ayala Ave, Makati, Metro Manila, Philippines"
+1181,cheyenne.w@outlook.com,4/21/25 18:31,DELIVERED,50.23,USD,"Woodward Ave, Detroit, MI 48226, USA"
+1182,jonah.b@protonmail.com,5/5/25 10:15,DELIVERED,56.65,USD,"Pike St, Seattle, WA 98101, USA"
+1183,karen.r@icloud.com,5/12/25 16:40,DELIVERED,56.65,USD,"Forbes Ave, Pittsburgh, PA 15213, USA"
+1184,wilson.s@gmail.com,5/22/25 13:14,DELIVERED,50.23,USD,"Central Ave, Phoenix, AZ 85003, USA"
+1185,eric.m@yahoo.com,6/5/25 15:20,DELIVERED,50.23,USD,"Water St, Jacksonville, FL 32202, USA"
+1186,allison.aj@hotmail.com,6/15/25 18:35,DELIVERED,39.21,GBP,"Deansgate, Manchester M3 3EE, UK"
+1187,robert.s@me.com,6/25/25 10:11,DELIVERED,50.23,USD,"Monument Circle, Indianapolis, IN 46204, USA"
+1188,james.k@gmail.com,7/8/25 16:44,DELIVERED,50.23,USD,"Main St, Pawnee, IN 47371, USA"
+1189,gregory.l@outlook.com,7/20/25 13:10,DELIVERED,56.65,USD,"Market St, Wilmington, DE 19801, USA"
+1190,pam.d@protonmail.com,8/1/25 15:26,DELIVERED,56.65,USD,"Cheviot Dr, Los Angeles, CA 90064, USA"
+1191,jim.p@icloud.com,8/14/25 18:31,DELIVERED,50.23,USD,"Palisades Dr, Pacific Palisades, CA 90272, USA"
+1192,ryan.d@gmail.com,8/28/25 10:14,DELIVERED,56.65,USD,"Spring St, New York, NY 10012, USA"
+1193,kelly.t@yahoo.com,9/2/25 16:41,DELIVERED,56.65,USD,"Main St, Kansas City, MO 64111, USA"
+1194,jung.s@hotmail.com,9/10/25 13:16,DELIVERED,50.23,USD,"Slutter Ave, Scranton, PA 18505, USA"
+1195,janet.h@me.com,9/18/25 15:22,DELIVERED,56.65,USD,"Linden St, Scranton, PA 18503, USA"
+1196,appa.b@gmail.com,9/25/25 18:31,DELIVERED,56.65,USD,"Adams Ave, Scranton, PA 18503, USA"
+1197,gloria.s@outlook.com,10/2/25 10:15,DELIVERED,50.23,USD,"W 57th St, New York, NY 10019, USA"
+1198,mitchell.k@protonmail.com,10/14/25 16:40,DELIVERED,50.23,USD,"Park Ave, New York, NY 10022, USA"
+1199,cameron.w@icloud.com,10/30/25 13:14,DELIVERED,56.65,USD,"Lexington Ave, New York, NY 10016, USA"
+1200,jay.t@gmail.com,11/5/25 15:20,DELIVERED,56.65,USD,"E 42nd St, New York, NY 10017, USA"
+1201,claire.h@yahoo.com,11/12/25 18:35,DELIVERED,147.96,USD,"Madison Ave, New York, NY 10021, USA"
+1202,phil.d@hotmail.com,11/26/25 10:11,DELIVERED,28.74,USD,"5th Ave, New York, NY 10011, USA"
+1203,carmy.a@me.com,12/28/25 16:44,SHIPPED,74350,JPY,"Chuo City, Tokyo 104-0061, Japan"
+1204,ebraheim.t@gmail.com,1/5/25 13:10,DELIVERED,3950,JPY,"Bunkyo City, Tokyo 112-0003, Japan"
+1205,tina.s@outlook.com,1/15/25 15:26,DELIVERED,55.84,USD,"N Orleans St, Chicago, IL 60654, USA"
+1206,richie.d@protonmail.com,1/22/25 18:31,DELIVERED,302.33,USD,"W Randolph St, Chicago, IL 60606, USA"
+1207,leia.e@icloud.com,2/2/25 10:14,DELIVERED,192.85,USD,"Central Ave NE, Albuquerque, NM 87106, USA"
+1208,gwen.r@gmail.com,2/14/25 16:41,DELIVERED,84.85,USD,"E Pratt St, Baltimore, MD 21202, USA"
+1209,laszlo.g@yahoo.com,2/28/25 13:16,DELIVERED,149.97,USD,"Bourbon St, New Orleans, LA 70130, USA"
+1210,guillermo.s@hotmail.com,3/5/25 15:22,DELIVERED,28.49,USD,"Las Vegas Blvd S, Las Vegas, NV 89109, USA"
+1211,max.w@me.com,3/10/25 18:31,DELIVERED,28.84,USD,"W Washington St, Indianapolis, IN 46204, USA"
+1212,billy.b@gmail.com,3/25/25 10:15,DELIVERED,53.64,USD,"N Meridian St, Indianapolis, IN 46208, USA"
+1213,eleanor.s@outlook.com,4/11/25 16:40,DELIVERED,198.6,USD,"Peachtree St NE, Atlanta, GA 30303, USA"
+1214,john.m@protonmail.com,4/18/25 13:14,DELIVERED,232.8,USD,"Broadway, Nashville, TN 37203, USA"
+1215,eleven.t@icloud.com,4/21/25 15:20,DELIVERED,138.05,USD,"SW 5th Ave, Portland, OR 97204, USA"
+1216,jen.r@gmail.com,5/5/25 18:35,DELIVERED,38.95,GBP,"Oxford St, London W1D 1BS, UK"
+1217,roy.e@yahoo.com,5/12/25 10:11,DELIVERED,41.95,GBP,"Regent St, London W1B 5AH, UK"
+1218,carla.h@hotmail.com,5/22/25 16:44,DELIVERED,229.33,USD,"Collins Ave, Miami Beach, FL 33139, USA"
+1219,bob.b@me.com,6/5/25 13:10,DELIVERED,129.3,USD,"Constitution Ave NW, Washington, DC 20001, USA"
+1220,troy.k@gmail.com,6/15/25 15:26,DELIVERED,31.48,USD,"Santa Monica Blvd, Santa Monica, CA 90401, USA"
+1221,shirley.r@outlook.com,6/25/25 18:31,DELIVERED,54.94,USD,"Lombard St, San Francisco, CA 94133, USA"
+1222,pierce.d@protonmail.com,7/8/25 10:14,DELIVERED,28.49,USD,"Boylston St, Boston, MA 02116, USA"
+1223,britta.s@icloud.com,7/20/25 16:41,DELIVERED,194.22,USD,"Market St, Philadelphia, PA 19106, USA"
+1224,abed.h@gmail.com,8/1/25 13:16,DELIVERED,253,USD,"16th St Mall, Denver, CO 80202, USA"
+1225,annie.t@yahoo.com,8/14/25 15:22,DELIVERED,55.14,USD,"Chestnut St, Philadelphia, PA 19106, USA"
+1226,jeff.h@hotmail.com,8/28/25 18:31,DELIVERED,152.85,USD,"Wilshire Blvd, Los Angeles, CA 90028, USA"
+1227,ben.s@me.com,9/2/25 10:15,DELIVERED,62.49,USD,"Walnut St, Philadelphia, PA 19103, USA"
+1228,claire.g@gmail.com,9/10/25 16:40,DELIVERED,53.14,USD,"State St, Chicago, IL 60602, USA"
+1229,brianna.n@outlook.com,9/18/25 13:14,DELIVERED,344.61,USD,"Michigan Ave, Chicago, IL 60611, USA"
+1230,roger.p@protonmail.com,9/25/25 15:20,DELIVERED,110.05,USD,"Canal St, New York, NY 10013, USA"
+1231,jamie.e@icloud.com,10/2/25 18:35,DELIVERED,56.65,USD,"Wall St, New York, NY 10005, USA"
+1232,harry.k@gmail.com,10/14/25 10:11,DELIVERED,50.23,USD,"Mass Ave, Indianapolis, IN 46204, USA"
+1233,sally.s@yahoo.com,10/30/25 16:44,DELIVERED,56.65,USD,"Delaware St, Indianapolis, IN 46204, USA"
+1234,tommy.l@hotmail.com,11/5/25 13:10,DELIVERED,56.65,USD,"Capitol Ave, Indianapolis, IN 46204, USA"
+1235,sunisa.h@gmail.com,11/12/25 15:26,DELIVERED,51.49,EUR,"Ratakatu 12, 00120 Helsinki, Finland"
+1236,barnabus.l@yahoo.com,11/26/25 18:31,DELIVERED,56.65,SEK,"Drottninggatan 1, 111 51 Stockholm, Sweden"
+1237,safiya.k@gmail.com,12/28/25 10:14,SHIPPED,3950,JPY,"Higashiyama-ku, Kyoto 605-0001, Japan"
+1238,moe.b@outlook.com,1/5/25 16:41,DELIVERED,51.49,EUR,"Place de la Comédie, 69001 Lyon, France"
+1239,taylor.r@hotmail.com,1/15/25 13:16,DELIVERED,50.23,USD,"Via del Corso, 00186 Rome, Italy"
+1240,yoongi.k@gmail.com,1/22/25 15:22,DELIVERED,51.49,EUR,"Eerikinkatu 15, 20100 Turku, Finland"
+1241,susie.a@me.com,2/2/25 18:31,DELIVERED,68.38,CAD,"P.O. Box 1000, Iqaluit, NU X0A 0H0, Canada"
+1242,sandra.l@gmail.com,2/14/25 10:15,DELIVERED,46.27,EUR,"Hämeenkatu 1, 33100 Tampere, Finland"
+1243,taehyung.p@yahoo.com,2/28/25 16:40,DELIVERED,51.49,EUR,"Bulevardi 2, 00120 Helsinki, Finland"
+1244,austin.k@gmail.com,3/5/25 13:14,DELIVERED,46.27,EUR,"Kirkkokatu 1, 90100 Oulu, Finland"
+1245,barbara.l@hotmail.com,3/10/25 15:20,DELIVERED,68.38,CAD,"Grande Allée Est, Québec, QC G1R 2H9, Canada"
+1246,suzuka.n@gmail.com,3/25/25 18:35,DELIVERED,68.38,CAD,"General Delivery, Pangnirtung, NU X0A 0R0, Canada"
+1247,philip.l@outlook.com,4/11/25 10:11,DELIVERED,26.49,SEK,"Avenyn 1, 411 36 Gothenburg, Sweden"
+1248,morgan.s@me.com,4/18/25 16:44,DELIVERED,4200,JPY,"Naka-ku, Yokohama 231-0001, Japan"
+1249,uyen.t@gmail.com,4/21/25 13:10,DELIVERED,50.23,USD,"W 4th St, New York, NY 10012, USA"
+1250,steve.p@yahoo.com,5/5/25 15:26,DELIVERED,46.27,EUR,"Mannerheimintie 1, 00100 Helsinki, Finland"
+1251,ava.d@gmail.com,5/12/25 18:31,DELIVERED,68.38,CAD,"Rideau St, Ottawa, ON K1N 5X8, Canada"
+1252,eddie.s@hotmail.com,5/22/25 10:14,DELIVERED,92.54,EUR,"Keskuskatu 1, 00100 Helsinki, Finland"
+1253,susie.s@me.com,6/5/25 16:41,DELIVERED,136.76,CAD,"Federal Rd, Iqaluit, NU X0A 0H0, Canada"
+1254,suranne.t@gmail.com,6/15/25 13:16,DELIVERED,535.8,CAD,"Rue Saint-Jean, Québec, QC G1R 1P5, Canada"
+1255,wucy.a@outlook.com,6/25/25 15:22,DELIVERED,109.68,EUR,"Unioninkatu 1, 00130 Helsinki, Finland"
+1256,ashra.t@gmail.com,7/8/25 18:31,DELIVERED,28000,JPY,"Shinjuku-ku, Tokyo 160-0022, Japan"
+1257,sujin.a@yahoo.com,7/20/25 10:15,DELIVERED,221.96,USD,"E 14th St, New York, NY 10003, USA"
+1258,austin.n@gmail.com,8/1/25 16:40,DELIVERED,195.29,USD,"W 23rd St, New York, NY 10011, USA"
+1259,safiya.e@hotmail.com,8/14/25 13:14,DELIVERED,167.77,USD,"Market St, San Francisco, CA 94103, USA"
+1260,sugar.v@protonmail.com,8/28/25 15:20,DELIVERED,462.2,EUR,"Espoonkatu 4, 02100 Espoo, Finland"
+1261,bear.o@gmail.com,9/2/25 18:35,DELIVERED,113.96,CAD,"Arctic Rd, Inuvik, NT X0E 0T0, Canada"
+1262,elora.l@yahoo.com,9/10/25 10:11,DELIVERED,244.44,EUR,"Place de la Bourse, 33000 Bordeaux, France"
+1263,nadja.i@icloud.com,9/18/25 16:44,DELIVERED,207.12,USD,"Calle Mayor, 28013 Madrid, Spain"
+1264,guillermo.d@gmail.com,9/25/25 13:10,DELIVERED,570.09,EUR,"La Canebière, 13001 Marseille, France"
+1265,colin.n@hotmail.com,10/2/25 15:26,DELIVERED,363.7,EUR,"Tehtaankatu 1, 00140 Helsinki, Finland"
+1266,mike.r@me.com,10/14/25 18:31,DELIVERED,316.15,USD,"Via Dante, 20121 Milan, Italy"
+1267,robin.k@outlook.com,10/30/25 10:14,DELIVERED,96.8,EUR,"Linnankatu 1, 20100 Turku, Finland"
+1268,amy.b@gmail.com,11/5/25 16:41,DELIVERED,71.64,EUR,"Grand Place, 59800 Lille, France"
+1269,charles.l@yahoo.com,11/12/25 13:16,DELIVERED,95.29,EUR,"Satakunnankatu 1, 33100 Tampere, Finland"
+1270,meredith.p@hotmail.com,11/26/25 15:22,DELIVERED,416.91,EUR,"Eteläesplanadi 1, 00130 Helsinki, Finland"
+1271,alex.l@protonmail.com,12/28/25 18:31,SHIPPED,560.4,CAD,"Boulevard Laurier, Québec, QC G1V 2M2, Canada"
+1272,george.k@icloud.com,1/5/25 10:15,DELIVERED,76.17,EUR,"Isokatu 1, 90100 Oulu, Finland"
+1273,moss.n@gmail.com,1/15/25 16:40,DELIVERED,362.68,CAD,"Baffin St, Arctic Bay, NU X0A 0A0, Canada"
+1274,malcolm.s@yahoo.com,1/22/25 13:14,DELIVERED,544.38,CAD,"Main St, Arviat, NU X0C 0E0, Canada"
+1275,riley.l@outlook.com,2/2/25 15:20,DELIVERED,86.75,SEK,"Hamngatan 1, 111 47 Stockholm, Sweden"
+1276,nomi.s@gmail.com,2/14/25 18:35,DELIVERED,30150,JPY,"Ginza, Chuo City, Tokyo 104-0061, Japan"
+1277,wolfgang.t@hotmail.com,2/28/25 10:11,DELIVERED,249.67,USD,"W 14th St, New York, NY 10011, USA"
+1278,jamie.t@me.com,3/5/25 16:44,DELIVERED,216.53,CAD,"Rue Sherbrooke, Montreal, QC H3A 1G1, Canada"
+1279,roger.a@gmail.com,3/10/25 13:10,DELIVERED,259.24,EUR,"Korkeavuorenkatu 1, 00130 Helsinki, Finland"
+1280,helly.a@yahoo.com,3/25/25 15:26,DELIVERED,340.28,CAD,"Igloolik, NU X0A 0L0, Canada"
+1281,dylan.t@outlook.com,4/11/25 18:31,DELIVERED,60100,JPY,"Namba, Chuo Ward, Osaka 542-0076, Japan"
+1282,sally.a@gmail.com,4/18/25 10:14,DELIVERED,363.99,USD,"Michigan Ave, Chicago, IL 60611, USA"
+1283,jonah.n@hotmail.com,4/21/25 16:41,DELIVERED,309.07,USD,"Sunset Blvd, Los Angeles, CA 90028, USA"
+1284,garrett.e@protonmail.com,5/5/25 13:16,DELIVERED,259.03,USD,"California St, San Francisco, CA 94104, USA"
+1285,matt.g@icloud.com,5/12/25 15:22,DELIVERED,158.06,USD,"Wacker Dr, Chicago, IL 60601, USA"
+1286,foggy.b@gmail.com,5/22/25 18:31,DELIVERED,559.04,USD,"K St NW, Washington, DC 20006, USA"
+1287,frank.b@yahoo.com,6/5/25 10:15,DELIVERED,269.99,USD,"E Northern Lights Blvd, Anchorage, AK 99503, USA"
+1288,lisa.m@outlook.com,6/15/25 16:40,DELIVERED,26650,JPY,"Nakamura Ward, Nagoya, Aichi 450-0002, Japan"
+1289,dwight.h@gmail.com,6/25/25 13:14,DELIVERED,21100,JPY,"Nakamura Ward, Nagoya, Aichi 450-0002, Japan"
+1290,ryan.s@hotmail.com,7/8/25 15:20,DELIVERED,74.53,USD,"Biscayne Blvd, Miami, FL 33132, USA"
+1291,umma.j@me.com,7/20/25 18:35,DELIVERED,164.45,USD,"Flatbush Ave, Brooklyn, NY 11217, USA"
+1292,haley.s@gmail.com,8/1/25 10:11,DELIVERED,145.19,USD,"S Broad St, Philadelphia, PA 19107, USA"
+1293,manny.h@yahoo.com,8/14/25 16:44,DELIVERED,130.77,USD,"Colfax Ave, Denver, CO 80203, USA"
+1294,abed.m@outlook.com,8/28/25 13:10,DELIVERED,24.32,EUR,"Bulevardi 1, 00120 Helsinki, Finland"
+1295,troy.v@gmail.com,9/2/25 15:26,DELIVERED,25.84,EUR,"Hämeenkatu 1, 33100 Tampere, Finland"
+1296,annie.l@hotmail.com,9/10/25 18:31,DELIVERED,89.28,EUR,"Avenue des Champs-Élysées, 75008 Paris, France"
+1297,pierce.o@me.com,9/18/25 10:14,DELIVERED,38.32,CAD,"P.O. Box 100, Iqaluit, NU X0A 0H0, Canada"
+1298,britta.i@gmail.com,9/25/25 16:41,DELIVERED,126.12,USD,"W Olympic Blvd, Los Angeles, CA 90015, USA"
+1299,jeff.o@yahoo.com,10/2/25 13:16,DELIVERED,37.6,USD,"Montgomery St, San Francisco, CA 94104, USA"
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
