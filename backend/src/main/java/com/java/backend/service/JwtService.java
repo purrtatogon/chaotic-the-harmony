@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Injecting the value from application.properties
+    // Injecting the value from application-local.properties
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 

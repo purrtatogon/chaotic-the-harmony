@@ -39,8 +39,19 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
 
                         // 2. USER PROFILE (Authenticated Users)
-                        // This allows Customers, Staff, Admins to see their own profile
-                        .requestMatchers("/api/v1/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/me").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/profile").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/password").authenticated()
+
+                        // 2b. USER MANAGEMENT (Role-based)
+                        // List & view: SUPER_ADMIN, STORE_MANAGER, SUPPORT_AGENT, AUDITOR
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER", "SUPPORT_AGENT", "AUDITOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/*").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER", "SUPPORT_AGENT", "AUDITOR")
+                        // Create & delete: SUPER_ADMIN only
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/*").hasRole("SUPER_ADMIN")
+                        // Update: SUPER_ADMIN or SUPPORT_AGENT (controller restricts SUPPORT_AGENT to customers)
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/*").hasAnyRole("SUPER_ADMIN", "SUPPORT_AGENT")
 
                         // 3. PRODUCTS
                         // Everyone (except Customers) can VIEW products
@@ -55,9 +66,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER", "WAREHOUSE_STAFF", "SUPPORT_AGENT", "AUDITOR")
                         .requestMatchers("/api/v1/categories/**").hasAnyRole("SUPER_ADMIN", "STORE_MANAGER")
 
-                        // 5. USER MANAGEMENT (Strictly Admin)
-                        // Note: The /users/me endpoint above takes precedence over this because it's defined earlier
-                        .requestMatchers("/api/v1/users/**").hasAnyRole("SUPER_ADMIN")
+                        // 5. USER MANAGEMENT (remaining /users/** must be authenticated; controller @PreAuthorize refines)
+                        .requestMatchers("/api/v1/users/**").authenticated()
 
                         // 6. CATCH-ALL
                         .anyRequest().authenticated()

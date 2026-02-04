@@ -22,6 +22,9 @@ public enum Size {
     Medium("MED"),
     Large("LRG"),
 
+    OS("OS"), // One Size
+    STD("STD"), // Standard
+
     NA("N/A");
 
     private final String descriptor;
