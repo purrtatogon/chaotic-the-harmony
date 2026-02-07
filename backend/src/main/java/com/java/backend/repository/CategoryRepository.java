@@ -7,10 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
-    // Find a Category by its 3-letter code
-    Optional<Category> findByCode(String code);
-
-    // Find a Category by its name
     Optional<Category> findByName(String name);
+    Optional<Category> findByCode(String code);
 }

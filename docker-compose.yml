@@ -7,10 +7,12 @@ services:
     image: postgres:16-alpine
     container_name: cth_postgres
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: bandstoredb123postgres
-      POSTGRES_DB: bandstoredb
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-bandstoredb}
     ports:
       - "5432:5432"
     volumes:
@@ -22,7 +24,7 @@ services:
   backend:
     build:
       # My source code is inside the 'backend' project (name) folder.
-      context: ./backend 
+      context: ./backend
       dockerfile: Dockerfile
     container_name: spring_backend
     restart: on-failure
@@ -30,13 +32,15 @@ services:
       - db
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       # For activating the 'docker' profile to load application-docker.properties
       SPRING_PROFILES_ACTIVE: docker
-      # For setting the environment variables for the backend app
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bandstoredb
-      SPRING_DATASOURCE_USERNAME: postgres 
-      SPRING_DATASOURCE_PASSWORD: bandstoredb123postgres 
+      # Database (must match db service)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-bandstoredb}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-password}
 
 # --------------------
 # React Frontend

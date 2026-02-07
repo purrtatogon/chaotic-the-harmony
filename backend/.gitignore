@@ -1,0 +1,30 @@
+# -------------------------------------------------------------------
+# Backend-specific .gitignore
+# Patterns are relative to /backend/
+# -------------------------------------------------------------------
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Build
+build/
+out/
+
+# OS files
+.DS_Store
+*.DS_Store
+
+# IDE
+.idea
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings
+
+# Logs
+*.log
+logs

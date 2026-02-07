@@ -1,197 +1,200 @@
-# band-store-cth: Full-Stack Application
+# Chaotic The Harmony — Full-Stack E-Commerce Platform
 
-A comprehensive e-commerce and inventory management platform for the fictional ska-punk band _"Chaotic The Harmony"_ (CTH). Built with **React**, **Java Spring Boot**, and **PostgreSQL**.
+A production-grade **Unified Commerce Platform (UCP)** for the fictional ska-punk band _"Chaotic The Harmony"_ (CTH). This solution merges a complex **Inventory Management System (IMS)** with a custom **Content Management System (CMS)**, built with **React**, **Java Spring Boot**, and **PostgreSQL**.
 
 ---
 
-## Project Background: The Evolution
+## Project Background: The Engineering Journey
 
-This project represents a journey of continuous iteration and architectural growth.
+This project represents a simulation of a real-world software lifecycle, evolving through multiple architectural iterations.
 
-- **Origins:** It began as a front-end bootcamp assignment—a static website built with Bootstrap 5.
-- **Refactoring:** Over several months, I completely re-architected the solution multiple times to transition from a static site to a dynamic, containerized full-stack application.
-- **Goal:** To simulate a real-world production environment, prioritizing data integrity, scalability, and clean code principles.
+- **Evolution:** What began as a static Bootstrap prototype has been re-architected into a fully containerized, dynamic full-stack application.
+- **Goal:** To build a system that prioritizes Data Integrity, Scalability, and Developer Experience (DX) over simple functionality.
+- **Philosophy:** "Build it like it's real." This meant rejecting "Lorem Ipsum" placeholders in favor of a cohesive CTH brand strategy, realistic data seeding, and production-ready security patterns.
 
-## The "CTH" Brand & Creative Process
+---
 
-Unlike standard demo projects populated with "Lorem Ipsum," I treated this as a real product launch requiring cohesive branding, assets, and data.
+## Brand Identity & Data Strategy
 
-### The Fictional Band
+Unlike standard demo projects, this application treats _"Chaotic The Harmony"_ as a real client requiring cohesive branding, assets, and complex data relationships.
 
-The name _"Chaotic The Harmony"_ is a nod to the real-world band _"Maximum The Hormone."_ The band's surreal "ska-punk" persona draws inspiration from an eclectic mix of artists including _The Aquabats!_, _Mustard Plug_, _Destroy Boys_, _Creepy Nuts_, and the musical comedy of _Bo Burnham_, _Brian David Gilbert_, and _Tom Cardy_.
+### 🎸 The "CTH" Brand Concept
 
-### Content Strategy & Data Realism
+The name _"Chaotic The Harmony"_ is a nod to the real-world band _"Maximum The Hormone."_ The fictional band's surreal "ska-punk" persona draws inspiration from an eclectic mix of artists including _The Aquabats!_, _Awkwafina_, _Destroy Boys_, _Käärijä_, _Baby Lasagna_, _Creepy Nuts_, and the musical comedy of _Bo Burnham_, _Brian David Gilbert_, _Tom Cardy_, and _Farideh_. This diverse influence required a flexible content strategy to handle varied media types.
 
-To ensure the database felt authentic, I manually architected the product catalog:
+### 📊 Data Realism & Seeding
 
-- **World Building:** I imagined and created the band's discography (album names, themes, tracks, and descriptions) and merchandise lines.
-- **Data Generation:** I established three primary product categories and designed realistic user personas and order histories.
-- **AI as a Tool:** Generative AI was used strictly as a "consultant" to identify gaps in my product lineup (e.g., "Is this merch theme missing a hat?") and to help pattern-match email addresses for demo users.
+To ensure the database schema faced real-world challenges, I manually architected the product catalog rather than using random generators.
 
-### Original Artwork & Design
+- **World Building:** I authored the band's entire discography (album themes, tracklists) and merch lines to test the **Content Management** capabilities of the system.
+- **AI-Assisted Seeding:** Generative AI was used strictly as a "consultant" to identify gaps in the product lineup and to pattern-match realistic user personas for the **Order History** datasets.
 
-- **Design Tools:** All unique artwork—including the band's wordmark, album covers, apparel designs, and accessory graphics—was personally created by me using **Affinity 3.0**.
-- **Implementation:** These assets are being progressively integrated into the frontend as they are finalized.
+### 🎨 Design System & Accessibility
 
-### Licensing & Asset Integrity
+**Aesthetic:** Neo-Brutalism inspired by the [Neubrutalism design trend](https://aesthetics.fandom.com/wiki/Neubrutalism).
 
-I adhere to strict copyright standards for all third-party assets:
+- **Theme Credits:** [Accessible Color Palettes](https://shop.stephaniewalter.design/b/six-yellow-purple-accessible-color-palettes) created by [Stephanie Walter](https://stephaniewalter.design/):
+  - _Admin Dashboard:_ "Soda Pop, pink strawberry edition"
+  - _Customer Storefront:_ "Stephanie's Yellow with a vibrant purple twist"
 
-- **Stock Media:** Royalty-free images sourced from Pexels.
-- **Mockups:** Professional product mockups purchased from vendors like Creatsy.
-- **Typography:** Fonts (e.g., _Daydream_) are used under valid desktop licenses purchased from Volcano Type.
+#### Accessibility First
 
-# Architecture & Tech Stack
+- **WCAG Compliance:** Implemented dual-color palettes using `ThemeContext` and CSS Modules to ensure sufficient contrast ratios.
 
-This project is structured as a **monorepo** (split into `/backend` and `/frontend` directories) and was built using a **Docker-first methodology**. The development environment is fully containerized, utilizing three orchestrated services to ensure consistency across machines.
+#### Asset Strategy:
 
-## Containerization & Infrastructure
+- **Original Artwork:** All unique assets—including the band's wordmark, album covers, and apparel designs—were created personally using **Affinity 3.0**.
+- **Licensing Standards:** I adhere to strict copyright standards. Fonts (e.g., _Daydream_) are used under valid desktop licenses, and stock media is sourced from royalty-free vendors (Pexels) or professional mockup providers (Creatsy).
 
-- **Docker Desktop:** Orchestrates the multi-container setup.
-- **Services:**
-  - **Frontend Container:** React/Vite (Port `5173`)
-  - **Backend Container:** Spring Boot (Port `8080`)
-  - **Database Container:** PostgreSQL (Port `5432`)
+---
 
-## Core Components
+## Architecture & Tech Stack
 
-**Backend**
+The project follows a **Microservices-ready Monolithic** structure (Monorepo split into `/backend` and `/frontend` directories), utilizing a **Docker-first** methodology for consistent development and deployment environments.
 
-- **Language:** Java 21
-- **Framework:** Spring Boot (Maven)
-- **Key Libraries:** Spring Security, JPA/Hibernate
-- **Architecture:** RESTful API
+### Infrastructure & DevOps
 
-**Frontend**
+- **Containerization:** Fully orchestrated via Docker Compose (Frontend, Backend, Database).
+- **Environment Strategy:**
+  - **Local Dev:** Uses **Mock Services** and a local PostgreSQL container for safe, offline development. (WIP)
+  - **Production:** Deploys to **Render** with a managed PostgreSQL instance and auto-scaling capabilities. (WIP)
+  - **Continuous Deployment:** Automated pipeline from GitHub to Render. (WIP)
 
-- **Framework:** React (Vite)
-- **Routing:** React Router
-- **HTTP Client:** Axios
+### Core Components
 
-**Database**
+**Backend (The "Brain")**
 
-- **System:** PostgreSQL
+- **Framework:** Java 21 + Spring Boot 3
+- **Security:** Spring Security (Role-Based Access Control).
+- **Data Layer:** JPA/Hibernate with PostgreSQL.
+- **Media Strategy:** **Stateless Architecture**. Images are offloaded to **Cloudinary** (via API) to ensure lightweight containers and faster build times.
+- **Resilience:** Implemented a **"Self-Healing"** database routine (`@Scheduled` task) that resets the demo environment every 20 minutes to prevent data drift. (WIP)
+
+**Frontend (The "Face")**
+
+- **Framework:** React + Vite
+- **State Management:** Context API & Custom Hooks.
+- **Content Rendering:** **React-Markdown** for secure, rich-text product descriptions (preserving formatting without the security risks of raw HTML).
+- **Styling:** CSS Modules with a Neo-Brutalism design system.
 
 ---
 
 ## Features
 
-### CTH Storefront (Customer View)
+### 🛒 CTH Storefront (Public Customer View)
 
-- 🚧 **Status:** Currently under active development.
+- **Dynamic Catalog:** Fetches "Active" products and "Published" news articles from the backend.
+- **Rich Content:** Displays formatted artist bios and product details using Markdown parsing.
+- **Read-Only Access:** Secured public endpoints that allow browsing but restrict transaction/modification capabilities.
 
-### CTH Store Admin (Inventory System)
+### 🔐 Admin Dashboard (Internal IMS & CMS)
 
-- **Admin Dashboard:** Comprehensive overview of store metrics.
-- **User Management:** Integrated with **UI Avatars** for dynamic profile generation.
-- **Inventory Control:** Full CRUD capabilities for Products and Categories.
-- **Placeholders:** UI prepared for future Order and Warehouse management modules.
-
-### Design & Accessibility
-
-**Aesthetic: Neo-Brutalism**
-
-- High-contrast, raw aesthetic inspired by the [Neo-brutalism design trend](https://aesthetics.fandom.com/wiki/Neubrutalism).
-- **Accessibility First:**
-  - **WCAG-Compliant Color Palettes:** implemented dual-color palettes using `ThemeContext` and CSS Modules.
-  - **Keyboard Navigation:** Fully navigable via keyboard (WIP).
-  - **Screen Readers:** All images include dynamic alt text (WIP).
-
-**Theme Credits:**
-
-- _Admin Theme:_ "Soda Pop, Pink Strawberry Edition" (by Stephanie Walter)
-- _Customer Theme:_ "Stephanie's Yellow" with a purple twist (by Stephanie Walter)
+- **Hybrid Management:** A unified interface for managing both **Hard Data** (Inventory, Stock Levels, Prices) and **Soft Content** (News, Artist Bios).
+- **Smart Editing:**
+  - **Product Names:** Restricted to plain text to enforce SEO-friendly URL slugs and clean search indexing.
+  - **Descriptions:** Markdown-enabled editor allowing bold, italics, and bullet points for rich presentation.
+- **Media Management:** Direct integration with Cloudinary for uploading/deleting product assets.
+- **Role-Based Security:** Protected routes ensuring only authenticated Admins can access sensitive inventory controls.
+- **Note on Architecture:** _In a large-scale enterprise environment, I would typically offload static content (Bios/Blogs) to a Headless CMS (like Contentful). However, for this project, I engineered a custom CMS layer within Spring Boot to demonstrate complex relationship mapping and full-stack CRUD proficiency._
 
 ---
 
-## Roadmap & Next Steps
+## Current Status & Future Roadmap
 
-- **Deployment:** Investigating **Render** (Static Site for React, Web Service for Spring Boot).
-- **Media Storage:** Evaluating Cloudinary for scalable asset management. Note: User-generated image uploads are currently deferred pending the implementation of robust security protocols (malware scanning and input sanitization).
-- **Notifications:** Investigating **SendGrid** for transactional emails.
+- ✅ **Containerization:** Fully Dockerized local environment!
+- ✅ **Media Storage:** Integrated **Cloudinary** for scalable asset management!
+- 🚧 **Progressive Asset Implementation:** Assets are being integrated iteratively. To ensure accessibility and layout stability during development, placeholder SVGs with descriptive alt-text are used where final media is currently pending.
+- 🚧 **Screen Reader friendly:** Keyboard navigation and comprehensive alt-text coverage for screen readers are currently under active development.
+- 🚧 **CTH Storefront:** Currently under active development.
+- 🚧 **Deployment:** Configuring **Render** for live hosting with "Self-Healing" database scripts.
+- ⏳ **Notifications:** Planned integration with **SendGrid** for transactional emails (Order Confirmations).
+- ⏳ **Testing:** Expanding JUnit test coverage for the Service Layer.
 
-# Prerequisites & Local Setup
+---
+
+# 🚀 Getting Started
 
 Because this project follows a **Docker-first** methodology, you can run the entire stack with minimal setup.
 
-### Option A: Run via Docker (Recommended)
+## Prerequisites
+
+### Option A: Docker (Recommended)
 
 The **only** requirement to spin up the full application (Frontend, Backend, and Database) is:
 
 - **Docker Desktop** (Latest stable version)
 - _Ensure the Docker daemon is running._
 
-### Option B: Local Development (Non-Docker)
+### Option B: Local Manual Setup
 
-If you wish to run the services individually for debugging or contribution, ensure you have the following installed on your host machine:
-
-| Component    | Requirement    | Context                          |
-| :----------- | :------------- | :------------------------------- |
-| **Java**     | JDK 21         | Required for Spring Boot Backend |
-| **Node.js**  | v20+ (LTS)     | Required for React Frontend      |
-| **Database** | PostgreSQL 16+ | If running DB outside of Docker  |
-| **Maven**    | v3.9+          | Backend dependency management    |
+If you wish to run services individually for debugging, ensure you have:
+| Component | Requirement | Context |
+| :--- | :--- | :--- |
+| **Java** | JDK 21 | Spring Boot Backend |
+| **Node.js** | v20+ (LTS) | React Frontend |
+| **PostgreSQL** | v16+ | If running DB outside Docker |
 
 ---
 
-# Getting Started
+## ⚙️ Configuration (Environment Variables)
 
-### 1. Clone the Repository
+This project uses a `.env` file to manage secrets (DB passwords, Cloudinary keys) without committing them to GitHub.
+
+1.  **Duplicate the example file:**
+    ```bash
+    cp .env.example .env
+    ```
+2.  **Update the variables (Optional):**
+    - If you have a Cloudinary account, add your `CLOUDINARY_API_KEY` in the `.env` file.
+    - **Mock Mode:** If you leave the Cloudinary keys **blank**, the application will automatically detect this and switch to **"Mock Mode"** (using local placeholder images), ensuring the app never crashes for new users.
+
+---
+
+## 🏃‍♂️ Run the Application
+
+### Method 1: Docker (Quickstart)
+
+This is the fastest way to see the app in action.
+
+**0. Create the env file (Defaults are fine for Mock Mode)**
 
 ```bash
-git clone [https://github.com/your-username/band-store-cth.git](https://github.com/your-username/band-store-cth.git)
-cd band-store-cth
+cp .env.example .env
 ```
 
-### 2. Run with Docker (Quickstart)
-
-This is the fastest way to see the app in action. It uses the application-docker.properties profile for the backend.
+**1. Build and start all services in detached mode**
 
 ```bash
-# Build and start all services in detached mode
 docker-compose up --build -d
 ```
 
-Once the containers are running, you can access the services at:
+Once running, access the services:
 
-| Service         | URL                   | Credentials (if applicable)                   |
+| Service         | URL                   | Notes                                         |
 | :-------------- | :-------------------- | :-------------------------------------------- |
-| **Frontend**    | http://localhost:3000 | N/A                                           |
-| **Backend API** | http://localhost:8080 | N/A                                           |
+| **Storefront**  | http://localhost:3000 | Mapped from internal port 5173                |
+| **Backend API** | http://localhost:8080 | Swagger UI available at /swagger-ui.html      |
 | **Database**    | localhost:5432        | User: postgres / Pass: bandstoredb123postgres |
 
-Note: The frontend container exposes port 5173 internally, but we map it to 3000 on your host machine to avoid conflicts!
+### Method 2: Manual (Non-Docker)
 
-To stop the application:
+Use this if you need to debug specific services or lack Docker resources.
 
-```bash
-docker-compose down
-```
-
-### 3. Run Locally (Manual Setup)
-
-Use this method if you need to debug specific services without Docker.
-
-### A. Database
-
-Ensure you have a local PostgreSQL instance running on port 5432 with a database named bandstoredb, or simply keep the Docker database running:
+**1. Database**
+Ensure you have a local Postgres instance running, or just spin up the DB container:
 
 ```bash
 docker-compose up db -d
 ```
 
-### B. Backend (Spring Boot)
-
-The application is configured to use the local profile (application-local.properties) when running outside of Docker.
+**2. Backend (Spring Boot)**
 
 ```bash
 cd backend
 mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-The Server will start on http://localhost:8080
-
-### C. Frontend (React/Vite)
+**3. Frontend (React/Vite)**
 
 ```bash
 cd frontend
@@ -199,9 +202,25 @@ npm install
 npm run dev
 ```
 
-The Client will start on http://localhost:5173 (Default Vite Port)
+## 🔑 Demo Credentials
 
-<p align="center">
-  **◕⩊◕**<br>
-  Thanks for stopping by! | Obrigada! | 見てくれてありがとう！
+To simulate a high-volume production environment, the database is pre-seeded with **190+ users** (including 150 customers and 40 staff members) to demonstrate **Pagination**, **Filtering**, and **Role-Based Access Control (RBAC)**.
+
+**Universal Password:** `pass123`
+
+To explore specific roles, use these representative accounts:
+
+| Role                 | Login Email                   | Access Capabilities                                                                     |
+| :------------------- | :---------------------------- | :-------------------------------------------------------------------------------------- |
+| **👑 SUPER_ADMIN**   | `ron.please@cth-store.com`    | **God Mode:** Full CRUD on Inventory, Users, Content, and System Settings.              |
+| **🏪 STORE_MANAGER** | `dustin.okpik@cth-store.com`  | **Merchandising:** Can manage Products, Categories, Prices, and Marketing campaigns.    |
+| **📦 WAREHOUSE**     | `ashra.dubois@cth-store.com`  | **Fulfillment:** Restricted view. Can only update Stock Levels and change Order Status. |
+| **🎧 SUPPORT**       | `barnabus.kato@cth-store.com` | **CRM:** Can view Order History and edit Customer Profiles (cannot modify catalog).     |
+| **📊 AUDITOR**       | `morgan.t@cth-store.com`      | **Read-Only:** Access to Dashboard Analytics and Financial Reports only.                |
+| **👤 CUSTOMER**      | `keanu.p@yahoo.com`           | **Storefront:** Standard e-commerce access (Cart, Wishlist, Profile).                   |
+
+> **💡 Exploration Tip:** You don't need to memorize these emails! Log in as the **Super Admin** to view and manage the full roster of 190+ users in the **Admin Dashboard > Users Tab**.
+
+<p align="center">◕⩊◕<br>
+<em>Thanks for checking out Chaotic The Harmony!</em>
 </p>

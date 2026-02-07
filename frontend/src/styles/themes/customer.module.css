@@ -124,3 +124,28 @@
 .table tr:hover {
   background-color: var(--secondary-05);
 }
+
+/* Responsive: customer-facing pages */
+@media (max-width: 768px) {
+  .card,
+  .statCard {
+    padding: 16px;
+  }
+
+  .statValue {
+    font-size: 26px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .button {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+}

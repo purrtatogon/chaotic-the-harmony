@@ -6,6 +6,7 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import ItemDetailCard from '../../components/ItemDetailCard';
 import { getAvatarUrl } from '../../utils/userUtils';
+import { formatCurrency } from '../../utils/formatters';
 
 const DashboardPage = () => {
   const theme = useTheme();
@@ -65,8 +66,8 @@ const DashboardPage = () => {
       <div className={styles.dashboardMetricsGrid}>
         <DashboardStatCard 
           title="Total Sales" 
-          value={`${stats.totalSales} €`} 
-          subtext="+12% from last month" 
+          value={`${formatCurrency(stats.totalSales)}`} 
+          subtext="Revenue from all cycles" 
           color="#10b981" 
         />
         <DashboardStatCard 
@@ -78,7 +79,7 @@ const DashboardPage = () => {
         <DashboardStatCard 
           title="Total Orders" 
           value={stats.totalOrders} 
-          subtext={`Avg. Order: ${stats.averageOrderValue} €`} 
+          subtext={`Avg. Order: ${formatCurrency(stats.averageOrderValue)}`} 
         />
         <DashboardStatCard 
             title="Out of Stock"
@@ -94,27 +95,31 @@ const DashboardPage = () => {
         {/* Recent Activity */}
         <ItemDetailCard title="Recent Activity">
           <div className={styles.activityList}>
-            {stats.recentActivity && stats.recentActivity.map((activity) => (
-              <div key={activity.id} className={styles.activityItem}>
-                <div 
-                  className={styles.activityIcon}
-                  style={{
-                    backgroundColor: activity.type === 'ORDER' ? '#dbeafe' : activity.type === 'PRODUCT' ? '#fef3c7' : '#d1fae5',
-                    color: activity.type === 'ORDER' ? '#1e40af' : activity.type === 'PRODUCT' ? '#92400e' : '#065f46'
-                  }}
-                >
-                  {activity.type ? activity.type.substring(0, 1) : '-'}
+            {stats.recentActivity && stats.recentActivity.length > 0 ? (
+              stats.recentActivity.map((activity, idx) => (
+                <div key={idx} className={styles.activityItem}>
+                  <div 
+                    className={styles.activityIcon}
+                    style={{
+                      backgroundColor: activity.type === 'ORDER' ? '#dbeafe' : activity.type === 'PRODUCT' ? '#fef3c7' : '#d1fae5',
+                      color: activity.type === 'ORDER' ? '#1e40af' : activity.type === 'PRODUCT' ? '#92400e' : '#065f46'
+                    }}
+                  >
+                    {activity.type ? activity.type.substring(0, 1) : '-'}
+                  </div>
+                  <div className={styles.activityText}>
+                    <div className={styles.activityDescription}>{activity.description}</div>
+                    <div className={styles.activityTime}>{activity.time}</div>
+                  </div>
                 </div>
-                <div className={styles.activityText}>
-                  <div className={styles.activityDescription}>{activity.description}</div>
-                  <div className={styles.activityTime}>{activity.time}</div>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p style={{ textAlign: 'center', color: '#666', padding: '20px' }}>No recent activity found.</p>
+            )}
           </div>
         </ItemDetailCard>
 
-        {/* Top Selling (Mock Data) */}
+        {/* Top Selling (Real Data) */}
         <ItemDetailCard title="Top Selling Products">
           <table className={styles.dashboardTable}>
             <thead className={styles.dashboardTableHeader}>
@@ -125,21 +130,19 @@ const DashboardPage = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className={styles.dashboardTableRow}>
-                <td className={styles.dashboardTableCell}>CTH Spark-Y Tee</td>
-                <td className={`${styles.dashboardTableCell} ${styles.dashboardTableCellRight}`}>42</td>
-                <td className={styles.dashboardTableCellBold}>1.048 €</td>
-              </tr>
-              <tr className={styles.dashboardTableRow}>
-                <td className={styles.dashboardTableCell}>Spark Vinyl</td>
-                <td className={`${styles.dashboardTableCell} ${styles.dashboardTableCellRight}`}>28</td>
-                <td className={styles.dashboardTableCellBold}>890 €</td>
-              </tr>
-              <tr>
-                <td className={styles.dashboardTableCell}>Logo Sticker Pack</td>
-                <td className={`${styles.dashboardTableCell} ${styles.dashboardTableCellRight}`}>150</td>
-                <td className={styles.dashboardTableCellBold}>450 €</td>
-              </tr>
+              {stats.topSellingProducts && stats.topSellingProducts.length > 0 ? (
+                stats.topSellingProducts.map((product, idx) => (
+                  <tr key={idx} className={styles.dashboardTableRow}>
+                    <td className={styles.dashboardTableCell}>{product.name}</td>
+                    <td className={`${styles.dashboardTableCell} ${styles.dashboardTableCellRight}`}>{product.sold}</td>
+                    <td className={`${styles.dashboardTableCellBold} ${styles.dashboardTableCellRight}`}>{formatCurrency(product.revenue)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" style={{ textAlign: 'center', color: '#666', padding: '20px' }}>No sales data available.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </ItemDetailCard>

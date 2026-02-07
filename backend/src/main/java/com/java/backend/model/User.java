@@ -9,11 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "app_users")
-public class User {
+public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // Removed @Id private Long id; because it is now inherited from BaseEntity
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -67,16 +65,16 @@ public class User {
      */
     @PrePersist
     protected void onCreate() {
+        // 1. Generate Avatar if missing
         if (this.profileImageUrl == null && this.fullName != null) {
             String encodedName = this.fullName.replace(" ", "+");
-            this.profileImageUrl = "https://ui-avatars.com/api/?name=" + encodedName;
+            this.profileImageUrl = "https://ui-avatars.com/api/?name=" + encodedName + "&background=random";
         }
+        // BaseEntity handles the isNew flag automatically via its own hooks
     }
 
-    // GETTERS AND SETTERS
-    public Long getId() { return id; }
-
-    public void setId(Long id) { this.id = id; }
+    // --- GETTERS AND SETTERS ---
+    // (Note: getId and setId are inherited from BaseEntity, so I don't list them here)
 
     public String getEmail() { return email; }
 

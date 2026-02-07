@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { productApi } from '../../api/product';
 import { categoryApi } from '../../api/category';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -50,7 +51,7 @@ const ProductDetailPage = () => {
         setFormData({
           ...productData,
           categoryId: productData.category?.id || '',
-          imageUrls: productData.images?.map(img => img.imageUrl) || []
+          images: productData.images || []
         });
       } catch (err) {
         setError(err.message || 'Failed to load data');
@@ -65,20 +66,32 @@ const ProductDetailPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleGalleryChange = (newUrls) => {
-    setFormData({ ...formData, imageUrls: newUrls });
+  const handleGalleryChange = (newImages) => {
+    setFormData({ ...formData, images: newImages });
   };
 
   const handleUpdate = async (section) => {
     try {
       setSubmitting(true);
-      const updated = await productApi.update(id, formData);
+      
+      // Prepare data for API call
+      const updateData = { ...formData };
+      
+      // If updating gallery, send images in the correct format
+      if (section === 'gallery' && updateData.images) {
+        updateData.images = updateData.images.map(img => ({
+          imageUrl: typeof img === 'string' ? img : (img.imageUrl || img.url || ''),
+          altText: typeof img === 'string' ? '' : (img.altText || '')
+        }));
+      }
+      
+      const updated = await productApi.update(id, updateData);
       
       setProduct(updated);
       setFormData({
         ...updated,
         categoryId: updated.category?.id,
-        imageUrls: updated.images?.map(img => img.imageUrl) || []
+        images: updated.images || []
       });
 
       if (section === 'gallery') setEditGallery(false);
@@ -96,7 +109,7 @@ const ProductDetailPage = () => {
     setFormData({
       ...product,
       categoryId: product.category?.id,
-      imageUrls: product.images?.map(img => img.imageUrl) || []
+      images: product.images || []
     });
     
     if (section === 'gallery') setEditGallery(false);
@@ -127,12 +140,17 @@ const ProductDetailPage = () => {
   return (
     <div className={styles.pageContent}>
       <PageHeader
-        title="Details"
-        subtitle={`SKU: ${product.sku || 'N/A'}`}
+        title={product.name}
+        subtitle={`Product ID: ${product.id}`}
         actions={
-          <Button onClick={() => navigate('/admin/products')}>
-            ← Back to Products
-          </Button>
+          <div className={styles.flexRow}>
+            <Button variant="secondary" onClick={() => navigate(`/admin/products/${id}/edit`)}>
+              Edit Product
+            </Button>
+            <Button onClick={() => navigate('/admin/products')}>
+              ← Back to Products
+            </Button>
+          </div>
         }
       />
 
@@ -156,24 +174,53 @@ const ProductDetailPage = () => {
               <div className={styles.galleryMainImage}>
                 <img 
                   src={displayImages[activeImageIndex]?.imageUrl} 
-                  alt={product.title} 
+                  alt={displayImages[activeImageIndex]?.altText || product.name} 
                 />
+                {displayImages[activeImageIndex]?.altText && (
+                  <div style={{ 
+                    marginTop: '8px', 
+                    fontSize: '0.85rem', 
+                    color: '#666',
+                    fontStyle: 'italic'
+                  }}>
+                    Alt text: {displayImages[activeImageIndex].altText}
+                  </div>
+                )}
               </div>
               <div className={styles.galleryThumbnails}>
                 {displayImages.map((img, i) => (
-                  <img 
-                    key={i} 
-                    src={img.imageUrl} 
-                    onClick={() => setActiveImageIndex(i)}
-                    className={`${styles.galleryThumbnail} ${activeImageIndex === i ? styles.galleryThumbnailActive : ''}`}
-                  />
+                  <div key={i} style={{ position: 'relative' }}>
+                    <img 
+                      src={img.imageUrl} 
+                      alt={img.altText || `Product image ${i + 1}`}
+                      onClick={() => setActiveImageIndex(i)}
+                      className={`${styles.galleryThumbnail} ${activeImageIndex === i ? styles.galleryThumbnailActive : ''}`}
+                    />
+                    {img.altText && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: 'rgba(0,0,0,0.7)',
+                        color: 'white',
+                        fontSize: '0.65rem',
+                        padding: '2px 4px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }} title={img.altText}>
+                        {img.altText}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
           ) : (
             <>
               <ProductImageGallery 
-                images={formData.imageUrls || []} 
+                images={formData.images || []} 
                 onImagesChange={handleGalleryChange}
                 submitting={submitting}
               />
@@ -189,7 +236,7 @@ const ProductDetailPage = () => {
         <ItemDetailCard 
           title={
             <div className={styles.cardHeaderFlex}>
-              <span>Details</span>
+              <span>General Information</span>
               {!editInfo && (
                 <Button size="small" variant="secondary" onClick={() => setEditInfo(true)}>
                   Edit
@@ -201,84 +248,75 @@ const ProductDetailPage = () => {
           {!editInfo ? (
             /* VIEW MODE */
             <div>
-              <hr className={styles.divider} />
-              <ItemDetailField label="SKU" value={product.sku || 'N/A'} />
-
-              <hr className={styles.divider} />
               <FormRow>
+                <ItemDetailField label="Name" value={product.name || 'N/A'} />
                 <ItemDetailField label="Category" value={product.category?.name || 'N/A'} />
-                <ItemDetailField label="Product Type" value={product.type?.name || 'N/A'} />
               </FormRow>
 
               <hr className={styles.divider} />
-              <ItemDetailField label="Title" value={product.title || 'N/A'} />
-
-              <hr className={styles.divider} />
+              
               <FormRow>
-                <ItemDetailField label="Music Style" value={product.musicStyle || 'N/A'} />
-                <ItemDetailField label="Color" value={product.color || 'N/A'} />
-                <ItemDetailField label="Size" value={product.itemSize || 'N/A'} />
+                <ItemDetailField label="Product Type" value={product.productType || 'N/A'} />
+                <ItemDetailField label="Theme Code" value={product.themeCode || 'N/A'} />
+                <ItemDetailField label="Design Code" value={product.designCode || 'N/A'} />
               </FormRow>
 
               <hr className={styles.divider} />
-              <FormRow>
-                <ItemDetailField label="Price" value={formatCurrency(product.price)} />
-                <ItemDetailField label="Stock Quantity" value={`${product.stockQuantity || 0} units`} />
-              </FormRow>
+
+              <ItemDetailField label="Description">
+                <ReactMarkdown>{product.description || 'N/A'}</ReactMarkdown>
+              </ItemDetailField>
 
               <hr className={styles.divider} />
-              <ItemDetailField label="Description" value={product.description || 'N/A'} />
+              
+              <ItemDetailField label="Materials + Specs">
+                <ReactMarkdown>{product.materialsSpecs || 'N/A'}</ReactMarkdown>
+              </ItemDetailField>
+              
               <hr className={styles.divider} />
-              <ItemDetailField label="Materials + Specs" value={product.materialsSpecs || 'N/A'} />
-              <hr className={styles.divider} />
-              <ItemDetailField label="Shipping Info" value={product.shippingInfo || 'N/A'} />
+              
+              <ItemDetailField label="Shipping Info">
+                <ReactMarkdown>{product.shippingInfo || 'N/A'}</ReactMarkdown>
+              </ItemDetailField>
             </div>
           ) : (
-            /* EDIT MODE - UPDATED TO MATCH VIEW ORDER */
+            /* EDIT MODE */
             <Form onSubmit={(e) => { e.preventDefault(); handleUpdate('info'); }}>
-              
-              <hr className={styles.divider} />
-              <Input label="SKU" name="sku" value={formData.sku || ''} onChange={handleChange} required />
-              
-              <hr className={styles.divider} />
-              {/* Category Selection */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label className={styles.categorySelectLabel}>Category</label>
-                <select 
-                  name="categoryId"
-                  value={formData.categoryId || ''} 
-                  onChange={handleChange}
-                  className={styles.categorySelect}
-                  required
-                >
-                  <option value="">SELECT CATEGORY</option>
-                  {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name.toUpperCase()}</option>)}
-                </select>
-              </div>
-
-              <hr className={styles.divider} />
-              <Input label="Title" name="title" value={formData.title || ''} onChange={handleChange} required />
-              
-              <hr className={styles.divider} />
               <FormRow>
-                <Input label="Music Style" name="musicStyle" value={formData.musicStyle || ''} onChange={handleChange} />
-                <Input label="Color" name="color" value={formData.color || ''} onChange={handleChange} />
-                <Input label="Size" name="itemSize" value={formData.itemSize || ''} onChange={handleChange} />
+                <Input label="Name" name="name" value={formData.name || ''} onChange={handleChange} required />
+                <div style={{ flex: 1 }}>
+                  <label className={styles.categorySelectLabel}>Category</label>
+                  <select 
+                    name="categoryId"
+                    value={formData.categoryId || ''} 
+                    onChange={handleChange}
+                    className={styles.categorySelect}
+                    required
+                  >
+                    <option value="">SELECT CATEGORY</option>
+                    {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name.toUpperCase()}</option>)}
+                  </select>
+                </div>
               </FormRow>
 
               <hr className={styles.divider} />
+              
               <FormRow>
-                <Input label="Price (€)" name="price" type="number" step="0.01" value={formData.price || ''} onChange={handleChange} required />
-                <Input label="Stock Quantity" name="stockQuantity" type="number" value={formData.stockQuantity || ''} onChange={handleChange} required />
+                <Input label="Product Type" name="productType" value={formData.productType || ''} onChange={handleChange} />
+                <Input label="Theme Code" name="themeCode" value={formData.themeCode || ''} onChange={handleChange} />
+                <Input label="Design Code" name="designCode" value={formData.designCode || ''} onChange={handleChange} />
               </FormRow>
 
               <hr className={styles.divider} />
+              
               <Input label="Description" name="description" type="textarea" value={formData.description || ''} onChange={handleChange} rows={4} />
               
               <hr className={styles.divider} />
+              
               <Input label="Materials + Specs" name="materialsSpecs" type="textarea" value={formData.materialsSpecs || ''} onChange={handleChange} rows={3} />
 
               <hr className={styles.divider} />
+              
               <Input label="Shipping Info" name="shippingInfo" type="textarea" value={formData.shippingInfo || ''} onChange={handleChange} rows={2} />
 
               <FormActions>
@@ -289,7 +327,115 @@ const ProductDetailPage = () => {
           )}
         </ItemDetailCard>
 
-        {/* --- 3. DANGER ZONE --- */}
+        {/* VARIANTS SECTION */}
+        <ItemDetailCard title="Variants & Inventory">
+          <div className={styles.tableContainer}>
+            <table className={styles.productTable}>
+              <thead>
+                <tr className={styles.productTableHeader}>
+                  <th className={styles.productTableCell}>Image</th>
+                  <th className={styles.productTableCell}>SKU</th>
+                  <th className={styles.productTableCell}>Size</th>
+                  <th className={styles.productTableCell}>Variant Code</th>
+                  <th className={styles.productTableCell}>Prices</th>
+                  <th className={styles.productTableCell}>Stock</th>
+                  <th className={styles.productTableCell}>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                {product.variants?.map(variant => {
+                  const variantImages = variant.images && variant.images.length > 0 
+                    ? variant.images 
+                    : (product.images && product.images.length > 0 ? product.images : []);
+                  const displayImage = variantImages.length > 0 ? variantImages[0] : null;
+                  
+                  return (
+                    <tr key={variant.id} className={styles.productTableRow}>
+                      <td className={styles.productTableCell}>
+                        {displayImage ? (
+                          <div style={{ position: 'relative', width: '60px', height: '60px' }}>
+                            <img 
+                              src={displayImage.imageUrl} 
+                              alt={displayImage.altText || `${variant.sku} image`}
+                              style={{ 
+                                width: '100%', 
+                                height: '100%', 
+                                objectFit: 'cover',
+                                borderRadius: '4px',
+                                border: '1px solid #ddd'
+                              }}
+                              title={displayImage.altText || ''}
+                            />
+                            {variantImages.length > 1 && (
+                              <span style={{
+                                position: 'absolute',
+                                top: '-4px',
+                                right: '-4px',
+                                background: '#007bff',
+                                color: 'white',
+                                borderRadius: '50%',
+                                width: '18px',
+                                height: '18px',
+                                fontSize: '0.7rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 'bold'
+                              }}>
+                                {variantImages.length}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div style={{ 
+                            width: '60px', 
+                            height: '60px', 
+                            background: '#f0f0f0',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#999',
+                            fontSize: '0.7rem'
+                          }}>
+                            No image
+                          </div>
+                        )}
+                      </td>
+                      <td className={styles.productTableCell} style={{ fontFamily: 'monospace' }}>{variant.sku}</td>
+                      <td className={styles.productTableCell}>{variant.size || 'N/A'}</td>
+                      <td className={styles.productTableCell}>{variant.variantCode || 'N/A'}</td>
+                      <td className={styles.productTableCell}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          {Array.from(variant.prices || [])
+                            .filter(p => p.currencyCode === 'EUR')
+                            .map((price, idx) => (
+                              <span key={idx} style={{ fontSize: '0.85rem' }}>
+                                <strong>{formatCurrency(price.amount, 'EUR')}</strong>
+                              </span>
+                            ))}
+                          {Array.from(variant.prices || []).filter(p => p.currencyCode === 'EUR').length === 0 && (
+                            <span style={{ fontSize: '0.85rem', color: '#666' }}>N/A</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className={styles.productTableCell}>
+                        {variant.inventory?.stockQuantity === 0 ? (
+                          <span className={styles.textError}>Out of Stock</span>
+                        ) : (
+                          <span>{variant.inventory?.stockQuantity || 0} units</span>
+                        )}
+                      </td>
+                      <td className={styles.productTableCell}>{variant.inventory?.stockLocation || 'N/A'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </ItemDetailCard>
+
+        {/* ADMINISTRATIVE ACTIONS */}
         <ItemDetailCard title="Administrative Actions">
           <p className={styles.warningText}>
             Warning: Deleting a product is permanent and cannot be undone.

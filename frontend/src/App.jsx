@@ -12,10 +12,11 @@ import UserDetailPage from './pages/Admin/UserDetailPage';
 import ProfilePage from './pages/Admin/ProfilePage';
 import ProductListPage from './pages/Admin/ProductListPage';
 import ProductDetailPage from './pages/Admin/ProductDetailPage';
-import CategoryListPage from './pages/Admin/CategoryListPage';
-import CategoryDetailPage from './pages/Admin/CategoryDetailPage';
+import ProductFormPage from './pages/Admin/ProductFormPage';
 import OrderListPage from './pages/Admin/OrderListPage';
+import OrderDetailPage from './pages/Admin/OrderDetailPage';
 import WarehouseListPage from './pages/Admin/WarehouseListPage';
+import WarehouseDetailPage from './pages/Admin/WarehouseDetailPage';
 
 function App() {
   const isAuthenticated = true; 
@@ -39,11 +40,13 @@ function App() {
           <Route path="users/:id" element={<UserDetailPage />} />
           <Route path="users/me" element={<ProfilePage />} />
           <Route path="products" element={<ProductListPage />} />
+          <Route path="products/new" element={<ProductFormPage />} />
           <Route path="products/:id" element={<ProductDetailPage />} />
-          <Route path="categories" element={<CategoryListPage />} />
-          <Route path="categories/:id" element={<CategoryDetailPage />} />       
+          <Route path="products/:id/edit" element={<ProductFormPage />} />
           <Route path="orders" element={<OrderListPage />} />
+          <Route path="orders/:orderSlug" element={<OrderDetailPage />} />
           <Route path="warehouses" element={<WarehouseListPage />} />
+          <Route path="warehouses/:zoneName" element={<WarehouseDetailPage />} />
         </Route>
 
         <Route path="*" element={<h1>404: Whoopsy daisy! Page Not Found.</h1>} />

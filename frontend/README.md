@@ -1,31 +1,53 @@
-# 🛍️ CTH Storefront - Frontend
+# 🛍️ CTH Admin Dashboard & Storefront — React Client
 
-This directory contains the React/Vite application that serves as the UI for the CTH Band Store. It features a dual-theme system (Admin/Customer) and follows a Neo-Brutalist design aesthetic.
+This directory contains the **React/Vite** application that serves as the "Face" of the Unified Commerce Platform. It features a sophisticated **Dual-Theme System** (Admin Dashboard vs. Customer Storefront) and utilizes a **Neo-Brutalist** design aesthetic.
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack & Architecture
 
-- **Framework:** React (Vite)
-- **Routing:** React Router
-- **HTTP Client:** Axios
-- **Styling:** CSS Modules, ThemeContext (Neo-brutalism)
+- **Core:** React 18 + Vite
+- **Routing:** React Router v6 (Protected Admin Routes)
+- **HTTP Client:** Axios (Interceptors for JWT handling)
+- **Content Rendering:** `react-markdown` (Safe rich-text rendering for product descriptions)
+- **Styling:** CSS Modules + `ThemeContext` (Dynamic variable switching)
 
-## ⚙️ Local Development (Non-Docker)
+## 📂 Project Structure
 
-If you are developing features for the UI without running the full Docker stack, follow these steps.
+The project follows a scalable "Feature-driven" directory structure:
 
-### Prerequisites
+```text
+/frontend
+├── /src
+│   ├── /assets        # Global styles, fonts (Daydream), and images
+│   ├── /components    # Reusable UI (Buttons, Cards, Inputs)
+│   ├── /context       # Global State (ThemeContext, AuthContext, CartContext)
+│   ├── /hooks         # Custom Hooks (useProduct, useAuth, useLocalStorage)
+│   ├── /layout        # Layout wrappers (AdminLayout vs. MainLayout)
+│   ├── /pages         # Page Views
+│   │   ├── /admin     # Protected IMS/CMS views
+│   │   └── /public    # Customer storefront views
+│   ├── /services      # Axios configuration & API endpoints
+│   ├── /utils         # Formatters (Currency, Date) and Validators
+│   └── main.jsx       # App Entry Point
+├── Dockerfile         # Multi-stage build for Nginx serving
+└── vite.config.js     # Proxy & Build configuration
+```
+
+## ⚙️ Local Development
+
+If you are developing UI features without running the full Docker stack:
+
+**1. Prerequisites**
 
 - **Node.js:** v20+ (LTS)
-- **npm:** Included with Node
+- **Backend:** Ensure the Spring Boot API is running on `localhost:8080`.
 
-### Installation
+**2. Installation**
 
 ```bash
-# From the /frontend directory
 npm install
 ```
 
-### Running Development Server
+**3. Run Dev Server**
 
 ```bash
 npm run dev
@@ -33,26 +55,18 @@ npm run dev
 
 The application will start at http://localhost:5173.
 
-Note: Ensure your backend is running (either via Docker or locally on port 8080) for API requests to work.
+---
 
-Docker Configuration
-When running via the root docker-compose.yml:
+## 🐳 Docker Configuration
 
-Internal Port: 5173
+When running via the root `docker-compose.yml`, the networking is handled automatically.
 
-Host Port: 3000 (Access at http://localhost:3000)
+- **Internal Container Port:** `5173`
+- **Exposed Host Port:** `3000`
+- **Access URL:** http://localhost:3000
 
-Note: We map the internal Vite port to 3000 on the host to avoid conflicts.
+**Note:** We map the internal Vite port to 3000 on the host machine to avoid conflicts with other local development servers and to simulate a production build port.
 
-## Project Structure WIP WIP WIP
-
-/frontend
-├── /src
-│ ├── /assets # Images, Fonts, Global CSS
-│ ├── /components # Reusable UI components
-│ ├── /context # ThemeContext and global state
-│ ├── /pages # Page views (Admin/Customer)
-│ ├── /services # Axios configuration
-│ └── main.jsx # Entry point
-├── Dockerfile
-└── vite.config.js
+<p align="center">◕⩊◕<br>
+<em>Thanks for checking out the Frontend!</em>
+</p>

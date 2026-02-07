@@ -9,7 +9,7 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Form from '../../components/Form';
 import FormActions from '../../components/FormActions';
-import { getAvatarUrl } from '../../utils/userUtils';
+import { getAvatarUrl, getRoleBadgeClassName, getRoleDisplayName } from '../../utils/userUtils';
 
 const ProfilePage = () => {
   const theme = useTheme();
@@ -111,7 +111,9 @@ const ProfilePage = () => {
           </div>
           <div className={styles.profileInfo}>
             <h1 className={styles.profileName}>{user.fullName}</h1>
-            <span className={styles.profileRole}>{user.role}</span>
+            <span className={getRoleBadgeClassName(styles, user.role)} style={{ display: 'inline-block', marginTop: '4px' }}>
+              {getRoleDisplayName(user.role)}
+            </span>
           </div>
         </div>
       </div>
@@ -159,7 +161,10 @@ const ProfilePage = () => {
             <>
               <ItemDetailField label="EMAIL ADDRESS" value={user.email} />
               <ItemDetailField label="PASSWORD" value="••••••••••••" />
-              <ItemDetailField label="ACCOUNT ROLE" value={user.role} />
+              <ItemDetailField
+                label="ACCOUNT ROLE"
+                value={<span className={getRoleBadgeClassName(styles, user.role)}>{getRoleDisplayName(user.role)}</span>}
+              />
             </>
           ) : (
             <Form onSubmit={handleSecuritySubmit}>

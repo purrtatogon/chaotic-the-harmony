@@ -1,0 +1,34 @@
+# -------------------------------------------------------------------
+# Frontend-specific .gitignore
+# Patterns are relative to /frontend/
+# -------------------------------------------------------------------
+
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+
+# OS files
+.DS_Store
+*.DS_Store
+
+# Local env
+.env.local
+.env.*.local
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite
+*.local

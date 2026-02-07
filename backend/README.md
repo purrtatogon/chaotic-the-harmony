@@ -1,66 +1,73 @@
-# ⚙️ CTH Store - Backend API
+# ⚙️ CTH API — Spring Boot Backend
 
-This directory contains the Java Spring Boot application that handles business logic, database persistence, and security for the CTH Band Store.
+This directory contains the **Java Spring Boot** application that serves as the "Brain" of the platform. It handles the **Inventory Management System (IMS)**, **Content Management System (CMS)**, and **Role-Based Access Control (RBAC)**.
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack & Architecture
 
-- **Language:** Java 21
-- **Framework:** Spring Boot 3.x (Maven)
-- **Database:** PostgreSQL
-- **Key Dependencies:**
-  - Spring Web (REST API)
-  - Spring Data JPA (Hibernate)
-  - Spring Security
+- **Core:** Java 21 + Spring Boot 3.4
+- **Database:** PostgreSQL + Spring Data JPA
+- **Security:** Spring Security + JWT (Stateless Auth)
+- **Media Strategy:**
+  - **Production:** Cloudinary (via API)
+  - **Local/Mock:** Placeholder Images (if API keys are missing)
+- **Resilience:** Scheduled "Self-Healing" tasks to reset demo data.
 
-## ⚙️ Local Development (Non-Docker)
+## 📂 Project Structure
 
-If you are working on API logic without the full Docker stack, follow these steps.
+The codebase follows a clean Layered Architecture:
 
-### Prerequisites
+```text
+/backend
+├── /src/main/java/com/cth/bandstore
+│   ├── /config       # Security, CORS, and Cloudinary Configuration
+│   ├── /controller   # REST Endpoints (API Layer)
+│   ├── /dto          # Data Transfer Objects (Request/Response shapes)
+│   ├── /exception    # Global Exception Handlers (@ControllerAdvice)
+│   ├── /model        # JPA Entities (Database Schema)
+│   ├── /repository   # Data Access Layer (Hibernate interfaces)
+│   ├── /service      # Business Logic (Mock vs. Real implementations)
+│   └── /tasks        # @Scheduled tasks (Database Cleanup/Reset)
+└── /src/main/resources
+    ├── application.properties        # Shared Config
+    ├── application-docker.properties # Docker Override
+    ├── application-local.properties  # Local Dev Override
+    └── /data                         # CSV Seeding Data
+```
+
+## ⚙️ Local Development
+
+You can run the backend in "Mock Mode" (Offline) or "Connected Mode" (Cloudinary).
+
+**1. Prerequisites**
 
 - **Java:** JDK 21
-- **Maven:** 3.9+
-- **PostgreSQL:** Running locally on port 5432
+- **PostgreSQL:** Running locally on port `5432`.
 
-### Configuration Profiles
+**2. Configuration (Environment)**
 
-This application uses Spring Profiles to manage environments:
+The app checks for a `.env` file (or system env vars) for secrets.
 
-1.  **`application-docker.properties`:** Active when running in Docker. Connects to the containerized DB.
-2.  **`application-local.properties`:** Active for local dev. Connects to `localhost:5432`.
+- **Mock Mode:** If you do not provide `CLOUDINARY_API_KEY`, the app automatically falls back to local placeholder images.
+- **Connected Mode:** Add your keys to the root `.env` file to enable real image uploads.
 
-### Running Locally
-
-To run the app using the local profile:
+**3. Run the App**
+Use the local profile to connect to your localhost database:
 
 ```bash
-# From the /backend directory
 mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-The API will be available at http://localhost:8080.
+The API will be available at **http://localhost:8080**.
 
-Docker Configuration
+## 🐳 Docker Configuration
+
 When running via the root docker-compose.yml:
 
-Port: 8080
+- **Internal Port:** `8080`
+- **Profile:** Automatically activates the docker profile.
+- **Database:** Connects to the `db` container (not localhost).
+- **Self-Healing:** The `prod` profile activates the 20-minute database reset timer (disabled in local profile).
 
-Build: Multi-stage Dockerfile
-
-Profile: Automatically activates the docker profile.
-
-## Project Structure WIP WIP WIP
-
-/backend
-├── /src
-│ ├── /main/java/com/cth/bandstore
-│ │ ├── /config # Security configuration
-│ │ ├── /controller # REST Endpoints
-│ │ ├── /model # JPA Entities
-│ │ ├── /repository # Data Access Layer
-│ │ └── /service # Business Logic
-│ └── /resources
-│ ├── application.properties
-│ ├── application-docker.properties
-│ └── application-local.properties
-└── Dockerfile
+<p align="center">◕⩊◕<br>
+<em>Thanks for checking out the Backend!</em>
+</p>

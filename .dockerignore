@@ -1,0 +1,45 @@
+# -------------------------------------------------------------------
+# ROOT .dockerignore
+# Used when building from repository root (e.g. docker build .)
+# -------------------------------------------------------------------
+
+# Git
+.git
+.gitignore
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS and editor files
+.DS_Store
+*.DS_Store
+.idea
+.vscode
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Documentation (not needed in image)
+*.md
+!backend/README.md
+!frontend/README.md
+
+# Backend build artifacts
+backend/target
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Frontend build artifacts
+frontend/node_modules
+frontend/dist
+frontend/dist-ssr
+
+# Test and dev files
+**/__tests__
+**/*.test.*
+**/*.spec.*
+backend/**/test

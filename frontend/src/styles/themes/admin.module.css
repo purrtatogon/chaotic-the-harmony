@@ -345,6 +345,8 @@
 
 .listContent {
   padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Item Detail Styles */
@@ -630,6 +632,39 @@
   box-shadow: 2px 2px 0 0 var(--gray-100);
 }
 
+.categoryBadgeMusic {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--gray-30);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.categoryBadgeApparel {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--secondary-05);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.categoryBadgeAccessories {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--main-05);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
 .emptyState {
   padding: 3rem;
   text-align: center;
@@ -895,6 +930,63 @@
   color: #86198f;
 }
 
+/* Order Status Badges – one color per status, aligned with admin theme */
+.orderStatusPENDING {
+  background: var(--main-05);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  box-shadow: 2px 2px 0 0 var(--main-100);
+}
+
+.orderStatusCONFIRMED {
+  background: var(--main-30);
+  color: var(--main-100);
+  border-color: var(--main-100);
+  box-shadow: 2px 2px 0 0 var(--main-100);
+}
+
+.orderStatusPROCESSING {
+  background: var(--secondary-05);
+  color: var(--secondary-100);
+  border-color: var(--secondary-100);
+  box-shadow: 2px 2px 0 0 var(--secondary-100);
+}
+
+.orderStatusSHIPPED {
+  background: var(--gray-30);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.orderStatusDELIVERED {
+  background: #d4e8d4;
+  color: #2d4a2d;
+  border-color: #2d4a2d;
+  box-shadow: 2px 2px 0 0 #2d4a2d;
+}
+
+.orderStatusCANCELLED {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #991b1b;
+  box-shadow: 2px 2px 0 0 #991b1b;
+}
+
+.orderStatusREFUNDED {
+  background: var(--gray-30);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.orderStatusUnknown {
+  background: var(--white);
+  color: var(--gray-100);
+  border-color: var(--gray-100);
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
 /* User Detail Page Styles */
 .userDetailAvatar {
   width: 120px;
@@ -1015,4 +1107,358 @@
 .divider {
   margin: 1.5rem 0;
   opacity: 0.2;
+}
+
+/* ========== RESPONSIVE: Desktop & Mobile ========== */
+@media (max-width: 1024px) {
+  .dashboardMain {
+    padding: 24px 20px;
+  }
+
+  .dashboardTitle {
+    font-size: 28px;
+  }
+
+  .itemDetail {
+    grid-template-columns: 1fr;
+  }
+
+  .itemDetailCard {
+    padding: 20px;
+  }
+
+  .listHeader {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .listHeaderTitle {
+    font-size: 18px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+
+  .userDetailFormGrid,
+  .passwordFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .profileHeaderContent {
+    flex-wrap: wrap;
+  }
+
+  .filterInput {
+    min-width: 120px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .dashboardMetricsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .dashboardDetailsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .flexRow {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardSidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 1002;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-out;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .dashboardSidebarOpen {
+    transform: translateX(0);
+  }
+
+  .sidebarCloseButton {
+    display: flex;
+  }
+
+  .dashboardMain {
+    padding: 56px 12px 16px 16px;
+    min-width: 0;
+  }
+
+  .dashboardHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+
+  .dashboardTitle {
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .dashboardSubtitle {
+    font-size: 14px;
+  }
+
+  .pageActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .filterToolbar {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .filterInput {
+    min-width: 0;
+    flex: 1 1 120px;
+  }
+
+  .table th,
+  .table td,
+  .productTableCell {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .table th {
+    font-size: 0.75rem;
+  }
+
+  .listHeader {
+    padding: 12px 16px;
+  }
+
+  .listHeaderTitle {
+    font-size: 16px;
+  }
+
+  .itemDetailCard {
+    padding: 16px;
+  }
+
+  .itemDetailTitle {
+    font-size: 20px;
+  }
+
+  .button {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .adminLoginCard {
+    padding: 24px 20px;
+  }
+
+  .adminLoginTitle {
+    font-size: 26px;
+  }
+
+  .tabsContainer {
+    gap: 6px;
+  }
+
+  .tab {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .userDetailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .userDetailFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeaderFlex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardMain {
+    padding: 56px 10px 12px 10px;
+  }
+
+  .dashboardTitle {
+    font-size: 20px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterInput {
+    flex: 1 1 auto;
+  }
+
+  .productImageContainer {
+    width: 48px;
+    height: 48px;
+  }
+
+  .avatarSmall {
+    width: 36px;
+    height: 36px;
+  }
+
+  .avatarLarge {
+    width: 80px;
+    height: 80px;
+  }
+
+  .roleBadge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
+
+/* Sidebar close button - visible only on mobile when sidebar is open */
+.sidebarCloseButton {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 1.25rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 2px 2px 0 0 var(--gray-100);
+}
+
+.sidebarCloseButton:hover {
+  background: var(--main-05);
+  color: var(--main-100);
+  border-color: var(--main-100);
+}
+
+.sidebarCloseButton:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 2px;
+}
+
+/* Mobile top bar: reserves space so hamburger never overlaps page content (WCAG) */
+.mobileTopBar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 1000;
+  background: var(--white);
+  align-items: center;
+  padding: 0 12px;
+}
+
+@media (max-width: 768px) {
+  .mobileTopBar {
+    display: flex;
+  }
+}
+
+/* Mobile menu button (hamburger) - 44px min touch target (WCAG 2.5.5), inside top bar */
+.mobileMenuButton {
+  display: none;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: var(--border-width) solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--gray-100);
+  border-radius: 0;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.mobileMenuButton:hover {
+  background: var(--main-05);
+  color: var(--main-100);
+  border-color: var(--main-100);
+}
+
+/* WCAG 2.4.7: visible focus indicator (AAA) */
+.mobileMenuButton:focus-visible {
+  outline: 3px solid var(--main-100);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .mobileMenuButton {
+    display: flex;
+  }
+}
+
+/* Backdrop when sidebar is open on mobile */
+.sidebarBackdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@media (max-width: 768px) {
+  .sidebarBackdropVisible {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

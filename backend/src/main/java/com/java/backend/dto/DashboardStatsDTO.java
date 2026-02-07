@@ -17,6 +17,8 @@ public class DashboardStatsDTO {
     // Recent Activity (Mocked for now)
     private List<RecentActivityDTO> recentActivity;
 
+    private List<TopProductDTO> topSellingProducts;
+
     // Constructors, Getters, Setters
     public DashboardStatsDTO() {}
 
@@ -41,6 +43,9 @@ public class DashboardStatsDTO {
     public List<RecentActivityDTO> getRecentActivity() { return recentActivity; }
     public void setRecentActivity(List<RecentActivityDTO> recentActivity) { this.recentActivity = recentActivity; }
 
+    public List<TopProductDTO> getTopSellingProducts() { return topSellingProducts; }
+    public void setTopSellingProducts(List<TopProductDTO> topSellingProducts) { this.topSellingProducts = topSellingProducts; }
+
     // Inner DTO for Activity List
     public static class RecentActivityDTO {
         private String id;
@@ -59,5 +64,21 @@ public class DashboardStatsDTO {
         public String getDescription() { return description; }
         public String getTime() { return time; }
         public String getType() { return type; }
+    }
+
+    public static class TopProductDTO {
+        private String name;
+        private long sold;
+        private BigDecimal revenue;
+
+        public TopProductDTO(String name, long sold, BigDecimal revenue) {
+            this.name = name;
+            this.sold = sold;
+            this.revenue = revenue;
+        }
+
+        public String getName() { return name; }
+        public long getSold() { return sold; }
+        public BigDecimal getRevenue() { return revenue; }
     }
 }
