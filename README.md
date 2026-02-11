@@ -43,7 +43,7 @@ To ensure the database schema faced real-world challenges, I manually architecte
 
 #### Asset Strategy:
 
-- **Original Artwork:** All unique assets—including the band's wordmark, album covers, and apparel designs—were created personally using **Affinity 3.0**.
+- **Original Artwork:** All unique assets—including the band's wordmark, album covers, and apparel designs—were created personally using **Affinity 3.0**. (WIP)
 - **Licensing Standards:** I adhere to strict copyright standards. Fonts (e.g., _Daydream_) are used under valid desktop licenses, and stock media is sourced from royalty-free vendors (Pexels) or professional mockup providers (Creatsy).
 
 ---
@@ -168,7 +168,7 @@ cp .env.example .env
 docker-compose up --build -d
 ```
 
-Once running, access the services:
+Once running, access the services (WIP):
 
 | Service         | URL                   | Notes                                         |
 | :-------------- | :-------------------- | :-------------------------------------------- |

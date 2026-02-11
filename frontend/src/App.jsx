@@ -1,8 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 // Customer components
+import CustomerLayout from './layouts/CustomerLayout';
 import CustomerLoginPage from './pages/Customer/CustomerLoginPage';
 import HomePage from './pages/Customer/HomePage';
+import AboutPage from './pages/Customer/AboutPage';
+import ShippingPage from './pages/Customer/ShippingPage';
+import FAQPage from './pages/Customer/FAQPage';
 import AdminLoginPage from './pages/Admin/AdminLoginPage';
 // Admin components
 import DashboardLayout from './pages/Admin/DashboardLayout';
@@ -19,15 +23,21 @@ import WarehouseListPage from './pages/Admin/WarehouseListPage';
 import WarehouseDetailPage from './pages/Admin/WarehouseDetailPage';
 
 function App() {
-  const isAuthenticated = true; 
-  const isAdmin = true;        
+  const isAuthenticated = true;
+  const isAdmin = true;
 
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<CustomerLoginPage />} />
+        {/* Customer storefront - uses Customer Theme (neo-brutalist) */}
+        <Route element={<CustomerLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/shipping" element={<ShippingPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="/login" element={<CustomerLoginPage />} />
+        </Route>
+
         <Route path="/admin/login" element={<AdminLoginPage />} />
 
         {/* PROTECTED ADMIN ROUTES */}
