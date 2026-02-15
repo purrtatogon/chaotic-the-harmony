@@ -1,27 +1,14 @@
-/* Customer Theme - Stephanie's Yellow with a vibrant purple twist */
-/* CSS Variables (not modules, these are global) */
+/* Customer Theme - Neo-Brutalist Design System */
+/* CSS Variables (global) */
 
 :root[data-theme="customer"] {
-  /* Gray Palette */
   --gray-100: #2F253A;
   --gray-50: #5D5A60;
-  --gray-30: #E8E6EA;
   --white: #FFFFFF;
-
-  /* Yellow (Main) Palette */
+  --main-50: #FEDC2A; /* Bright Yellow */
   --main-100: #514400;
-  --main-50: #FEDC2A;
-  --main-30: #FEF0A3;
   --main-05: #FFFBE5;
-
-  /* Purple (Secondary) Palette */
-  --secondary-100: #330069;
-  --secondary-50: #902AFE;
-  --secondary-30: #E5CDFF;
-  --secondary-05: #F7EFFF;
-
-  /* Neo-brutalist design tokens */
+  --secondary-30: #E5CDFF; /* Light Purple */
   --border-width: 4px;
   --shadow-offset: 6px;
-  --shadow-blur: 0px;
 }
