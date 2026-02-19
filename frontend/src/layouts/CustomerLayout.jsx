@@ -28,6 +28,11 @@ const CustomerLayout = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/#shop" className={layoutStyles.navLink}>
+                    Shop
+                  </Link>
+                </li>
+                <li>
                   <Link to="/about" className={layoutStyles.navLink}>
                     About
                   </Link>

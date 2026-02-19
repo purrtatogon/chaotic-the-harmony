@@ -7,6 +7,7 @@ import HomePage from './pages/Customer/HomePage';
 import AboutPage from './pages/Customer/AboutPage';
 import ShippingPage from './pages/Customer/ShippingPage';
 import FAQPage from './pages/Customer/FAQPage';
+import CustomerProductDetailPage from './pages/Customer/ProductDetailPage';
 import AdminLoginPage from './pages/Admin/AdminLoginPage';
 // Admin components
 import DashboardLayout from './pages/Admin/DashboardLayout';
@@ -35,6 +36,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/shipping" element={<ShippingPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/products/:id" element={<CustomerProductDetailPage />} />
           <Route path="/login" element={<CustomerLoginPage />} />
         </Route>
 
