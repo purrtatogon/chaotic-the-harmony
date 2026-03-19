@@ -5,36 +5,49 @@ on:
     - cron: '*/20 * * * *'
   workflow_dispatch:
 
+env:
+  # This silences the Node 20 warning by forcing the newer runtime
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   reset-and-reseed:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure
-        uses: azure/login@v2 # Updated to v2 for Node 24 support
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Open Firewall for GitHub Runner
+      - name: Install Postgres Client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Enable Public Access & Wait
         run: |
-          # Dynamically allow the GitHub Runner IP
+          # Ensure public access is toggled on
+          az postgres flexible-server update \
+            --resource-group chaotic-the-harmony-rg \
+            --name chaotic-the-harmony-db-server \
+            --public-access Enabled
+          
+          # Allow all IPs for the reset window
           az postgres flexible-server firewall-rule create \
             --resource-group chaotic-the-harmony-rg \
             --name chaotic-the-harmony-db-server \
-            --rule-name AllowGitHub \
+            --rule-name AllowAll \
             --start-ip-address 0.0.0.0 \
             --end-ip-address 255.255.255.255
-          # Note: Using 0.0.0.0-255.255.255.255 is the simplest for demos
-          # but you can use "az postgres flexible-server firewall-rule create --public-access 0.0.0.0"
+          
+          # Give Azure 20 seconds to "wake up" the firewall
+          sleep 20
 
       - name: Wipe Database Schema
         run: |
-          az postgres flexible-server execute \
-            --name chaotic-the-harmony-db-server \
-            --resource-group chaotic-the-harmony-rg \
-            --admin-user ${{ secrets.AZURE_DB_ADMIN_USER }} \
-            --admin-password "${{ secrets.AZURE_DB_ADMIN_PASSWORD }}" \
-            --database-name chaotic_the_harmony_prod \
-            --querytext "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+          # We use the raw PGPASSWORD method which is often more stable in CI
+          export PGPASSWORD='${{ secrets.AZURE_DB_ADMIN_PASSWORD }}'
+          psql -h chaotic-the-harmony-db-server.postgres.database.azure.com \
+               -U ${{ secrets.AZURE_DB_ADMIN_USER }} \
+               -d chaotic_the_harmony_prod \
+               -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
       - name: Restart API to Trigger Seeder
         run: |
