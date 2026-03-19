@@ -26,7 +26,7 @@ public class DatabaseCleanupTask {
         this.csvSeederService = csvSeederService;
     }
 
-    @Scheduled(cron = "0 */20 * * * *")
+//  @Scheduled(cron = "0 */20 * * * *")
     public void selfHeal() {
         logger.info("♻️ SELF-HEALING: Resetting database to initial state...");
         try {

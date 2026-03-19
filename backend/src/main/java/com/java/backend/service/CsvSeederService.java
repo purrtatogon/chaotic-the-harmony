@@ -95,11 +95,21 @@ public class CsvSeederService implements CommandLineRunner {
     }
 
     private CSVReader createCsvReader(String path) throws Exception {
+        ClassPathResource resource = new ClassPathResource(path);
+
+        // debug line
+        if (!resource.exists()) {
+            logger.error("❌ CRITICAL: CSV file not found at path: {}", path);
+            throw new java.io.FileNotFoundException("Resource not found: " + path);
+        }
+
+        logger.info("📖 Successfully found CSV file: {}", path);
+
         RFC4180Parser parser = new RFC4180Parser();
         return new CSVReaderBuilder(new InputStreamReader(
-                new ClassPathResource(path).getInputStream(), StandardCharsets.UTF_8))
+                resource.getInputStream(), StandardCharsets.UTF_8))
                 .withCSVParser(parser)
-                .withSkipLines(1) // Skip header
+                .withSkipLines(1)
                 .build();
     }
 

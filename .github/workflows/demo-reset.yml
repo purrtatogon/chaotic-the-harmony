@@ -1,0 +1,31 @@
+name: "Demo Self-Heal: 20-Minute Reset"
+
+on:
+  schedule:
+    - cron: '*/20 * * * *' # Every 20 minutes
+  workflow_dispatch:      # Manual "Panic Button" in GitHub UI
+
+jobs:
+  reset-and-reseed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Wipe Database Schema
+        run: |
+          # This drops the public schema to clear ALL data instantly
+          az postgres flexible-server execute \
+            --name chaotic-the-harmony-db-server \
+            --resource-group chaotic-the-harmony-rg \
+            --admin-user ${{ secrets.AZURE_DB_ADMIN_USER }} \
+            --admin-password "${{ secrets.AZURE_DB_ADMIN_PASSWORD }}" \
+            --database-name chaotic_the_harmony_prod \
+            --querytext "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
+      - name: Restart API to Trigger Seeder
+        run: |
+          # Restarting forces the CsvSeederService to run in the now-empty DB
+          az webapp restart --name chaotic-the-harmony-api --resource-group chaotic-the-harmony-rg

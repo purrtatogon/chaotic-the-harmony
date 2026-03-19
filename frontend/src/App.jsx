@@ -1,5 +1,4 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 // Customer components
 import CustomerLayout from './layouts/CustomerLayout';
 import CustomerLoginPage from './pages/Customer/CustomerLoginPage';
@@ -22,13 +21,23 @@ import OrderListPage from './pages/Admin/OrderListPage';
 import OrderDetailPage from './pages/Admin/OrderDetailPage';
 import WarehouseListPage from './pages/Admin/WarehouseListPage';
 import WarehouseDetailPage from './pages/Admin/WarehouseDetailPage';
+import {useEffect, useState} from "react";
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 function App() {
-  const isAuthenticated = true;
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const isAdmin = true;
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Customer storefront - uses Customer Theme (neo-brutalist) */}
         <Route element={<CustomerLayout />}>

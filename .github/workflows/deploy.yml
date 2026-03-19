@@ -1,0 +1,49 @@
+name: CI/CD Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # Build & Push Backend
+      - name: Build Backend
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }} ./backend
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
+
+      # Build & Push Frontend
+      - name: Build Frontend
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }} ./frontend
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}
+
+      # Deploy to Azure App Service
+      - name: Deploy Backend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'chaotic-the-harmony-api'
+          images: '${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}'
+
+      - name: Deploy Frontend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'chaotic-the-harmony-web'
+          images: '${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}'

@@ -10,10 +10,11 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
+# Copy the JAR
 COPY --from=build /app/target/*.jar app.jar
 
-# Exposing the application port
-EXPOSE 8080
+# EXPLICITLY copy the data folder for the Seeder
+COPY src/main/resources/data ./data
 
-# Running the application
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
