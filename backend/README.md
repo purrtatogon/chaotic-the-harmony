@@ -4,13 +4,11 @@ This directory contains the **Java Spring Boot** application that serves as the 
 
 ## 🛠 Tech Stack & Architecture
 
-- **Core:** Java 21 + Spring Boot 3.4
-- **Database:** PostgreSQL + Spring Data JPA
+- **Core:** Java 21 + Spring Boot 3.4.2
+- **Database:** Managed Azure PostgreSQL (Flexible Server)
 - **Security:** Spring Security + JWT (Stateless Auth)
-- **Media Strategy:**
-  - **Production:** Cloudinary (via API)
-  - **Local/Mock:** Placeholder Images (if API keys are missing)
-- **Resilience:** Scheduled "Self-Healing" tasks to reset demo data.
+- **Media Strategy:** Cloudinary API (Production) vs. Mock placeholders (Local).
+- **Resilience:** Automated "Nuclear Reset" via **GitHub Actions** (Schema wipe + API restart).
 
 ## 📂 Project Structure
 
@@ -23,50 +21,38 @@ The codebase follows a clean Layered Architecture:
 │   ├── /controller   # REST Endpoints (API Layer)
 │   ├── /dto          # Data Transfer Objects (Request/Response shapes)
 │   ├── /exception    # Global Exception Handlers (@ControllerAdvice)
-│   ├── /model        # JPA Entities (Database Schema)
+│   ├── /model        # JPA Entities (PostgreSQL Schema)
 │   ├── /repository   # Data Access Layer (Hibernate interfaces)
-│   ├── /service      # Business Logic (Mock vs. Real implementations)
-│   └── /tasks        # @Scheduled tasks (Database Cleanup/Reset)
+│   ├── /service      # Business Logic & CsvSeederService
+│   └── /tasks        # Internal maintenance (Local scheduler only)
 └── /src/main/resources
-    ├── application.properties        # Shared Config
+    ├── application-prod.properties   # Azure/Production settings
     ├── application-docker.properties # Docker Override
     ├── application-local.properties  # Local Dev Override
-    └── /data                         # CSV Seeding Data
+    └── /data                         # CSV Datasets for re-seeding
 ```
 
 ## ⚙️ Local Development
-
-You can run the backend in "Mock Mode" (Offline) or "Connected Mode" (Cloudinary).
 
 **1. Prerequisites**
 
 - **Java:** JDK 21
 - **PostgreSQL:** Running locally on port `5432`.
 
-**2. Configuration (Environment)**
-
-The app checks for a `.env` file (or system env vars) for secrets.
-
-- **Mock Mode:** If you do not provide `CLOUDINARY_API_KEY`, the app automatically falls back to local placeholder images.
-- **Connected Mode:** Add your keys to the root `.env` file to enable real image uploads.
-
-**3. Run the App**
-Use the local profile to connect to your localhost database:
-
+**2. Run the App**
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-The API will be available at **http://localhost:8080**.
+API available at **http://localhost:8080**.
 
-## 🐳 Docker Configuration
+## 🐳 Azure & CI/CD Configuration
 
-When running via the root docker-compose.yml:
+In production, the backend is hosted as a container on Azure App Service.
 
-- **Internal Port:** `8080`
-- **Profile:** Automatically activates the docker profile.
-- **Database:** Connects to the `db` container (not localhost).
-- **Self-Healing:** The `prod` profile activates the 20-minute database reset timer (disabled in local profile).
+- **Deployment:** Triggered via `deploy.sh` or GitHub Actions.
+- **Image Versioning:** Current stable is `backend:v7`.
+- **Self-Healing:** The production reset is externalized to GitHub Actions to prevent database deadlocks. The Action drops the `public` schema every 2 hours, and the Spring Boot `CsvSeederService` automatically re-populates the data upon container restart.
 
 <p align="center">◕⩊◕<br>
 <em>Thanks for checking out the Backend!</em>
