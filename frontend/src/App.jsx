@@ -22,6 +22,7 @@ import OrderDetailPage from './pages/Admin/OrderDetailPage';
 import WarehouseListPage from './pages/Admin/WarehouseListPage';
 import WarehouseDetailPage from './pages/Admin/WarehouseDetailPage';
 import {useEffect, useState} from "react";
+import DemoBanner from "./components/DemoBanner.jsx";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -38,6 +39,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <DemoBanner />
       <Routes>
         {/* Customer storefront - uses Customer Theme (neo-brutalist) */}
         <Route element={<CustomerLayout />}>

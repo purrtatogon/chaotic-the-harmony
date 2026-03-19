@@ -1,29 +1,29 @@
-name: "Demo Self-Heal: 20-Minute Reset"
+name: "Demo Self-Heal: 2-Hour Reset"
 
 on:
   schedule:
-    - cron: '*/20 * * * *'
-  workflow_dispatch:
+    - cron: '0 */2 * * *' # Every 2 hours (UTC)
+  workflow_dispatch:      # Your "Panic Button"
 
 env:
-  # This silences the Node 20 warning by forcing the newer runtime
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # This silences the Node.js 20 deprecation warning by forcing the newer runtime
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   reset-and-reseed:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Install Postgres Client
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Enable Public Access & Wait
+      - name: Open Firewall & Prep Database
         run: |
-          # Ensure public access is toggled on
+          # Ensure public access is Enabled
           az postgres flexible-server update \
             --resource-group chaotic-the-harmony-rg \
             --name chaotic-the-harmony-db-server \
@@ -37,12 +37,11 @@ jobs:
             --start-ip-address 0.0.0.0 \
             --end-ip-address 255.255.255.255
           
-          # Give Azure 20 seconds to "wake up" the firewall
+          # Give Azure 20 seconds to propagate the firewall rule
           sleep 20
 
       - name: Wipe Database Schema
         run: |
-          # We use the raw PGPASSWORD method which is often more stable in CI
           export PGPASSWORD='${{ secrets.AZURE_DB_ADMIN_PASSWORD }}'
           psql -h chaotic-the-harmony-db-server.postgres.database.azure.com \
                -U ${{ secrets.AZURE_DB_ADMIN_USER }} \
