@@ -2,6 +2,9 @@
 
 A production-grade **Unified Commerce Platform (UCP)** for the fictional ska-punk band _"Chaotic The Harmony"_ (CTH). This solution merges a complex **Inventory Management System (IMS)** with a custom **Content Management System (CMS)**, built with **React**, **Java Spring Boot**, and **PostgreSQL**.
 
+**🔗 [Live Demo Storefront](https://chaotic-the-harmony-web.azurewebsites.net/)**
+**🔐 [Admin Dashboard](https://chaotic-the-harmony-web.azurewebsites.net/admin/login)**
+
 ---
 
 ## Project Background: The Engineering Journey
@@ -50,158 +53,116 @@ To ensure the database schema faced real-world challenges, I manually architecte
 
 ## Architecture & Tech Stack
 
-The project follows a **Microservices-ready Monolithic** structure (Monorepo split into `/backend` and `/frontend` directories), utilizing a **Docker-first** methodology for consistent development and deployment environments.
+The project follows a **Microservices-ready Monolithic** structure (Monorepo split into `/backend` and `/frontend` directories), utilizing a **Docker-first** methodology.
 
 ### Infrastructure & DevOps
-
-- **Containerization:** Fully orchestrated via Docker Compose (Frontend, Backend, Database).
-- **Environment Strategy:**
-  - **Local Dev:** Uses **Mock Services** and a local PostgreSQL container for safe, offline development. (WIP)
-  - **Production:** Deploys to **Render** with a managed PostgreSQL instance and auto-scaling capabilities. (WIP)
-  - **Continuous Deployment:** Automated pipeline from GitHub to Render. (WIP)
+- **Cloud Provider:** Hosted on **Microsoft Azure** using **Azure App Service** (Linux Containers).
+- **Container Registry:** Images are versioned and managed via **Azure Container Registry (ACR)**.
+- **Database:** Managed **Azure Database for PostgreSQL (Flexible Server)**.
+- **Continuous Deployment:** Automated **GitHub Actions** pipeline.
+- **Self-Healing Automation:** To prevent demo "data drift," a GitHub Action performs a **"Nuclear Reset"** every 2 hours (wiping the schema via `psql` and triggering a rolling restart/re-seed of the API).
 
 ### Core Components
 
 **Backend (The "Brain")**
-
-- **Framework:** Java 21 + Spring Boot 3
-- **Security:** Spring Security (Role-Based Access Control).
+- **Framework:** Java 21 + Spring Boot 3.4.2
+- **Security:** Spring Security with **JWT** (Stateless Auth) and Role-Based Access Control (RBAC).
 - **Data Layer:** JPA/Hibernate with PostgreSQL.
-- **Media Strategy:** **Stateless Architecture**. Images are offloaded to **Cloudinary** (via API) to ensure lightweight containers and faster build times.
-- **Resilience:** Implemented a **"Self-Healing"** database routine (`@Scheduled` task) that resets the demo environment every 20 minutes to prevent data drift. (WIP)
+- **Media Strategy:** Stateless architecture; images are offloaded to **Cloudinary** via API.
 
 **Frontend (The "Face")**
-
 - **Framework:** React + Vite
 - **State Management:** Context API & Custom Hooks.
-- **Content Rendering:** **React-Markdown** for secure, rich-text product descriptions (preserving formatting without the security risks of raw HTML).
-- **Styling:** CSS Modules with a Neo-Brutalism design system.
+- **Deployment:** Served via **Nginx** to handle client-side routing in a production environment.
+- **Visual Feedback:** A custom **Demo Banner** provides users with a real-time countdown to the next automated system reset.
 
 ---
 
 ## Features
 
 ### 🛒 CTH Storefront (Public Customer View)
-
-- **Dynamic Catalog:** Fetches "Active" products and "Published" news articles from the backend.
-- **Rich Content:** Displays formatted artist bios and product details using Markdown parsing.
-- **Read-Only Access:** Secured public endpoints that allow browsing but restrict transaction/modification capabilities.
+- **Dynamic Catalog:** Fetches "Active" products and news articles.
+- **Rich Content:** Displays artist bios and product details using **React-Markdown**.
+- **Self-Healing UI:** Informs users of the 2-hour reset cycle to ensure transparency of demo data.
 
 ### 🔐 Admin Dashboard (Internal IMS & CMS)
-
-- **Hybrid Management:** A unified interface for managing both **Hard Data** (Inventory, Stock Levels, Prices) and **Soft Content** (News, Artist Bios).
-- **Smart Editing:**
-  - **Product Names:** Restricted to plain text to enforce SEO-friendly URL slugs and clean search indexing.
-  - **Descriptions:** Markdown-enabled editor allowing bold, italics, and bullet points for rich presentation.
-- **Media Management:** Direct integration with Cloudinary for uploading/deleting product assets.
-- **Role-Based Security:** Protected routes ensuring only authenticated Admins can access sensitive inventory controls.
-- **Note on Architecture:** _In a large-scale enterprise environment, I would typically offload static content (Bios/Blogs) to a Headless CMS (like Contentful). However, for this project, I engineered a custom CMS layer within Spring Boot to demonstrate complex relationship mapping and full-stack CRUD proficiency._
+- **Hybrid Management:** Unified interface for **Hard Data** (Inventory/Stock) and **Soft Content** (News/Bios).
+- **Media Management:** Direct integration with Cloudinary for asset lifecycle management.
+- **Role-Based Security:** Protected routes ensuring only authenticated Admins access inventory controls.
 
 ---
 
 ## Current Status & Future Roadmap
 
-- ✅ **Containerization:** Fully Dockerized local environment!
-- ✅ **Media Storage:** Integrated **Cloudinary** for scalable asset management!
+- ✅ **Containerization:** Fully Dockerized production images (v7 Backend / v3 Frontend).
+- ✅ **Cloud Infrastructure:** Migrated from local dev to **Azure Cloud**.
+- ✅ **Automated Resilience:** GitHub Actions "Self-Heal" pipeline is live and stable.
+- ✅ **Media Storage:** Integrated **Cloudinary** for scalable asset management.
 - 🚧 **Progressive Asset Implementation:** Assets are being integrated iteratively. To ensure accessibility and layout stability during development, placeholder SVGs with descriptive alt-text are used where final media is currently pending.
 - 🚧 **Screen Reader friendly:** Keyboard navigation and comprehensive alt-text coverage for screen readers are currently under active development.
-- 🚧 **CTH Storefront:** Currently under active development.
-- 🚧 **Deployment:** Configuring **Render** for live hosting with "Self-Healing" database scripts.
-- ⏳ **Notifications:** Planned integration with **SendGrid** for transactional emails (Order Confirmations).
-- ⏳ **Testing:** Expanding JUnit test coverage for the Service Layer.
+- 🚧 **Storefront:** Finalizing the public checkout flow.
+- ⏳ **Notifications:** Planned integration with **SendGrid** for order confirmations.
+- ⏳ **Testing:** Expanding JUnit 5 test coverage for the Service Layer.
+
 
 ---
 
-# 🚀 Getting Started
+## 🏃‍♂️ Getting Started (Local Development)
 
-Because this project follows a **Docker-first** methodology, you can run the entire stack with minimal setup.
+You can run the full stack using Docker (recommended for speed) or manually if you need to debug specific services or work without containerization.
 
-## Prerequisites
+### ⚙️ Step 0: Configuration
+Regardless of the method chosen, you must set up your environment variables:
+1.  **Duplicate the example file:**
+ ```bash  
+  cp .env.example .env
+  ```
 
-### Option A: Docker (Recommended)
+2. **Update variables:** Add your DB credentials and Cloudinary keys. If keys are left blank, the system automatically defaults to Mock Mode, using local placeholder assets to ensure the app remains functional.
+---  
+### Option A: Local Quickstart (Docker Desktop)
+The fastest way to see the app in action with a single command.
 
-The **only** requirement to spin up the full application (Frontend, Backend, and Database) is:
+1. **Prerequisites**
+- Docker Desktop installed and running.
 
-- **Docker Desktop** (Latest stable version)
-- _Ensure the Docker daemon is running._
+2. **Launch**  
+   Build and start all services (Frontend, Backend, and Database) in detached mode:
+ ```bash  
+  docker-compose up --build -d  
+ ```
+
+3. **Access**
+- **Storefront:** http://localhost:3000
+- **Backend API:** http://localhost:8080
+- **Database:** localhost:5432
 
 ### Option B: Local Manual Setup
+Best for active development, hot-reloading, and deep debugging.
 
-If you wish to run services individually for debugging, ensure you have:
-| Component | Requirement | Context |
-| :--- | :--- | :--- |
-| **Java** | JDK 21 | Spring Boot Backend |
-| **Node.js** | v20+ (LTS) | React Frontend |
-| **PostgreSQL** | v16+ | If running DB outside Docker |
+1. **Prerequisites**
+- **Java 21** (for the Spring Boot Backend)
+- **Node.js 20+** (for the React Frontend)
+- **PostgreSQL 16+** (If you prefer to run the database outside of Docker)
+
+2. **Database**
+   Ensure a local Postgres instance is running with a database named chaotic_the_harmony_dev (matching your local profile settings).
+
+3. **Backend (Spring Boot)**
+ ```bash  
+  cd backend
+  mvn spring-boot:run -Dspring-boot.run.profiles=local  
+```
+
+4. **Frontend (React/Vite)**
+ ```bash  
+  cd frontend
+  npm install
+  npm run dev
+```
 
 ---
-
-## ⚙️ Configuration (Environment Variables)
-
-This project uses a `.env` file to manage secrets (DB passwords, Cloudinary keys) without committing them to GitHub.
-
-1.  **Duplicate the example file:**
-    ```bash
-    cp .env.example .env
-    ```
-2.  **Update the variables (Optional):**
-    - If you have a Cloudinary account, add your `CLOUDINARY_API_KEY` in the `.env` file.
-    - **Mock Mode:** If you leave the Cloudinary keys **blank**, the application will automatically detect this and switch to **"Mock Mode"** (using local placeholder images), ensuring the app never crashes for new users.
-
----
-
-## 🏃‍♂️ Run the Application
-
-### Method 1: Docker (Quickstart)
-
-This is the fastest way to see the app in action.
-
-**0. Create the env file (Defaults are fine for Mock Mode)**
-
-```bash
-cp .env.example .env
-```
-
-**1. Build and start all services in detached mode**
-
-```bash
-docker-compose up --build -d
-```
-
-Once running, access the services (WIP):
-
-| Service         | URL                   | Notes                                         |
-| :-------------- | :-------------------- | :-------------------------------------------- |
-| **Storefront**  | http://localhost:3000 | Mapped from internal port 5173                |
-| **Backend API** | http://localhost:8080 | Swagger UI available at /swagger-ui.html      |
-| **Database**    | localhost:5432        | User: postgres / Pass: bandstoredb123postgres |
-
-### Method 2: Manual (Non-Docker)
-
-Use this if you need to debug specific services or lack Docker resources.
-
-**1. Database**
-Ensure you have a local Postgres instance running, or just spin up the DB container:
-
-```bash
-docker-compose up db -d
-```
-
-**2. Backend (Spring Boot)**
-
-```bash
-cd backend
-mvn spring-boot:run -Dspring-boot.run.profiles=local
-```
-
-**3. Frontend (React/Vite)**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
+    
 ## 🔑 Demo Credentials
 
 To simulate a high-volume production environment, the database is pre-seeded with **190+ users** (including 150 customers and 40 staff members) to demonstrate **Pagination**, **Filtering**, and **Role-Based Access Control (RBAC)**.
