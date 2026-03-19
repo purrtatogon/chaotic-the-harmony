@@ -2,21 +2,32 @@ name: "Demo Self-Heal: 20-Minute Reset"
 
 on:
   schedule:
-    - cron: '*/20 * * * *' # Every 20 minutes
-  workflow_dispatch:      # Manual "Panic Button" in GitHub UI
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
 
 jobs:
   reset-and-reseed:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2 # Updated to v2 for Node 24 support
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Open Firewall for GitHub Runner
+        run: |
+          # Dynamically allow the GitHub Runner IP
+          az postgres flexible-server firewall-rule create \
+            --resource-group chaotic-the-harmony-rg \
+            --name chaotic-the-harmony-db-server \
+            --rule-name AllowGitHub \
+            --start-ip-address 0.0.0.0 \
+            --end-ip-address 255.255.255.255
+          # Note: Using 0.0.0.0-255.255.255.255 is the simplest for demos
+          # but you can use "az postgres flexible-server firewall-rule create --public-access 0.0.0.0"
+
       - name: Wipe Database Schema
         run: |
-          # This drops the public schema to clear ALL data instantly
           az postgres flexible-server execute \
             --name chaotic-the-harmony-db-server \
             --resource-group chaotic-the-harmony-rg \
@@ -27,5 +38,4 @@ jobs:
 
       - name: Restart API to Trigger Seeder
         run: |
-          # Restarting forces the CsvSeederService to run in the now-empty DB
           az webapp restart --name chaotic-the-harmony-api --resource-group chaotic-the-harmony-rg
