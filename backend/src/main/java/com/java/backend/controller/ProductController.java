@@ -38,6 +38,7 @@ public class ProductController {
     public List<Product> getAllProducts(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false, name = "productType") String typeCode,
+            @RequestParam(required = false) String themeCode,
             @RequestParam(required = false) String availability,
             @RequestParam(required = false) String size,
             @RequestParam(required = false) String color,
@@ -50,20 +51,19 @@ public class ProductController {
 
         ProductType type = null;
         if (typeCode != null && !typeCode.isEmpty()) {
-            try {
-                type = ProductType.fromString(typeCode);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid Product Type Code: " + typeCode);
-            }
+            type = ProductType.fromString(typeCode);
+            // fromString returns null for unknown codes — the spec handles null gracefully
         }
 
-        // Safety check for sortBy field to prevent errors with moved fields
+        // Guard against sorting by fields that no longer exist on Product
+        // (price and stockQuantity moved to ProductVariant / ProductInventory)
         String effectiveSortBy = sortBy;
         if ("price".equalsIgnoreCase(sortBy) || "stockQuantity".equalsIgnoreCase(sortBy)) {
-            effectiveSortBy = "id"; // Default to ID if field moved to variants
+            effectiveSortBy = "id";
         }
 
-        Specification<Product> spec = ProductSpecification.filterProducts(categoryId, type, availability, size, color);
+        Specification<Product> spec = ProductSpecification.filterProducts(
+                categoryId, type, themeCode, availability, size, color);
 
         return productRepository.findAll(spec, Sort.by(direction, effectiveSortBy));
     }
