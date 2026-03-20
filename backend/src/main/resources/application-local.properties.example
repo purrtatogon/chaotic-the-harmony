@@ -1,30 +1,24 @@
-spring.application.name=backend
+# Copy to application-local.properties and fill in your own values (file is gitignored).
 
+spring.application.name=backend
 spring.config.activate.on-profile=local
 
-# Backend port
 server.port=8080
 
-# Database Config
 spring.datasource.url=jdbc:postgresql://localhost:5432/bandstoredb
 spring.datasource.username=postgres
-spring.datasource.password=bandstoredb123postgres
+spring.datasource.password=YOUR_LOCAL_POSTGRES_PASSWORD
 
-# JPA / Hibernate Settings
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.generate-ddl=true
 spring.jpa.show-sql=false
 spring.jpa.properties.hibernate.format_sql=true
 
-# Hibernate 6+ auto-detects the dialect
-# spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-
-# Logging
 logging.level.org.hibernate.SQL=INFO
 logging.level.org.hibernate.orm.deprecation=ERROR
 logging.level.org.hibernate.type.descriptor.sql.BasicExtractor=TRACE
 logging.level.org.hibernate.orm.jdbc.bind=INFO
 
-# JWT Security Settings
-application.security.jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+# Generate a long random secret for local dev; do not reuse production secrets.
+application.security.jwt.secret-key=YOUR_BASE64_OR_HEX_SECRET_AT_LEAST_256_BITS
 application.security.jwt.expiration=86400000

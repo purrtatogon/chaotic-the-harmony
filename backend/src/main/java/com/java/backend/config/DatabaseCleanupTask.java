@@ -5,12 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Self-healing task: resets the database to initial seeded state every 20 minutes.
- * Only active when the "prod" profile is enabled (e.g. on Render).
+ * Truncate main tables and re-run CSV seed. {@code prod} profile only; add {@code @Scheduled} if you want it on a timer.
  */
 @Component
 @Profile("prod")
@@ -26,7 +24,6 @@ public class DatabaseCleanupTask {
         this.csvSeederService = csvSeederService;
     }
 
-//  @Scheduled(cron = "0 */20 * * * *")
     public void selfHeal() {
         logger.info("♻️ SELF-HEALING: Resetting database to initial state...");
         try {
@@ -39,8 +36,8 @@ public class DatabaseCleanupTask {
     }
 
     private void truncateAllTables() {
-        // Order: child tables first, then parents. RESTART IDENTITY resets sequences.
         jdbcTemplate.execute("TRUNCATE TABLE order_items, orders, products_inventory, product_prices, " +
-                "product_variants, product_images, products, categories, app_users RESTART IDENTITY CASCADE");
+                "product_variants, product_images, products, categories, app_users, site_content_entries " +
+                "RESTART IDENTITY CASCADE");
     }
 }

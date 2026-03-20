@@ -1,0 +1,27 @@
+# Root .gitignore
+
+# Local environment files — contain credentials, never commit these
+.env
+.env.local
+*.env.local
+
+# Frontend Vite env (API URLs, third-party keys like VITE_* — keep local only)
+frontend/.env
+frontend/.env.development
+frontend/.env.production
+frontend/.env.local
+frontend/.env.*.local
+
+# Spring Boot local profile — DB password & JWT secret (use application-local.properties.example)
+backend/src/main/resources/application-local.properties
+
+# OS
+.DS_Store
+*.DS_Store
+Thumbs.db
+
+# Docker volumes
+postgres_data/
+
+.idea
+.vscode

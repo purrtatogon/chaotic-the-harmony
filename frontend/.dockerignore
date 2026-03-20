@@ -1,0 +1,11 @@
+# Build context is ./frontend — prevent secrets and junk from entering the image.
+node_modules
+dist
+dist-ssr
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+*.md
+.dockerignore

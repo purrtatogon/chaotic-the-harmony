@@ -1,8 +1,5 @@
 package com.java.backend.dto;
 
-/**
- * Request body for changing the current user's password.
- */
 public class ChangePasswordRequest {
     private String currentPassword;
     private String newPassword;

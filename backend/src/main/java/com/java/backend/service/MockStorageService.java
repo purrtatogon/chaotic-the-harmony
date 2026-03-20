@@ -6,10 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
-/**
- * Fallback storage when no Cloudinary API key is configured. Returns fake URLs
- * so the app never crashes for new users or in local/dev without credentials.
- */
+/** Fake URLs when Cloudinary is not configured. */
 @Service
 @ConditionalOnMissingBean(StorageService.class)
 public class MockStorageService implements StorageService {
@@ -27,7 +24,6 @@ public class MockStorageService implements StorageService {
 
     @Override
     public void delete(String publicIdOrUrl) {
-        // No-op: nothing to delete in mock mode
     }
 
     @Override

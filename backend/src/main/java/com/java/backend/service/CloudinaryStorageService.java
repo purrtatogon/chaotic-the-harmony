@@ -10,10 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Real storage implementation using Cloudinary. Loaded only when
- * cloudinary.api-key is set (e.g. in production or when user configures it).
- */
+/** Cloudinary uploads when {@code cloudinary.api-key} is set; otherwise the mock bean is used. */
 @Service
 @ConditionalOnProperty(prefix = "cloudinary", name = "api-key")
 public class CloudinaryStorageService implements StorageService {
@@ -59,7 +56,6 @@ public class CloudinaryStorageService implements StorageService {
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
             }
         } catch (Exception e) {
-            // Log but do not fail; asset may already be deleted
             System.err.println("Cloudinary delete failed for " + publicIdOrUrl + ": " + e.getMessage());
         }
     }
@@ -72,13 +68,12 @@ public class CloudinaryStorageService implements StorageService {
     private static String extractPublicId(String publicIdOrUrl) {
         if (publicIdOrUrl == null || publicIdOrUrl.isBlank()) return null;
         if (publicIdOrUrl.contains("res.cloudinary.com")) {
-            // URL like https://res.cloudinary.com/cloudName/image/upload/v123/public_id
             int upload = publicIdOrUrl.indexOf("/upload/");
             if (upload >= 0) {
                 String after = publicIdOrUrl.substring(upload + "/upload/".length());
                 int v = after.indexOf('/');
                 if (v >= 0) after = after.substring(v + 1);
-                return after.replaceFirst("\\.([^.]+)$", ""); // strip extension
+                return after.replaceFirst("\\.([^.]+)$", "");
             }
         }
         return publicIdOrUrl;

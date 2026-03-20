@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @Table(name = "app_users")
 public class User extends BaseEntity {
 
-    // Removed @Id private Long id; because it is now inherited from BaseEntity
-
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -32,14 +30,9 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String address;
 
-    /**
-     * This field stores the URL for the user's avatar.
-     * Since we are removing manual uploads, this will hold the UI-Avatars link.
-     */
     @Column
     private String profileImageUrl;
 
-    // AUDIT FIELDS
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -48,7 +41,6 @@ public class User extends BaseEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // CONSTRUCTORS
     public User() {
     }
 
@@ -59,22 +51,14 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    /**
-     * JPA Lifecycle Hook: Runs automatically before a new User is saved.
-     * This ensures every user has a default avatar based on their name.
-     */
+    /** Fill in a default avatar from the name if none set. */
     @PrePersist
     protected void onCreate() {
-        // 1. Generate Avatar if missing
         if (this.profileImageUrl == null && this.fullName != null) {
             String encodedName = this.fullName.replace(" ", "+");
             this.profileImageUrl = "https://ui-avatars.com/api/?name=" + encodedName + "&background=random";
         }
-        // BaseEntity handles the isNew flag automatically via its own hooks
     }
-
-    // --- GETTERS AND SETTERS ---
-    // (Note: getId and setId are inherited from BaseEntity, so I don't list them here)
 
     public String getEmail() { return email; }
 
