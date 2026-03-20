@@ -37,6 +37,7 @@ public class CsvSeederService implements CommandLineRunner {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductImageRepository productImageRepository;
+    private final SiteContentRepository siteContentRepository;
     private final PasswordEncoder passwordEncoder;
 
     public CsvSeederService(UserRepository userRepository,
@@ -48,6 +49,7 @@ public class CsvSeederService implements CommandLineRunner {
                             OrderRepository orderRepository,
                             OrderItemRepository orderItemRepository,
                             ProductImageRepository productImageRepository,
+                            SiteContentRepository siteContentRepository,
                             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -58,6 +60,7 @@ public class CsvSeederService implements CommandLineRunner {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.productImageRepository = productImageRepository;
+        this.siteContentRepository = siteContentRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -67,11 +70,7 @@ public class CsvSeederService implements CommandLineRunner {
         runSeed();
     }
 
-    /**
-     * Run the full CSV seed.
-     * Idempotent: Skips records that already exist to prevent duplicate key errors.
-     * Uses BaseEntity logic to force INSERTs for new records with manual IDs.
-     */
+    /** Load all CSVs; skips rows that are already in the DB. */
     @Transactional
     public void runSeed() throws Exception {
         logger.info("Starting CSV data seeding...");
@@ -81,7 +80,7 @@ public class CsvSeederService implements CommandLineRunner {
         seedProducts();
         seedVariants();
 
-        // Flush needed so that Variants exist before Inventory tries to link to them
+        // Inventory rows point at variants — flush so FKs resolve.
         productRepository.flush();
         productVariantRepository.flush();
 
@@ -90,14 +89,14 @@ public class CsvSeederService implements CommandLineRunner {
         seedProductImages();
         seedOrders();
         seedOrderItems();
+        seedSiteContent();
 
-        logger.info("CSV data seeding completed successfully! Rejoice!");
+        logger.info("CSV data seeding completed.");
     }
 
     private CSVReader createCsvReader(String path) throws Exception {
         ClassPathResource resource = new ClassPathResource(path);
 
-        // debug line
         if (!resource.exists()) {
             logger.error("❌ CRITICAL: CSV file not found at path: {}", path);
             throw new java.io.FileNotFoundException("Resource not found: " + path);
@@ -125,7 +124,6 @@ public class CsvSeederService implements CommandLineRunner {
                 if (!isValidLine(line)) continue;
                 Long id = Long.parseLong(line[0]);
 
-                // Idempotency check: if user exists, skip to next
                 if (userRepository.existsById(id)) continue;
 
                 User user = new User();
@@ -134,13 +132,11 @@ public class CsvSeederService implements CommandLineRunner {
                 user.setEmail(line[2]);
                 user.setPassword(passwordEncoder.encode(line[3]));
 
-                // Safety: UpperCase ensures "customer" in CSV matches "CUSTOMER" enum
                 user.setRole(Role.valueOf(line[4].toUpperCase()));
 
                 user.setPhoneNumber(line[5]);
                 user.setAddress(line[6]);
 
-                // Because User extends BaseEntity, isNew defaults to true, forcing an INSERT
                 userRepository.save(user);
                 count++;
             }
@@ -178,19 +174,17 @@ public class CsvSeederService implements CommandLineRunner {
 
                 Long id = Long.parseLong(line[0]);
 
-                // Idempotency: Skip if already exists!
                 if (productRepository.existsById(id)) continue;
 
                 Long categoryId = Long.parseLong(line[1]);
                 Category category = categoryRepository.findById(categoryId).orElse(null);
 
                 if (category != null) {
-                    // Safe Enum Parsing: Returns null if invalid instead of crashing
                     ProductType type = ProductType.fromString(line[2]);
 
                     if (type != null) {
                         Product product = new Product();
-                        product.setId(id); // BaseEntity logic ensures this is an INSERT
+                        product.setId(id);
                         product.setCategory(category);
                         product.setProductType(type);
                         product.setThemeCode(line[3]);
@@ -203,7 +197,6 @@ public class CsvSeederService implements CommandLineRunner {
                         productRepository.save(product);
                         count++;
                     } else {
-                        // Log specifically which product failed due to a typo in the CSV
                         logger.warn("Skipping Product ID {}: Invalid Product Type '{}'", id, line[2]);
                     }
                 } else {
@@ -227,7 +220,6 @@ public class CsvSeederService implements CommandLineRunner {
 
                 if (productVariantRepository.existsById(id)) continue;
 
-                // Prevent duplicate SKUs
                 if (productVariantRepository.findBySku(sku).isPresent()) {
                     logger.warn("Skipping Variant ID {}: SKU '{}' already exists.", id, sku);
                     continue;
@@ -240,7 +232,6 @@ public class CsvSeederService implements CommandLineRunner {
                     variant.setProduct(product);
                     variant.setSku(sku);
                     variant.setVariantCode(line[3]);
-                    // Handle empty/null size strings safely
                     String sizeStr = (line.length > 4) ? line[4] : null;
                     variant.setSize(Size.fromString(sizeStr != null && !sizeStr.isEmpty() ? sizeStr.toUpperCase() : null));
 
@@ -322,7 +313,6 @@ public class CsvSeederService implements CommandLineRunner {
                 image.setDisplayOrder(line.length > 5 && line[5] != null && !line[5].trim().isEmpty() 
                     ? Integer.parseInt(line[5]) : 1);
 
-                // Handle product_id (can be empty/null)
                 String productIdStr = line.length > 1 ? line[1] : null;
                 if (productIdStr != null && !productIdStr.trim().isEmpty()) {
                     Long productId = Long.parseLong(productIdStr);
@@ -335,7 +325,6 @@ public class CsvSeederService implements CommandLineRunner {
                     }
                 }
 
-                // Handle variant_id (can be empty/null)
                 String variantIdStr = line.length > 2 ? line[2] : null;
                 if (variantIdStr != null && !variantIdStr.trim().isEmpty()) {
                     Long variantId = Long.parseLong(variantIdStr);
@@ -348,7 +337,6 @@ public class CsvSeederService implements CommandLineRunner {
                     }
                 }
 
-                // Ensure at least one relationship exists
                 if (image.getProduct() == null && image.getProductVariant() == null) {
                     logger.warn("Skipping Image ID {}: Neither product_id nor variant_id provided.", id);
                     continue;
@@ -362,7 +350,6 @@ public class CsvSeederService implements CommandLineRunner {
     }
 
     private void seedOrders() throws Exception {
-        // Flexible date formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy H:mm", Locale.ENGLISH);
 
         try (CSVReader reader = createCsvReader("data/orders.csv")) {
@@ -421,5 +408,39 @@ public class CsvSeederService implements CommandLineRunner {
             }
             if (count > 0) logger.info("Imported {} order items.", count);
         }
+    }
+
+    /** Wipes site copy and reloads from {@code data/cms_*.csv}. */
+    private void seedSiteContent() throws Exception {
+        siteContentRepository.deleteAllInBatch();
+
+        String[] paths = {
+                "data/cms_global.csv",
+                "data/cms_home.csv",
+                "data/cms_music.csv",
+                "data/cms_about.csv",
+                "data/cms_media.csv",
+                "data/cms_store.csv",
+                "data/cms_support.csv"
+        };
+
+        int total = 0;
+        for (String path : paths) {
+            try (CSVReader reader = createCsvReader(path)) {
+                String[] line;
+                while ((line = reader.readNext()) != null) {
+                    if (!isValidLine(line) || line.length < 2) continue;
+
+                    SiteContentEntry entry = new SiteContentEntry();
+                    entry.setSection(line[0].trim());
+                    entry.setEntryKey(line[1].trim());
+                    entry.setTitle(line.length > 2 && line[2] != null ? line[2] : "");
+                    entry.setContent(line.length > 3 && line[3] != null ? line[3] : "");
+                    siteContentRepository.save(entry);
+                    total++;
+                }
+            }
+        }
+        logger.info("Imported {} site content rows from cms_*.csv.", total);
     }
 }
