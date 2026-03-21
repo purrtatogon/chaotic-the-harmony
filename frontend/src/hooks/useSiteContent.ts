@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback, useContext } from 'react';
 import type { SiteContentBlock } from '../types/siteContent';
-import { parseSiteContent } from '../utils/parseSiteContent';
+import { fetchSiteContent } from '../api/siteContent';
 import { SiteContentContext } from '../contexts/SiteContentContext';
-
-const CSV_URL = '/data/site_content.csv';
 
 interface UseSiteContentResult {
   blocks: SiteContentBlock[];
@@ -12,10 +10,7 @@ interface UseSiteContentResult {
   error: string | null;
 }
 
-/**
- * Fetches and parses site content from CSV.
- * Uses context when inside SiteContentProvider (single fetch), otherwise fetches directly.
- */
+/** Site CMS blocks from the API; uses provider data when wrapped. */
 export function useSiteContent(): UseSiteContentResult {
   const ctx = useContext(SiteContentContext);
   const [blocks, setBlocks] = useState<SiteContentBlock[]>([]);
@@ -30,11 +25,9 @@ export function useSiteContent(): UseSiteContentResult {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(CSV_URL);
-        if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
-        const text = await res.text();
+        const data = await fetchSiteContent();
         if (cancelled) return;
-        setBlocks(parseSiteContent(text));
+        setBlocks(Array.isArray(data) ? data : []);
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : 'Failed to load site content');

@@ -1,13 +1,13 @@
 import axios from 'axios';
 
+// VITE_API_URL is fixed at build time (see .env.* / Docker ARG). Fallback = deployed API.
 const api = axios.create({
-    baseURL: 'https://chaotic-the-harmony-api.azurewebsites.net/api/v1',
+    baseURL: import.meta.env.VITE_API_URL ?? 'https://chaotic-the-harmony-api.azurewebsites.net/api/v1',
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Automatically add the token to every request if we have one
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {

@@ -1,8 +1,5 @@
 import type { SiteContentBlock } from '../types/siteContent';
 
-/**
- * Parses a single CSV line, respecting quoted fields that may contain commas.
- */
 function parseCSVLine(line: string): string[] {
   const result: string[] = [];
   let current = '';
@@ -23,10 +20,7 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-/**
- * Parses CSV text into an array of SiteContentBlock objects.
- * Handles quoted fields with commas.
- */
+/** Legacy CSV → blocks (quoted commas OK). Prefer the API in new code. */
 export function parseSiteContent(csvText: string): SiteContentBlock[] {
   const lines = csvText.trim().split('\n');
   if (lines.length < 2) return [];
