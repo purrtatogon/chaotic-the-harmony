@@ -8,6 +8,9 @@
   --gray-50: #797277;
   --gray-30: #DFDADE;
   --white: #FFFFFF;
+  /* WCAG 2.2 AAA (≥7:1 on #FFFFFF for normal text) — secondary / muted copy */
+  --admin-text-muted: #4a4a4a;
+  --admin-text-subtle: #525252;
 
   /* Yellow (Main) Palette */
   --main-100: #635700;
@@ -29,6 +32,8 @@
   --gray-50: #797277;
   --gray-30: #DFDADE;
   --white: #FFFFFF;
+  --admin-text-muted: #4a4a4a;
+  --admin-text-subtle: #525252;
 
   /* Yellow (Main) Palette */
   --main-100: #635700;

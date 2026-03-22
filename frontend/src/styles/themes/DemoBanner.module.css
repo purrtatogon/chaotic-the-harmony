@@ -1,0 +1,45 @@
+/**
+ * Demo banner — WCAG 2.2 AAA-oriented palette:
+ * Normal text: #FFFFFF on #2F253A (contrast > 7:1).
+ * Accent border is decorative; status is spelled out in text (not color-only).
+ */
+.banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #2f253a;
+  border-bottom: var(--border-width, 4px) solid #fedc2a;
+}
+
+.inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.badge {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.staticCopy {
+  font-weight: 600;
+}
+
+.countdown {
+  display: inline;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    border-bottom-width: var(--border-width, 4px);
+  }
+}
