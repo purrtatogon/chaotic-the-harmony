@@ -31,6 +31,7 @@ To ensure the database schema faced real-world challenges, I manually architecte
 
 - **World Building:** I authored the band's entire discography (album themes, tracklists) and merch lines to test the **Content Management** capabilities of the system.
 - **AI-Assisted Seeding:** Generative AI was used strictly as a "consultant" to identify gaps in the product lineup and to pattern-match realistic user personas for the **Order History** datasets.
+- **Site copy (CMS):** Marketing and page blocks are seeded from multiple CSV files under `backend/src/main/resources/data/` (`cms_*.csv`, e.g. home, store, about, support). At runtime the API exposes this content to the storefront; the React app no longer reads a static CSV from `public/`.
 
 ### 🎨 Design System & Accessibility
 
@@ -66,14 +67,15 @@ The project follows a **Microservices-ready Monolithic** structure (Monorepo spl
 
 **Backend (The "Brain")**
 - **Framework:** Java 21 + Spring Boot 3.4.2
-- **Security:** Spring Security with **JWT** (Stateless Auth) and Role-Based Access Control (RBAC).
+- **Security:** Spring Security with **JWT** (Stateless Auth) and Role-Based Access Control (RBAC). Public **GET** access is allowed for read-only site content at `/api/v1/site-content` (see backend README).
 - **Data Layer:** JPA/Hibernate with PostgreSQL.
 - **Media Strategy:** Stateless architecture; images are offloaded to **Cloudinary** via API.
 
 **Frontend (The "Face")**
 - **Framework:** React + Vite
-- **State Management:** Context API & Custom Hooks.
+- **State Management:** Context API & Custom Hooks (including dedicated contexts for theme, authentication, cart, and site content).
 - **Deployment:** Served via **Nginx** to handle client-side routing in a production environment.
+- **API base URL:** Vite injects `VITE_API_URL` at **build time**. Docker Compose passes this when building the frontend image so the browser can reach the backend on the host.
 - **Visual Feedback:** A custom **Demo Banner** provides users with a real-time countdown to the next automated system reset.
 
 ---
@@ -81,8 +83,11 @@ The project follows a **Microservices-ready Monolithic** structure (Monorepo spl
 ## Features
 
 ### 🛒 CTH Storefront (Public Customer View)
-- **Dynamic Catalog:** Fetches "Active" products and news articles.
-- **Rich Content:** Displays artist bios and product details using **React-Markdown**.
+- **Dynamic Catalog:** Fetches "Active" products and related content.
+- **Rich Content:** Displays artist bios, FAQs, and product details using **React-Markdown** where applicable.
+- **API-driven copy:** Home, store, and other sections consume **site content blocks** from the backend API instead of a checked-in static CSV.
+- **Store experience:** Structured store views (collections, browse sections, featured areas) with configuration-driven sections.
+- **Account flows:** Customer login and sign-up views wired to the existing auth API patterns.
 - **Self-Healing UI:** Informs users of the 2-hour reset cycle to ensure transparency of demo data.
 
 ### 🔐 Admin Dashboard (Internal IMS & CMS)
@@ -98,12 +103,12 @@ The project follows a **Microservices-ready Monolithic** structure (Monorepo spl
 - ✅ **Cloud Infrastructure:** Migrated from local dev to **Azure Cloud**.
 - ✅ **Automated Resilience:** GitHub Actions "Self-Heal" pipeline is live and stable.
 - ✅ **Media Storage:** Integrated **Cloudinary** for scalable asset management.
+- ✅ **CMS API:** Site copy is persisted in PostgreSQL, seeded from `cms_*.csv`, and served to the storefront via REST.
 - 🚧 **Progressive Asset Implementation:** Assets are being integrated iteratively. To ensure accessibility and layout stability during development, placeholder SVGs with descriptive alt-text are used where final media is currently pending.
-- 🚧 **Screen Reader friendly:** Keyboard navigation and comprehensive alt-text coverage for screen readers are currently under active development.
+- 🚧 **Screen Reader friendly:** Keyboard navigation, focus management, and comprehensive alt-text coverage for screen readers are under active development.
 - 🚧 **Storefront:** Finalizing the public checkout flow.
 - ⏳ **Notifications:** Planned integration with **SendGrid** for order confirmations.
 - ⏳ **Testing:** Expanding JUnit 5 test coverage for the Service Layer.
-
 
 ---
 
@@ -113,56 +118,67 @@ You can run the full stack using Docker (recommended for speed) or manually if y
 
 ### ⚙️ Step 0: Configuration
 Regardless of the method chosen, you must set up your environment variables:
-1.  **Duplicate the example file:**
- ```bash  
-  cp .env.example .env
-  ```
+
+1. **Duplicate the example file (repo root):**
+   ```bash
+   cp .env.example .env
+   ```
 
 2. **Update variables:** Add your DB credentials and Cloudinary keys. If keys are left blank, the system automatically defaults to Mock Mode, using local placeholder assets to ensure the app remains functional.
----  
+
+3. **Frontend API URL (manual `npm run dev` only):** Ensure `frontend/.env.development` defines `VITE_API_URL` (for example `http://localhost:8080/api/v1`). Vite reads this when you run the dev server. Do not commit secrets; use the same pattern in production via your deployment pipeline or `frontend/.env.production`.
+
+---
+
 ### Option A: Local Quickstart (Docker Desktop)
 The fastest way to see the app in action with a single command.
 
 1. **Prerequisites**
-- Docker Desktop installed and running.
+   - Docker Desktop installed and running.
 
 2. **Launch**  
    Build and start all services (Frontend, Backend, and Database) in detached mode:
- ```bash  
-  docker-compose up --build -d  
- ```
+   ```bash
+   docker-compose up --build -d
+   ```
 
 3. **Access**
-- **Storefront:** http://localhost:3000
-- **Backend API:** http://localhost:8080
-- **Database:** localhost:5432
+   - **Storefront:** http://localhost:3000 (Compose maps the Nginx container to host port `3000`)
+   - **Backend API:** http://localhost:8080
+   - **Database:** localhost:5432
+
+---
 
 ### Option B: Local Manual Setup
 Best for active development, hot-reloading, and deep debugging.
 
 1. **Prerequisites**
-- **Java 21** (for the Spring Boot Backend)
-- **Node.js 20+** (for the React Frontend)
-- **PostgreSQL 16+** (If you prefer to run the database outside of Docker)
+   - **Java 21** (for the Spring Boot Backend)
+   - **Node.js 20+** (for the React Frontend)
+   - **PostgreSQL 16+** (if you prefer to run the database outside of Docker)
 
-2. **Database**
-   Ensure a local Postgres instance is running with a database named chaotic_the_harmony_dev (matching your local profile settings).
+2. **Database**  
+   Ensure a local Postgres instance is running with a database named `chaotic_the_harmony_dev` (matching your local profile settings).
 
 3. **Backend (Spring Boot)**
- ```bash  
-  cd backend
-  mvn spring-boot:run -Dspring-boot.run.profiles=local  
-```
+   ```bash
+   cd backend
+   mvn spring-boot:run -Dspring-boot.run.profiles=local
+   ```
 
 4. **Frontend (React/Vite)**
- ```bash  
-  cd frontend
-  npm install
-  npm run dev
-```
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+5. **Access (manual)**  
+   - **Storefront (Vite dev server):** http://localhost:5173  
+   - **Backend API:** http://localhost:8080  
 
 ---
-    
+
 ## 🔑 Demo Credentials
 
 To simulate a high-volume production environment, the database is pre-seeded with **190+ users** (including 150 customers and 40 staff members) to demonstrate **Pagination**, **Filtering**, and **Role-Based Access Control (RBAC)**.
