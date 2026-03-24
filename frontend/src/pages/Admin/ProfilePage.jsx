@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { userApi } from '../../api/user';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import ItemDetailField from '../../components/ItemDetailField';
-import Loading from '../../components/Loading';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import Form from '../../components/Form';
-import FormActions from '../../components/FormActions';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import ItemDetailField from '../../components/Admin/ItemDetailField';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
+import Button from '../../components/Global/Button';
+import Input from '../../components/Global/Input';
+import Form from '../../components/Global/Form';
+import FormActions from '../../components/Global/FormActions';
 import { getAvatarUrl, getRoleBadgeClassName, getRoleDisplayName } from '../../utils/userUtils';
 
 const ProfilePage = () => {
@@ -95,7 +96,7 @@ const ProfilePage = () => {
   };
 
   if (loading) return <Loading message="Fetching profile..." />;
-  if (error) return <div style={{ color: 'red', padding: '20px' }}>{error}</div>;
+  if (error) return <Error message={error} />;
 
   return (
     <div className={styles.pageContent}>
@@ -111,7 +112,7 @@ const ProfilePage = () => {
           </div>
           <div className={styles.profileInfo}>
             <h1 className={styles.profileName}>{user.fullName}</h1>
-            <span className={getRoleBadgeClassName(styles, user.role)} style={{ display: 'inline-block', marginTop: '4px' }}>
+            <span className={`${getRoleBadgeClassName(styles, user.role)} ${styles.roleBadgeSpacing}`.trim()}>
               {getRoleDisplayName(user.role)}
             </span>
           </div>

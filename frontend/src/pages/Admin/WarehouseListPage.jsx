@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { productApi } from '../../api/product';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import ListContainer from '../../components/ListContainer';
-import Table from '../../components/Table';
-import StatCard from '../../components/StatCard';
-import Button from '../../components/Button';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
+import PageHeader from '../../components/Admin/PageHeader';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import ListContainer from '../../components/Admin/ListContainer';
+import Table from '../../components/Global/Table';
+import StatCard from '../../components/Admin/StatCard';
+import Button from '../../components/Global/Button';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
 
 const WarehouseListPage = () => {
   const theme = useTheme();
@@ -73,13 +73,14 @@ const WarehouseListPage = () => {
 
       <ListContainer title="Storage Zones" count={activeZones}>
         <Table
+          caption="Warehouse zones and stock summary"
           columns={['Zone ID', 'Unique Products', 'Total Variants', 'Available Stock', 'Actions']}
           data={inventory}
           renderRow={(item) => [
-            <td key="zone" style={{ fontWeight: 'bold' }}>{item.zone}</td>,
+            <td key="zone" className={styles.tableCellStrong}>{item.zone}</td>,
             <td key="products">{item.uniqueProducts.size} Products</td>,
             <td key="variants">{item.totalItems} Variants</td>,
-            <td key="stock" style={{ fontFamily: 'monospace' }}>{item.stockCount} units</td>,
+            <td key="stock" className={styles.tableCellMono}>{item.stockCount} units</td>,
             <td key="actions">
               <Button 
                 size="small" 
@@ -93,9 +94,9 @@ const WarehouseListPage = () => {
         />
       </ListContainer>
 
-      <div style={{ marginTop: '24px' }}>
+      <div className={styles.pageSectionSpaced}>
         <ItemDetailCard title="Warehouse Map Overview">
-          <p style={{ color: '#666' }}>
+          <p className={styles.warehouseInfoText}>
             All operations are centralized in our Helsinki hub. Stock is organized into alphanumeric zones (e.g., Zone-C-01 for CD/Music media).
           </p>
         </ItemDetailCard>

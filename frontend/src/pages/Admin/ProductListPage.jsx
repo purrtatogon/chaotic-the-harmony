@@ -4,10 +4,10 @@ import { productApi } from '../../api/product';
 import { categoryApi } from '../../api/category';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import Button from '../../components/Button';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
+import PageHeader from '../../components/Admin/PageHeader';
+import Button from '../../components/Global/Button';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
 import { formatCurrency } from '../../utils/formatters';
 
 
@@ -163,20 +163,9 @@ const ProductListPage = () => {
       />
 
       {/*███████ CATEGORY BANNER ███████*/}
-      <div style={{ 
-        marginBottom: '24px', 
-        padding: '16px', 
-        border: '3px solid black',
-        backgroundColor: '#f5f5f5'
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '16px', 
-          flexWrap: 'wrap',
-          marginBottom: '8px'
-        }}>
-          <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>CATEGORIES:</span>
+      <div className={styles.categorySummaryBanner}>
+        <div className={styles.categorySummaryInner}>
+          <span className={styles.categorySummaryLabel}>Categories</span>
           {categories.length > 0 ? (
             categories.map(cat => {
               const count = categoryCounts[cat.name] || 0;
@@ -200,7 +189,7 @@ const ProductListPage = () => {
               );
             })
           ) : (
-            <span style={{ fontSize: '0.85rem', color: '#666' }}>No categories available</span>
+            <span className={styles.categorySummaryEmpty}>No categories available</span>
           )}
           {categoryCounts['Uncategorized'] > 0 && (
             <span 
@@ -213,7 +202,7 @@ const ProductListPage = () => {
       </div>
 
       {/*███████ ADD PRODUCT BUTTON ███████*/}
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-start' }}>
+      <div className={styles.pageActionBar}>
         <Button variant="primary" onClick={() => navigate('/admin/products/new')}>
           + Add New Product
         </Button>
@@ -284,16 +273,17 @@ const ProductListPage = () => {
       {/*███████ TABLE ███████*/}
       <div className={styles.tableContainer}>
         <table className={styles.productTable}>
+          <caption className="srOnly">Product inventory with expandible variant rows</caption>
           <thead>
             <tr className={styles.productTableHeader}>
-              <th className={styles.productTableCell} style={{ width: '44px' }}></th>
-              <th className={styles.productTableCell}>Image</th>
-              <th className={styles.productTableCell}>Name</th>
-              <th className={styles.productTableCell}>Codes</th>
-              <th className={styles.productTableCell}>Category</th>
-              <th className={styles.productTableCell}>Price</th>
-              <th className={styles.productTableCell}>Total Stock</th>
-              <th className={styles.productTableCell}>Actions</th>
+              <th scope="col" className={`${styles.productTableCell} ${styles.productTableColExpand}`.trim()} />
+              <th scope="col" className={styles.productTableCell}>Image</th>
+              <th scope="col" className={styles.productTableCell}>Name</th>
+              <th scope="col" className={styles.productTableCell}>Codes</th>
+              <th scope="col" className={styles.productTableCell}>Category</th>
+              <th scope="col" className={styles.productTableCell}>Price</th>
+              <th scope="col" className={styles.productTableCell}>Total Stock</th>
+              <th scope="col" className={styles.productTableCell}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -305,13 +295,13 @@ const ProductListPage = () => {
               return (
                 <React.Fragment key={product.id}>
                 <tr className={styles.productTableRow}>
-                  <td className={styles.productTableCell} style={{ verticalAlign: 'middle' }}>
+                  <td className={`${styles.productTableCell} ${styles.productTableCellMiddle}`.trim()}>
                     {variants.length > 0 && (
                       <button
                         type="button"
                         onClick={() => toggleExpanded(product.id)}
-                        className={styles.button}
-                        style={{ minWidth: '36px', padding: '6px 10px', fontSize: '1rem' }}
+                        className={`${styles.button} ${styles.expandRowToggle}`.trim()}
+                        aria-expanded={isExpanded}
                         aria-label={isExpanded ? 'Collapse variants' : 'Expand variants'}
                       >
                         {isExpanded ? '−' : '+'}
@@ -328,10 +318,10 @@ const ProductListPage = () => {
                     </div>
                   </td>
                   
-                  <td className={styles.productTableCell} style={{ fontWeight: 'bold' }}>{product.name}</td>
+                  <td className={`${styles.productTableCell} ${styles.tableCellStrong}`.trim()}>{product.name}</td>
                   
                   <td className={styles.productTableCell}>
-                    <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <div className={styles.productCodesStack}>
                       <span><span className={styles.textMuted}>Type:</span> {product.productType}</span>
                       <span><span className={styles.textMuted}>Theme:</span> {product.themeCode}</span>
                       <span><span className={styles.textMuted}>Design:</span> {product.designCode}</span>
@@ -357,7 +347,7 @@ const ProductListPage = () => {
                     })()}
                   </td>
 
-                  <td className={styles.productTableCell} style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>
+                  <td className={`${styles.productTableCell} ${styles.tableCellMono} ${styles.tableCellStrong}`.trim()}>
                     {getPriceDisplay(product)}
                   </td>
                   
@@ -390,34 +380,35 @@ const ProductListPage = () => {
                 </tr>
                 {isExpanded && variants.length > 0 && (
                   <tr className={styles.productTableRow}>
-                    <td colSpan={8} className={styles.productTableCell} style={{ padding: '0', borderTop: 'none', backgroundColor: 'var(--gray-30)', verticalAlign: 'top' }}>
-                      <div style={{ padding: '12px 16px' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '0.85rem' }}>Variants</div>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                    <td colSpan={8} className={`${styles.productTableCell} ${styles.productNestedCell}`.trim()}>
+                      <div className={styles.productNestedInner}>
+                        <div className={styles.productNestedTitle}>Variants</div>
+                        <table className={styles.productNestedTable}>
+                          <caption className="srOnly">Variants for {product.name}</caption>
                           <thead>
-                            <tr style={{ borderBottom: '2px solid var(--gray-100)' }}>
-                              <th style={{ textAlign: 'left', padding: '6px 8px' }}>SKU</th>
-                              <th style={{ textAlign: 'left', padding: '6px 8px' }}>Size</th>
-                              <th style={{ textAlign: 'left', padding: '6px 8px' }}>Variant Code</th>
-                              <th style={{ textAlign: 'right', padding: '6px 8px' }}>Stock</th>
-                              <th style={{ textAlign: 'left', padding: '6px 8px' }}>Status</th>
+                            <tr className={styles.productNestedTheadRow}>
+                              <th scope="col" className={styles.productNestedTh}>SKU</th>
+                              <th scope="col" className={styles.productNestedTh}>Size</th>
+                              <th scope="col" className={styles.productNestedTh}>Variant Code</th>
+                              <th scope="col" className={`${styles.productNestedTh} ${styles.productNestedThRight}`.trim()}>Stock</th>
+                              <th scope="col" className={styles.productNestedTh}>Status</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {variants.map(v => {
+                            {variants.map((v) => {
                               const qty = v.inventory?.stockQuantity ?? 0;
                               const isOut = qty === 0;
                               return (
-                                <tr key={v.id} style={{ borderBottom: '1px solid var(--gray-30)' }}>
-                                  <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>{v.sku || '—'}</td>
-                                  <td style={{ padding: '6px 8px' }}>{v.size || '—'}</td>
-                                  <td style={{ padding: '6px 8px' }}>{v.variantCode || '—'}</td>
-                                  <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 'bold' }}>{qty} units</td>
-                                  <td style={{ padding: '6px 8px' }}>
+                                <tr key={v.id} className={styles.productNestedBodyRow}>
+                                  <td className={`${styles.productNestedTd} ${styles.productNestedTdMono}`.trim()}>{v.sku || '—'}</td>
+                                  <td className={styles.productNestedTd}>{v.size || '—'}</td>
+                                  <td className={styles.productNestedTd}>{v.variantCode || '—'}</td>
+                                  <td className={`${styles.productNestedTd} ${styles.productNestedStockCell}`.trim()}>{qty} units</td>
+                                  <td className={styles.productNestedTd}>
                                     {isOut ? (
                                       <span className={styles.textError}>Out of stock</span>
                                     ) : (
-                                      <span style={{ color: 'var(--main-100)' }}>In stock</span>
+                                      <span className={styles.stockStatusOk}>In stock</span>
                                     )}
                                   </td>
                                 </tr>
@@ -426,7 +417,7 @@ const ProductListPage = () => {
                           </tbody>
                         </table>
                         {outOfStockVariants.length > 0 && (
-                          <div style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--gray-50)' }}>
+                          <div className={styles.productNestedFootnote}>
                             {outOfStockVariants.length} variant{outOfStockVariants.length !== 1 ? 's' : ''} out of stock
                           </div>
                         )}

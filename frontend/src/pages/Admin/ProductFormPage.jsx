@@ -4,15 +4,15 @@ import { productApi } from '../../api/product';
 import { categoryApi } from '../../api/category';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import Form from '../../components/Form';
-import FormRow from '../../components/FormRow';
-import FormActions from '../../components/FormActions';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
+import PageHeader from '../../components/Admin/PageHeader';
+import Button from '../../components/Global/Button';
+import Input from '../../components/Global/Input';
+import Form from '../../components/Global/Form';
+import FormRow from '../../components/Global/FormRow';
+import FormActions from '../../components/Global/FormActions';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
 
 const ProductFormPage = () => {
   const theme = useTheme();
@@ -274,10 +274,9 @@ const ProductFormPage = () => {
               {!isNew && (
                 <Button 
                   type="button" 
-                  variant="secondary" 
+                  variant="danger" 
                   onClick={handleDelete} 
                   disabled={submitting}
-                  style={{ backgroundColor: '#fee2e2', color: '#991b1b', borderColor: '#991b1b' }}
                 >
                   Delete Product
                 </Button>

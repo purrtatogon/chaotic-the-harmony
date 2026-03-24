@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
 import { authApi } from '../../api/auth';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+import Input from '../../components/Global/Input';
+import Button from '../../components/Global/Button';
 
 const AdminLoginPage = () => {
   const theme = useTheme();
@@ -41,15 +41,11 @@ const AdminLoginPage = () => {
         <p className={styles.adminLoginSubtitle}>Staff Login</p>
         
         {error && (
-          <div style={{ 
-            padding: '12px', 
-            marginBottom: '16px', 
-            backgroundColor: 'var(--secondary-05)', 
-            border: 'var(--border-width) solid var(--secondary-100)',
-            color: 'var(--secondary-100)',
-            fontWeight: 700
-          }}>
-            {error}
+          <div className={styles.adminLoginError} role="alert">
+            <span className={styles.adminLoginErrorIcon} aria-hidden="true">
+              !
+            </span>
+            <span>{error}</span>
           </div>
         )}
 
@@ -74,7 +70,7 @@ const AdminLoginPage = () => {
             disabled={loading}
           />
           
-          <Button type="submit" variant="primary" style={{ width: '100%' }} disabled={loading}>
+          <Button type="submit" variant="primary" className={styles.fullWidthButton} disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </Button>
         </form>

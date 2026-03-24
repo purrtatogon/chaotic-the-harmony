@@ -3,11 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { productApi } from '../../api/product';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import Button from '../../components/Button';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
+import PageHeader from '../../components/Admin/PageHeader';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import Button from '../../components/Global/Button';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
 import { formatCurrency } from '../../utils/formatters';
 
 const WarehouseDetailPage = () => {
@@ -79,7 +79,7 @@ const WarehouseDetailPage = () => {
         }
       />
 
-      <div className={styles.statsGrid} style={{ marginBottom: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+      <div className={`${styles.statsGrid} ${styles.warehouseDetailStats}`.trim()}>
         <div className={styles.dashboardStatCard}>
           <span className={styles.dashboardStatTitle}>Total Products</span>
           <span className={styles.dashboardStatValue}>{products.length}</span>
@@ -98,7 +98,7 @@ const WarehouseDetailPage = () => {
 
       {products.length === 0 ? (
         <ItemDetailCard title="No Inventory" fullWidth>
-          <p style={{ textAlign: 'center', padding: '24px', color: '#666' }}>
+          <p className={styles.emptyStateText}>
             This zone currently has no products assigned.
           </p>
         </ItemDetailCard>
@@ -123,11 +123,11 @@ const WarehouseDetailPage = () => {
                 </Button>
               }
             >
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '12px' }}>
+              <div className={styles.zoneProductBlock}>
+                <div className={styles.zoneProductMetaRow}>
                   <div>
                     <span className={styles.textMuted}>Product ID:</span>{' '}
-                    <span style={{ fontFamily: 'monospace' }}>#{product.id}</span>
+                    <span className={styles.tableCellMono}>#{product.id}</span>
                   </div>
                   <div>
                     <span className={styles.textMuted}>Category:</span>{' '}
@@ -141,7 +141,7 @@ const WarehouseDetailPage = () => {
                   </div>
                 </div>
                 {product.themeCode && (
-                  <div style={{ fontSize: '0.9rem', color: '#666' }}>
+                  <div className={styles.zoneProductThemeLine}>
                     <span className={styles.textMuted}>Theme:</span> {product.themeCode}
                     {product.designCode && (
                       <> | <span className={styles.textMuted}>Design:</span> {product.designCode}</>
@@ -152,14 +152,17 @@ const WarehouseDetailPage = () => {
 
               <div className={styles.tableContainer}>
                 <table className={styles.productTable}>
+                  <caption className="srOnly">
+                    Variants in zone {decodedZoneName} for {product.name}
+                  </caption>
                   <thead>
                     <tr className={styles.productTableHeader}>
-                      <th className={styles.productTableCell}>Image</th>
-                      <th className={styles.productTableCell}>SKU</th>
-                      <th className={styles.productTableCell}>Size</th>
-                      <th className={styles.productTableCell}>Variant Code</th>
-                      <th className={styles.productTableCell}>Price (EUR)</th>
-                      <th className={styles.productTableCell}>Stock Quantity</th>
+                      <th scope="col" className={styles.productTableCell}>Image</th>
+                      <th scope="col" className={styles.productTableCell}>SKU</th>
+                      <th scope="col" className={styles.productTableCell}>Size</th>
+                      <th scope="col" className={styles.productTableCell}>Variant Code</th>
+                      <th scope="col" className={styles.productTableCell}>Price (EUR)</th>
+                      <th scope="col" className={styles.productTableCell}>Stock Quantity</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -173,56 +176,26 @@ const WarehouseDetailPage = () => {
                         <tr key={variant.id} className={styles.productTableRow}>
                           <td className={styles.productTableCell}>
                             {displayImage ? (
-                              <div style={{ position: 'relative', width: '60px', height: '60px' }}>
+                              <div className={styles.variantImgWrap}>
                                 <img 
                                   src={displayImage.imageUrl} 
                                   alt={displayImage.altText || `${variant.sku} image`}
-                                  style={{ 
-                                    width: '100%', 
-                                    height: '100%', 
-                                    objectFit: 'cover',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ddd'
-                                  }}
+                                  className={styles.variantThumbImg}
                                   title={displayImage.altText || ''}
                                 />
                                 {variantImages.length > 1 && (
-                                  <span style={{
-                                    position: 'absolute',
-                                    top: '-4px',
-                                    right: '-4px',
-                                    background: '#007bff',
-                                    color: 'white',
-                                    borderRadius: '50%',
-                                    width: '18px',
-                                    height: '18px',
-                                    fontSize: '0.7rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 'bold'
-                                  }}>
+                                  <span className={styles.variantImgCountBadge}>
                                     {variantImages.length}
                                   </span>
                                 )}
                               </div>
                             ) : (
-                              <div style={{ 
-                                width: '60px', 
-                                height: '60px', 
-                                background: '#f0f0f0',
-                                borderRadius: '4px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#999',
-                                fontSize: '0.7rem'
-                              }}>
+                              <div className={styles.variantNoImg}>
                                 No image
                               </div>
                             )}
                           </td>
-                          <td className={styles.productTableCell} style={{ fontFamily: 'monospace' }}>
+                          <td className={`${styles.productTableCell} ${styles.tableCellMono}`.trim()}>
                             {variant.sku}
                           </td>
                           <td className={styles.productTableCell}>
@@ -238,7 +211,7 @@ const WarehouseDetailPage = () => {
                               return eurPrice ? (
                                 <strong>{formatCurrency(eurPrice.amount, 'EUR')}</strong>
                               ) : (
-                                <span style={{ color: '#666' }}>N/A</span>
+                                <span className={styles.variantPriceMuted}>N/A</span>
                               );
                             })()}
                           </td>
@@ -246,7 +219,7 @@ const WarehouseDetailPage = () => {
                             {variant.inventory?.stockQuantity === 0 ? (
                               <span className={styles.textError}>Out of Stock</span>
                             ) : (
-                              <span style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>
+                              <span className={styles.stockQtyMono}>
                                 {variant.inventory?.stockQuantity || 0} units
                               </span>
                             )}

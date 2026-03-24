@@ -3,21 +3,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { orderApi } from '../../api/order';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import Button from '../../components/Button';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
+import PageHeader from '../../components/Admin/PageHeader';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import Button from '../../components/Global/Button';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+
 const getOrderStatusBadgeClass = (styles, status) => {
   if (!status) return styles.orderStatusUnknown;
   const key = `orderStatus${String(status).toUpperCase()}`;
   return styles[key] || styles.orderStatusUnknown;
 };
 
-/**
- * Parse slug "2025ordernr1101" -> order id 1101
- */
 const parseOrderSlug = (slug) => {
   if (!slug) return null;
   const match = slug.match(/ordernr(\d+)$/i);
@@ -72,53 +70,62 @@ const OrderDetailPage = () => {
       />
 
       <ItemDetailCard title="Order details" fullWidth>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+        <div className={styles.orderMetaGrid}>
           <div>
-            <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Customer</p>
+            <p className={styles.orderMetaLabel}>Customer</p>
             <p>{order.customer?.fullName}</p>
-            <p style={{ fontSize: '0.85rem', color: '#666' }}>{order.customer?.email}</p>
+            <p className={styles.orderMetaEmail}>{order.customer?.email}</p>
           </div>
           <div>
-            <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Date</p>
+            <p className={styles.orderMetaLabel}>Date</p>
             <p>{formatDate(order.orderDate)}</p>
           </div>
           <div>
-            <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Total Amount</p>
-            <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{formatCurrency(order.totalAmount, order.currency || 'EUR')}</p>
+            <p className={styles.orderMetaLabel}>Total Amount</p>
+            <p className={styles.orderTotalValue}>
+              {formatCurrency(order.totalAmount, order.currency || 'EUR')}
+            </p>
           </div>
           <div>
-            <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Status</p>
+            <p className={styles.orderMetaLabel}>Status</p>
             <span className={`${styles.roleBadge} ${getOrderStatusBadgeClass(styles, order.status)}`}>
               {order.status}
             </span>
           </div>
         </div>
 
-        <div style={{ border: '3px solid black', padding: '16px', background: '#f5f5f5' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '12px', textTransform: 'uppercase' }}>Items in Order</p>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className={styles.orderLineItemsPanel}>
+          <p className={styles.orderLineItemsTitle}>Items in order</p>
+          <table className={styles.orderLineItemsTable}>
+            <caption className="srOnly">Line items for this order</caption>
             <thead>
-              <tr style={{ textAlign: 'left', borderBottom: '2px solid black' }}>
-                <th style={{ padding: '8px' }}>Product</th>
-                <th style={{ padding: '8px' }}>SKU</th>
-                <th style={{ padding: '8px' }}>Qty</th>
-                <th style={{ padding: '8px' }}>Price Each</th>
-                <th style={{ padding: '8px' }}>Subtotal</th>
+              <tr className={styles.orderLineItemsHeadRow}>
+                <th scope="col" className={styles.orderLineItemsTh}>Product</th>
+                <th scope="col" className={styles.orderLineItemsTh}>SKU</th>
+                <th scope="col" className={styles.orderLineItemsTh}>Qty</th>
+                <th scope="col" className={styles.orderLineItemsTh}>Price Each</th>
+                <th scope="col" className={styles.orderLineItemsTh}>Subtotal</th>
               </tr>
             </thead>
             <tbody>
               {order.items?.map((item, idx) => (
-                <tr key={idx} style={{ borderBottom: '1px solid #ddd' }}>
-                  <td style={{ padding: '8px' }}>
+                <tr key={idx} className={styles.orderLineItemsRow}>
+                  <td className={styles.orderLineItemsTd}>
                     {item.variant?.product?.name}
-                    <span style={{ fontSize: '0.8rem', color: '#666', marginLeft: '8px' }}>
+                    <span className={styles.orderLineVariantMeta}>
                       ({item.variant?.size || 'N/A'})
                     </span>
                   </td>
-                  <td style={{ padding: '8px', fontFamily: 'monospace' }}>{item.variant?.sku}</td>
-                  <td style={{ padding: '8px' }}>{item.quantity}</td>
-                  <td style={{ padding: '8px' }}>{formatCurrency(item.priceAtPurchase, order.currency || 'EUR')}</td>
-                  <td style={{ padding: '8px', fontWeight: 'bold' }}>{formatCurrency(item.priceAtPurchase * item.quantity, order.currency || 'EUR')}</td>
+                  <td className={`${styles.orderLineItemsTd} ${styles.orderLineSkuCell}`.trim()}>
+                    {item.variant?.sku}
+                  </td>
+                  <td className={styles.orderLineItemsTd}>{item.quantity}</td>
+                  <td className={styles.orderLineItemsTd}>
+                    {formatCurrency(item.priceAtPurchase, order.currency || 'EUR')}
+                  </td>
+                  <td className={`${styles.orderLineItemsTd} ${styles.orderLineSubtotalCell}`.trim()}>
+                    {formatCurrency(item.priceAtPurchase * item.quantity, order.currency || 'EUR')}
+                  </td>
                 </tr>
               ))}
             </tbody>

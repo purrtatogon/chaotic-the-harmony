@@ -5,17 +5,17 @@ import { productApi } from '../../api/product';
 import { categoryApi } from '../../api/category';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import Button from '../../components/Button';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import ItemDetailField from '../../components/ItemDetailField';
-import Input from '../../components/Input';
-import Form from '../../components/Form';
-import FormActions from '../../components/FormActions';
-import FormRow from '../../components/FormRow';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
-import ProductImageGallery from '../../components/ProductImageGallery';
+import PageHeader from '../../components/Admin/PageHeader';
+import Button from '../../components/Global/Button';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import ItemDetailField from '../../components/Admin/ItemDetailField';
+import Input from '../../components/Global/Input';
+import Form from '../../components/Global/Form';
+import FormActions from '../../components/Global/FormActions';
+import FormRow from '../../components/Global/FormRow';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
+import ProductImageGallery from '../../components/Admin/ProductImageGallery';
 import { formatCurrency } from '../../utils/formatters';
 
 const ProductDetailPage = () => {
@@ -144,11 +144,11 @@ const ProductDetailPage = () => {
         subtitle={`Product ID: ${product.id}`}
         actions={
           <div className={styles.flexRow}>
-            <Button variant="secondary" onClick={() => navigate(`/admin/products/${id}/edit`)}>
-              Edit Product
-            </Button>
             <Button onClick={() => navigate('/admin/products')}>
               ← Back to Products
+            </Button>
+            <Button variant="secondary" onClick={() => navigate(`/admin/products/${id}/edit`)}>
+              Edit Product
             </Button>
           </div>
         }
@@ -177,39 +177,29 @@ const ProductDetailPage = () => {
                   alt={displayImages[activeImageIndex]?.altText || product.name} 
                 />
                 {displayImages[activeImageIndex]?.altText && (
-                  <div style={{ 
-                    marginTop: '8px', 
-                    fontSize: '0.85rem', 
-                    color: '#666',
-                    fontStyle: 'italic'
-                  }}>
+                  <div className={styles.galleryAltNote}>
                     Alt text: {displayImages[activeImageIndex].altText}
                   </div>
                 )}
               </div>
               <div className={styles.galleryThumbnails}>
                 {displayImages.map((img, i) => (
-                  <div key={i} style={{ position: 'relative' }}>
-                    <img 
-                      src={img.imageUrl} 
-                      alt={img.altText || `Product image ${i + 1}`}
+                  <div key={i} className={styles.galleryThumbCell}>
+                    <button
+                      type="button"
+                      className={styles.galleryThumbButton}
                       onClick={() => setActiveImageIndex(i)}
-                      className={`${styles.galleryThumbnail} ${activeImageIndex === i ? styles.galleryThumbnailActive : ''}`}
-                    />
+                      aria-label={`Show product image ${i + 1} of ${displayImages.length}`}
+                      aria-pressed={activeImageIndex === i}
+                    >
+                      <img
+                        src={img.imageUrl}
+                        alt={img.altText || `Product image ${i + 1}`}
+                        className={`${styles.galleryThumbnail} ${activeImageIndex === i ? styles.galleryThumbnailActive : ''}`.trim()}
+                      />
+                    </button>
                     {img.altText && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: 'rgba(0,0,0,0.7)',
-                        color: 'white',
-                        fontSize: '0.65rem',
-                        padding: '2px 4px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }} title={img.altText}>
+                      <div className={styles.galleryThumbAltStrip} title={img.altText}>
                         {img.altText}
                       </div>
                     )}
@@ -284,11 +274,14 @@ const ProductDetailPage = () => {
             <Form onSubmit={(e) => { e.preventDefault(); handleUpdate('info'); }}>
               <FormRow>
                 <Input label="Name" name="name" value={formData.name || ''} onChange={handleChange} required />
-                <div style={{ flex: 1 }}>
-                  <label className={styles.categorySelectLabel}>Category</label>
-                  <select 
+                <div className={styles.formGrow}>
+                  <label htmlFor="product-category-select" className={styles.categorySelectLabel}>
+                    Category
+                  </label>
+                  <select
+                    id="product-category-select"
                     name="categoryId"
-                    value={formData.categoryId || ''} 
+                    value={formData.categoryId || ''}
                     onChange={handleChange}
                     className={styles.categorySelect}
                     required
@@ -331,15 +324,16 @@ const ProductDetailPage = () => {
         <ItemDetailCard title="Variants & Inventory">
           <div className={styles.tableContainer}>
             <table className={styles.productTable}>
+              <caption className="srOnly">Product variants, pricing, and inventory</caption>
               <thead>
                 <tr className={styles.productTableHeader}>
-                  <th className={styles.productTableCell}>Image</th>
-                  <th className={styles.productTableCell}>SKU</th>
-                  <th className={styles.productTableCell}>Size</th>
-                  <th className={styles.productTableCell}>Variant Code</th>
-                  <th className={styles.productTableCell}>Prices</th>
-                  <th className={styles.productTableCell}>Stock</th>
-                  <th className={styles.productTableCell}>Location</th>
+                  <th scope="col" className={styles.productTableCell}>Image</th>
+                  <th scope="col" className={styles.productTableCell}>SKU</th>
+                  <th scope="col" className={styles.productTableCell}>Size</th>
+                  <th scope="col" className={styles.productTableCell}>Variant Code</th>
+                  <th scope="col" className={styles.productTableCell}>Prices</th>
+                  <th scope="col" className={styles.productTableCell}>Stock</th>
+                  <th scope="col" className={styles.productTableCell}>Location</th>
                 </tr>
               </thead>
               <tbody>
@@ -353,69 +347,37 @@ const ProductDetailPage = () => {
                     <tr key={variant.id} className={styles.productTableRow}>
                       <td className={styles.productTableCell}>
                         {displayImage ? (
-                          <div style={{ position: 'relative', width: '60px', height: '60px' }}>
-                            <img 
-                              src={displayImage.imageUrl} 
+                          <div className={styles.variantImgWrap}>
+                            <img
+                              src={displayImage.imageUrl}
                               alt={displayImage.altText || `${variant.sku} image`}
-                              style={{ 
-                                width: '100%', 
-                                height: '100%', 
-                                objectFit: 'cover',
-                                borderRadius: '4px',
-                                border: '1px solid #ddd'
-                              }}
+                              className={styles.variantThumbImg}
                               title={displayImage.altText || ''}
                             />
                             {variantImages.length > 1 && (
-                              <span style={{
-                                position: 'absolute',
-                                top: '-4px',
-                                right: '-4px',
-                                background: '#007bff',
-                                color: 'white',
-                                borderRadius: '50%',
-                                width: '18px',
-                                height: '18px',
-                                fontSize: '0.7rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontWeight: 'bold'
-                              }}>
+                              <span className={styles.variantImgCountBadge} aria-label={`${variantImages.length} images`}>
                                 {variantImages.length}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div style={{ 
-                            width: '60px', 
-                            height: '60px', 
-                            background: '#f0f0f0',
-                            borderRadius: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#999',
-                            fontSize: '0.7rem'
-                          }}>
-                            No image
-                          </div>
+                          <div className={styles.variantNoImg}>No image</div>
                         )}
                       </td>
-                      <td className={styles.productTableCell} style={{ fontFamily: 'monospace' }}>{variant.sku}</td>
+                      <td className={`${styles.productTableCell} ${styles.tableCellMono}`.trim()}>{variant.sku}</td>
                       <td className={styles.productTableCell}>{variant.size || 'N/A'}</td>
                       <td className={styles.productTableCell}>{variant.variantCode || 'N/A'}</td>
                       <td className={styles.productTableCell}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <div className={styles.variantPriceCol}>
                           {Array.from(variant.prices || [])
-                            .filter(p => p.currencyCode === 'EUR')
+                            .filter((p) => p.currencyCode === 'EUR')
                             .map((price, idx) => (
-                              <span key={idx} style={{ fontSize: '0.85rem' }}>
+                              <span key={idx} className={styles.variantPriceLine}>
                                 <strong>{formatCurrency(price.amount, 'EUR')}</strong>
                               </span>
                             ))}
-                          {Array.from(variant.prices || []).filter(p => p.currencyCode === 'EUR').length === 0 && (
-                            <span style={{ fontSize: '0.85rem', color: '#666' }}>N/A</span>
+                          {Array.from(variant.prices || []).filter((p) => p.currencyCode === 'EUR').length === 0 && (
+                            <span className={styles.variantPriceMuted}>N/A</span>
                           )}
                         </div>
                       </td>

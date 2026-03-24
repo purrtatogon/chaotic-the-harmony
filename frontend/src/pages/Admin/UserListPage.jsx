@@ -1,33 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApi } from '../../hooks/useApi';
 import { userApi } from '../../api/user';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeStyles } from '../../utils/themeStyles';
-import PageHeader from '../../components/PageHeader';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import Form from '../../components/Form';
-import FormRow from '../../components/FormRow';
-import FormActions from '../../components/FormActions';
-import ItemDetailCard from '../../components/ItemDetailCard';
-import ListContainer from '../../components/ListContainer';
-import Table from '../../components/Table';
-import Loading from '../../components/Loading';
-import Error from '../../components/Error';
-import StatCard from '../../components/StatCard';
+import PageHeader from '../../components/Admin/PageHeader';
+import Button from '../../components/Global/Button';
+import Input from '../../components/Global/Input';
+import Form from '../../components/Global/Form';
+import FormRow from '../../components/Global/FormRow';
+import FormActions from '../../components/Global/FormActions';
+import ItemDetailCard from '../../components/Admin/ItemDetailCard';
+import ListContainer from '../../components/Admin/ListContainer';
+import Table from '../../components/Global/Table';
+import Loading from '../../components/Global/Loading';
+import Error from '../../components/Global/Error';
+import StatCard from '../../components/Admin/StatCard';
 import { getAvatarUrl, canManageUsers, canEditUser } from '../../utils/userUtils';
 
 const UserListPage = () => {
   const theme = useTheme();
   const styles = getThemeStyles(theme);
   const navigate = useNavigate();
-  const location = useLocation();
   const { data: users, loading, error, refetch } = useApi(() => userApi.getAll());
   
   const [activeTab, setActiveTab] = useState('ALL');
   const [isCreating, setIsCreating] = useState(false);
-  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -80,33 +78,17 @@ const UserListPage = () => {
     });
   };
 
-  const handleEdit = (user) => {
-    setEditingId(user.id);
-    setFormData({
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-      password: '',
-      phoneNumber: user.phoneNumber || '',
-      address: user.address || ''
-    });
-    setIsCreating(false);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setSubmitting(true);
       const payload = { ...formData };
-      if (!isCreating && !payload.password) delete payload.password;
 
       if (isCreating) {
         await userApi.create(payload);
-      } else {
-        await userApi.update(editingId, payload);
+        handleCancel();
+        refetch();
       }
-      handleCancel();
-      refetch();
     } catch (err) {
       alert('Failed to save user: ' + err.message);
     } finally {
@@ -116,29 +98,7 @@ const UserListPage = () => {
 
   const handleCancel = () => {
     setIsCreating(false);
-    setEditingId(null);
   };
-
-  // Open edit form when navigating from UserDetailPage with state.editUserId
-  useEffect(() => {
-    const editUserId = location.state?.editUserId;
-    if (editUserId && users?.length) {
-      const target = users.find(u => u.id === editUserId);
-      if (target) {
-        setEditingId(target.id);
-        setFormData({
-          fullName: target.fullName,
-          email: target.email,
-          role: target.role,
-          password: '',
-          phoneNumber: target.phoneNumber || '',
-          address: target.address || ''
-        });
-        setIsCreating(false);
-      }
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location.state?.editUserId, users, navigate, location.pathname]);
 
   const handleDelete = async (id) => {
     // 1. Ask for confirmation so users don't delete by accident
@@ -192,39 +152,28 @@ const UserListPage = () => {
         </div>
       )}
 
-      {((isCreating && canManageUsers()) || (editingId && canEditUser(filteredUsers?.find(u => u.id === editingId)))) && (
-        <ItemDetailCard title={isCreating ? 'Create New User' : 'Edit User'} fullWidth>
+      {isCreating && canManageUsers() && (
+        <ItemDetailCard title="Create New User" fullWidth>
           <Form onSubmit={handleSubmit}>
             <FormRow>
               <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} required />
-              {canManageUsers() && (
-                <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required />
-              )}
+              <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required />
             </FormRow>
 
-            {canManageUsers() && (
-              <FormRow>
-                <Input label="Role" name="role" type="select" value={formData.role} onChange={handleChange} required>
-                  <option value="SUPER_ADMIN">Super Admin</option>
-                  <option value="STORE_MANAGER">Store Manager</option>
-                  <option value="WAREHOUSE_STAFF">Warehouse Staff</option>
-                  <option value="SUPPORT_AGENT">Support Agent</option>
-                  <option value="AUDITOR">Auditor</option>
-                  <option value="CUSTOMER">Customer</option>
-                </Input>
-                <Input label={isCreating ? "Password" : "New Password (Optional)"} name="password" type="password" value={formData.password} onChange={handleChange} required={isCreating} />
-              </FormRow>
-            )}
-
-            {!canManageUsers() && editingId && (
-              <FormRow>
-                <Input label="Phone Number" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} />
-                <Input label="Address" name="address" value={formData.address || ''} onChange={handleChange} />
-              </FormRow>
-            )}
+            <FormRow>
+              <Input label="Role" name="role" type="select" value={formData.role} onChange={handleChange} required>
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="STORE_MANAGER">Store Manager</option>
+                <option value="WAREHOUSE_STAFF">Warehouse Staff</option>
+                <option value="SUPPORT_AGENT">Support Agent</option>
+                <option value="AUDITOR">Auditor</option>
+                <option value="CUSTOMER">Customer</option>
+              </Input>
+              <Input label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required />
+            </FormRow>
 
             <FormActions>
-              <Button type="submit" variant="primary" disabled={submitting}>{isCreating ? 'Create User' : 'Save Changes'}</Button>
+              <Button type="submit" variant="primary" disabled={submitting}>Create User</Button>
               <Button type="button" onClick={handleCancel}>Cancel</Button>
             </FormActions>
           </Form>
@@ -233,6 +182,7 @@ const UserListPage = () => {
 
       <ListContainer title={`${roles.find(r => r.id === activeTab).label}`} count={filteredUsers.length}>
         <Table
+          caption={`${roles.find((r) => r.id === activeTab)?.label ?? 'User'} accounts`}
           columns={columns}
           data={filteredUsers}
           renderRow={(user) => [
@@ -261,7 +211,11 @@ const UserListPage = () => {
           actions={(user) => (
             <div className={styles.flexRow}>
               <Button onClick={() => navigate(`/admin/users/${user.id}`)} size="small" variant="secondary">View</Button>
-              {canEditUser(user) && <Button onClick={() => handleEdit(user)} size="small">Edit</Button>}
+              {canEditUser(user) && (
+                <Button onClick={() => navigate(`/admin/users/${user.id}/edit`)} size="small">
+                  Edit
+                </Button>
+              )}
               {canManageUsers() && <Button variant="secondary" onClick={() => handleDelete(user.id)} size="small">Delete</Button>}
             </div>
           )}
