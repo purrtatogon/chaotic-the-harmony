@@ -32,7 +32,9 @@ jobs:
       # Build & Push Frontend
       - name: Build Frontend
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }} ./frontend
+          docker build \
+            --build-arg VITE_API_URL=${{ secrets.VITE_API_URL }} \
+            -t ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }} ./frontend
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}
 
       # Deploy to Azure App Service

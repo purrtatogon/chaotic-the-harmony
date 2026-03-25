@@ -5,7 +5,10 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
+# 1. Declare the build argument
 ARG VITE_API_URL
+
+# 2. Set it as an environment variable so Vite can see it during build
 ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
