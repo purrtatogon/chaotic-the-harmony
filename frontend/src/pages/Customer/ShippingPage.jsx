@@ -1,10 +1,6 @@
 import React from 'react';
-import ContentSection from '../../components/ContentSection';
+import ContentSection from '../../components/Customer/ContentSection';
 
-/**
- * Shipping page - renders content from site_content.csv (SHIPPING section).
- * Uses Customer Theme via CustomerLayout.
- */
 const ShippingPage = () => {
   return (
     <div>

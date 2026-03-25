@@ -1,10 +1,6 @@
 import React from 'react';
-import FAQSection from '../../components/FAQSection';
+import FAQSection from '../../components/Customer/FAQSection';
 
-/**
- * FAQ page - renders FAQ section as accordion from site_content.csv.
- * Uses Customer Theme via CustomerLayout.
- */
 const FAQPage = () => {
   return (
     <div>

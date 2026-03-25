@@ -1,10 +1,6 @@
 import React from 'react';
-import ContentSection from '../../components/ContentSection';
+import ContentSection from '../../components/Customer/ContentSection';
 
-/**
- * About page - renders content from site_content.csv (ABOUT section).
- * Uses Customer Theme via CustomerLayout.
- */
 const AboutPage = () => {
   return (
     <div>
