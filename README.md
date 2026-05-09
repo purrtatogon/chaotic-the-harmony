@@ -8,6 +8,10 @@ An admin platform and customer storefront for the fictional ska-punk band _"Chao
 
 **🔗 [Demo CTH Storefront (Customer Platform)](https://chaotic-the-harmony-web.salmonhill-e1429fb9.spaincentral.azurecontainerapps.io/)**
 
+> **Deployment Note:** This project was originally architected and deployed on Azure. It has been migrated to Railway to optimize operational costs and streamline the CI/CD pipeline while maintaining the same automated 'self-healing' database routines.
+>
+> **Automated Demo Maintenance:** Includes a GitHub Actions workflow that resets the PostgreSQL database every 8 hours via a custom SQL script, ensuring a clean state for every visitor.
+
 ---
 
 ## 🔑 Demo Credentials
