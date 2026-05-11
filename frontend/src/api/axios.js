@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     // Vite replaces this at build time; Docker/CI pass the same var.
-    baseURL: import.meta.env.VITE_API_URL ?? 'https://chaotic-the-harmony-api.azurewebsites.net/api/v1',
+    baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1',
     headers: {
         'Content-Type': 'application/json',
     },

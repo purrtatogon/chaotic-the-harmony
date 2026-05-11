@@ -36,8 +36,8 @@ services:
     env_file:
       - .env
     environment:
-      # For activating the 'docker' profile to load application-docker.properties
-      SPRING_PROFILES_ACTIVE: docker
+      # demo: seeding + scheduler beans; docker last: JDBC + ddl-auto + reset default (see application-*.properties)
+      SPRING_PROFILES_ACTIVE: demo,docker
       # Database (must match db service)
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-cthdb}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}

@@ -131,6 +131,15 @@ public class SeederService implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        reseedDemoData();
+    }
+
+    /**
+     * Full demo reset (truncate + reseed). Used on startup and on the UTC 8-hour schedule
+     * (see {@code DemoDataResetScheduler}), matching the storefront banner copy.
+     */
+    @Transactional
+    public void reseedDemoData() throws Exception {
         logger.info("Starting demo data seeding...");
 
         truncateAllTables();

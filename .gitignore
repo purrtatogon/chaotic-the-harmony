@@ -15,6 +15,9 @@ frontend/.env.*.local
 # Spring Boot local profile — DB password & JWT secret (use application-local.properties.example)
 backend/src/main/resources/application-local.properties
 
+# Local docs (Railway setup notes, personal references)
+docs/
+
 # OS
 .DS_Store
 *.DS_Store
