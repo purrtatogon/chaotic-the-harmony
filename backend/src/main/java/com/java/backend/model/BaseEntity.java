@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.data.domain.Persistable;
 
 /**
- * Seeds assign ids manually ({@link com.java.backend.service.SeederService} + CSV imports).
+ * Seeds assign ids manually ({@link com.java.backend.service.DatabaseSeederService} + CSV imports).
  * Implementing Persistable tricks the first INSERT so preset ids actually persist.
  */
 @MappedSuperclass

@@ -4,7 +4,10 @@ import styles from '../../styles/themes/DemoBanner.module.css';
 function formatCountdownLabel() {
   const now = new Date();
   const nextReset = new Date(now);
-  nextReset.setUTCHours(Math.ceil((now.getUTCHours() + 1) / 8) * 8, 0, 0, 0);
+  nextReset.setUTCHours(3, 0, 0, 0);
+  if (nextReset <= now) {
+    nextReset.setUTCDate(nextReset.getUTCDate() + 1);
+  }
 
   const diffMs = Math.max(0, nextReset - now);
   const totalMinutes = Math.floor(diffMs / 60000);
@@ -72,10 +75,10 @@ const DemoBanner = () => {
       aria-label="Demo environment notice"
     >
       <p className={styles.inner}>
-        <strong className={styles.badge}>Demo mode</strong>
+        <strong className={styles.badge}>Demo Mode:</strong>
         <span className={styles.staticCopy}>
           {' '}
-          — Sample data for system &quot;Chaotic The Harmony&quot; restores every eight hours (UTC).{' '}
+          Database resets every 24 hours at 03:00 UTC.{' '}
         </span>
         <span
           className={styles.countdown}

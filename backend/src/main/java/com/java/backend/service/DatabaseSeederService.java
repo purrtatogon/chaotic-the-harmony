@@ -8,18 +8,16 @@ import com.java.backend.repository.*;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180Parser;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -31,17 +29,19 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
- * One-shot CSV + Faker bootstrap when profiles include {@code demo}
- * ({@code local} / {@code docker} groups wire that up in {@code application.properties}).
+ * Loads CSV catalog data and deterministic demo personas when the database has no users yet.
+ * Empty-db detection avoids duplicate inserts when {@code ddl-auto=update} keeps data across restarts.
  */
 @Service
-@Profile("demo")
-public class SeederService implements CommandLineRunner {
+public class DatabaseSeederService implements CommandLineRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(SeederService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseSeederService.class);
 
     private static final String DEMO_STAFF_PASSWORD = "CTH-backline!123";
     private static final String DEMO_CUSTOMER_PASSWORD = "demoCTHcustomer!123";
@@ -59,8 +59,6 @@ public class SeederService implements CommandLineRunner {
             new Object[]{5L, "Kevin Malone",    "k.malone@cth-backline.com",  Role.AUDITOR}
     );
 
-    /* ── Fixed demo customers with deterministic personas ────────────── */
-
     private static final long TROY_ID    = 6L;
     private static final long DEWEY_ID   = 7L;
     private static final long BARBARA_ID = 8L;
@@ -71,22 +69,20 @@ public class SeederService implements CommandLineRunner {
             new Object[]{BARBARA_ID, "Barbara Howard",  "b.howard@abbott.edu",      "215-555-0147", "4200 Chestnut St, Philadelphia, PA 19104"}
     );
 
-    /* Vinyl variant IDs Troy owns (every limited edition pressing) */
     private static final long[] TROY_VINYL_VARIANT_IDS = {
-            1009, /* Spark Vinyl STD */
-            1010, 1011, 1012, /* Bird Vinyl ORG, BLU, GRN */
-            1013, 1014, /* Sweater Weather Vinyl STD, DLX */
-            1015, /* H.Y.T.T.? Vinyl STD */
-            1016, /* H.Y.P.E. Vinyl STD */
-            1017, 1018, 1019, 1020, /* Whelmed Vinyl UP, DWN, RGT, LFT */
-            1021, 1022, 1023, /* Collab Vinyl editions */
+            1009,
+            1010, 1011, 1012,
+            1013, 1014,
+            1015,
+            1016,
+            1017, 1018, 1019, 1020,
+            1021, 1022, 1023,
     };
 
-    /* Barbara's high-value variant picks (hoodies, sweaters, blankets) */
     private static final long[] BARBARA_VARIANT_IDS = {
-            1009,  /* Spark Vinyl (premium) */
-            1015,  /* H.Y.T.T.? Vinyl (marbled limited) */
-            1017,  /* Whelmed UP Vinyl */
+            1009,
+            1015,
+            1017,
     };
 
     @PersistenceContext
@@ -104,17 +100,17 @@ public class SeederService implements CommandLineRunner {
     private final AuditLogRepository auditLogRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public SeederService(UserRepository userRepository,
-                         CategoryRepository categoryRepository,
-                         ProductRepository productRepository,
-                         ProductVariantRepository productVariantRepository,
-                         ProductPriceRepository productPriceRepository,
-                         ProductInventoryRepository productInventoryRepository,
-                         OrderRepository orderRepository,
-                         ProductImageRepository productImageRepository,
-                         SiteContentRepository siteContentRepository,
-                         AuditLogRepository auditLogRepository,
-                         PasswordEncoder passwordEncoder) {
+    public DatabaseSeederService(UserRepository userRepository,
+                                 CategoryRepository categoryRepository,
+                                 ProductRepository productRepository,
+                                 ProductVariantRepository productVariantRepository,
+                                 ProductPriceRepository productPriceRepository,
+                                 ProductInventoryRepository productInventoryRepository,
+                                 OrderRepository orderRepository,
+                                 ProductImageRepository productImageRepository,
+                                 SiteContentRepository siteContentRepository,
+                                 AuditLogRepository auditLogRepository,
+                                 PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
@@ -131,23 +127,19 @@ public class SeederService implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        reseedDemoData();
-    }
+        if (userRepository.count() > 0) {
+            logger.info("Skipping database seed — users already exist.");
+            return;
+        }
 
-    /**
-     * Full demo reset (truncate + reseed). Used on startup and on the UTC 8-hour schedule
-     * (see {@code DemoDataResetScheduler}), matching the storefront banner copy.
-     */
-    @Transactional
-    public void reseedDemoData() throws Exception {
-        logger.info("Starting demo data seeding...");
+        logger.info("Starting database seed (empty user table)...");
 
-        truncateAllTables();
         migrateRoleConstraint();
         entityManager.flush();
-        entityManager.clear();
 
         seedStaffUsers();
+        seedFixedCustomers();
+
         seedCategories();
         seedProducts();
         seedVariants();
@@ -160,32 +152,13 @@ public class SeederService implements CommandLineRunner {
         seedProductImages();
         seedSiteContent();
 
-        entityManager.flush();
-        entityManager.clear();
-
-        List<User> fixedCustomers = seedFixedCustomers();
         List<User> fakerCustomers = seedFakerCustomers();
 
-        List<User> allCustomers = new ArrayList<>(fixedCustomers);
-        allCustomers.addAll(fakerCustomers);
-
-        generateFixedCustomerOrders(fixedCustomers);
+        generateFixedCustomerOrders(resolveFixedCustomersOrdered());
         generateOrders(fakerCustomers);
         seedAuditLog();
 
-        logger.info("Demo data seeding completed.");
-    }
-
-    // ─── Database Reset ──────────────────────────────────────────────
-
-    private void truncateAllTables() {
-        logger.info("Truncating all tables and resetting identity sequences...");
-        entityManager.createNativeQuery(
-            "TRUNCATE TABLE audit_log, order_items, orders, product_images, product_prices, " +
-            "products_inventory, product_variants, products, categories, " +
-            "app_users, site_content_entries RESTART IDENTITY CASCADE"
-        ).executeUpdate();
-        logger.info("All tables truncated.");
+        logger.info("Database seed completed.");
     }
 
     private void migrateRoleConstraint() {
@@ -202,11 +175,9 @@ public class SeederService implements CommandLineRunner {
         }
     }
 
-    // ─── Staff Users (IDs 1-5) ───────────────────────────────────────
-
     private void seedStaffUsers() {
         String encodedPassword = passwordEncoder.encode(DEMO_STAFF_PASSWORD);
-
+        List<User> batch = new ArrayList<>(DEMO_STAFF_USERS.size());
         for (Object[] row : DEMO_STAFF_USERS) {
             User user = new User();
             user.setId((Long) row[0]);
@@ -214,17 +185,15 @@ public class SeederService implements CommandLineRunner {
             user.setEmail((String) row[2]);
             user.setPassword(encodedPassword);
             user.setRole((Role) row[3]);
-            userRepository.save(user);
+            batch.add(user);
         }
+        userRepository.saveAll(batch);
         logger.info("Seeded {} hardcoded demo staff users.", DEMO_STAFF_USERS.size());
     }
 
-    // ─── Fixed Demo Customers (IDs 6-8) then Faker (IDs 9-108) ──────
-
-    private List<User> seedFixedCustomers() {
+    private void seedFixedCustomers() {
         String encodedPassword = passwordEncoder.encode(DEMO_CUSTOMER_PASSWORD);
-        List<User> fixed = new ArrayList<>(FIXED_CUSTOMER_COUNT);
-
+        List<User> batch = new ArrayList<>(FIXED_CUSTOMER_COUNT);
         for (Object[] row : FIXED_CUSTOMERS) {
             User user = new User();
             user.setId((Long) row[0]);
@@ -234,19 +203,25 @@ public class SeederService implements CommandLineRunner {
             user.setRole(Role.CUSTOMER);
             user.setPhoneNumber((String) row[3]);
             user.setAddress((String) row[4]);
-            fixed.add(userRepository.save(user));
+            batch.add(user);
         }
-        userRepository.flush();
-
+        userRepository.saveAll(batch);
         backdateFixedCustomerAccounts();
-        entityManager.clear();
-        fixed.clear();
-        for (Object[] row : FIXED_CUSTOMERS) {
-            userRepository.findById((Long) row[0]).ifPresent(fixed::add);
-        }
+        logger.info("Seeded {} fixed demo customers (Troy, Dewey, Barbara).", FIXED_CUSTOMER_COUNT);
+    }
 
-        logger.info("Seeded {} fixed demo customers (Troy, Dewey, Barbara).", fixed.size());
-        return fixed;
+    private List<User> resolveFixedCustomersOrdered() {
+        List<Long> ids = List.of(TROY_ID, DEWEY_ID, BARBARA_ID);
+        Map<Long, User> byId = userRepository.findAllById(ids).stream()
+                .collect(Collectors.toMap(User::getId, u -> u));
+        return ids.stream().map(byId::get).filter(Objects::nonNull).toList();
+    }
+
+    private List<User> resolveStaffUsersOrdered() {
+        List<Long> ids = DEMO_STAFF_USERS.stream().map(row -> (Long) row[0]).toList();
+        Map<Long, User> byId = userRepository.findAllById(ids).stream()
+                .collect(Collectors.toMap(User::getId, u -> u));
+        return ids.stream().map(byId::get).filter(Objects::nonNull).toList();
     }
 
     private void backdateFixedCustomerAccounts() {
@@ -276,7 +251,7 @@ public class SeederService implements CommandLineRunner {
     private List<User> seedFakerCustomers() {
         Faker faker = new Faker(Locale.of("en", "US"));
         String encodedPassword = passwordEncoder.encode(DEMO_CUSTOMER_PASSWORD);
-        List<User> customers = new ArrayList<>(CUSTOMER_COUNT);
+        List<User> batch = new ArrayList<>(CUSTOMER_COUNT);
 
         for (int i = 0; i < CUSTOMER_COUNT; i++) {
             long id = STAFF_COUNT + FIXED_CUSTOMER_COUNT + 1L + i;
@@ -288,23 +263,21 @@ public class SeederService implements CommandLineRunner {
             user.setRole(Role.CUSTOMER);
             user.setPhoneNumber(faker.phoneNumber().cellPhone());
             user.setAddress(faker.address().fullAddress());
-            customers.add(userRepository.save(user));
+            batch.add(user);
         }
-        logger.info("Generated {} Datafaker customer accounts.", customers.size());
-        return customers;
+        userRepository.saveAll(batch);
+        logger.info("Generated {} Datafaker customer accounts.", batch.size());
+        return batch;
     }
-
-    // ─── Fixed Customer Order Generation ─────────────────────────────
 
     private void generateFixedCustomerOrders(List<User> fixedCustomers) {
         User troy    = fixedCustomers.stream().filter(u -> u.getId().equals(TROY_ID)).findFirst().orElse(null);
         User barbara = fixedCustomers.stream().filter(u -> u.getId().equals(BARBARA_ID)).findFirst().orElse(null);
 
-        List<User> staffUsers = new ArrayList<>();
-        for (Object[] row : DEMO_STAFF_USERS) {
-            userRepository.findById((Long) row[0]).ifPresent(staffUsers::add);
-        }
+        List<User> staffUsers = resolveStaffUsersOrdered();
         User staffDefault = staffUsers.isEmpty() ? null : staffUsers.get(0);
+
+        List<Order> toPersist = new ArrayList<>();
 
         long orderIdCounter = 1;
         long itemIdCounter = 1;
@@ -312,13 +285,9 @@ public class SeederService implements CommandLineRunner {
         LocalDate today = LocalDate.now();
         LocalDateTime ceiling = today.minusDays(RECENT_ORDER_WINDOW_DAYS).atTime(23, 59);
 
-        /* Troy joined ~18 months ago — spread 15 orders evenly across that window */
         LocalDate troyJoined = today.minusMonths(18).minusDays(5);
-
-        /* Barbara joined ~10 months ago — spread 5 orders across her window */
         LocalDate barbaraJoined = today.minusMonths(10).minusDays(3);
 
-        /* ── Troy Barnes: The Mega-Fan — every limited edition vinyl ─── */
         if (troy != null) {
             int orderCount = TROY_VINYL_VARIANT_IDS.length;
             long spanDays = java.time.temporal.ChronoUnit.DAYS.between(troyJoined, today.minusDays(7));
@@ -363,15 +332,13 @@ public class SeederService implements CommandLineRunner {
                 BigDecimal total = price.multiply(BigDecimal.valueOf(qty));
                 order.setTotalAmount(total.setScale(2, RoundingMode.HALF_UP));
                 order.setItems(List.of(item));
-                orderRepository.save(order);
+                toPersist.add(order);
             }
             logger.info("Seeded {} vinyl orders for Troy Barnes (Mega-Fan).", TROY_VINYL_VARIANT_IDS.length);
         }
 
-        /* ── Dewey Wilkerson: The Window Shopper — 0 orders (big wishlist, client-side) ── */
         logger.info("Dewey Wilkerson seeded with 0 orders (wishlist is client-side localStorage).");
 
-        /* ── Barbara Howard: The Complex Account — 5 orders (3 Delivered, 2 Cancelled) ── */
         if (barbara != null) {
             List<ProductVariant> allVariants = productVariantRepository.findAll();
             String[] barbaraStatuses = {"DELIVERED", "DELIVERED", "DELIVERED", "CANCELLED", "CANCELLED"};
@@ -436,20 +403,20 @@ public class SeederService implements CommandLineRunner {
 
                 order.setTotalAmount(total.setScale(2, RoundingMode.HALF_UP));
                 order.setItems(items);
-                orderRepository.save(order);
+                toPersist.add(order);
             }
             logger.info("Seeded 5 orders for Barbara Howard (Complex Account: 3 Delivered, 2 Cancelled).");
         }
 
-        entityManager.flush();
+        if (!toPersist.isEmpty()) {
+            orderRepository.saveAll(toPersist);
+        }
     }
 
     private LocalDateTime clampBeforeToday(LocalDateTime dt) {
         LocalDateTime limit = LocalDateTime.now().minusHours(1);
         return dt.isAfter(limit) ? limit : dt;
     }
-
-    // ─── Random Order Generation ──────────────────────────────────────
 
     private void generateOrders(List<User> customers) {
         Faker faker = new Faker();
@@ -463,9 +430,10 @@ public class SeederService implements CommandLineRunner {
             return;
         }
 
-        List<User> staffUsers = new ArrayList<>();
-        for (Object[] row : DEMO_STAFF_USERS) {
-            userRepository.findById((Long) row[0]).ifPresent(staffUsers::add);
+        List<User> staffUsers = resolveStaffUsersOrdered();
+        if (staffUsers.isEmpty()) {
+            logger.warn("No staff users found; skipping faker order generation.");
+            return;
         }
 
         int orderCount = faker.number().numberBetween(200, 501);
@@ -473,6 +441,8 @@ public class SeederService implements CommandLineRunner {
         long itemIdCounter = 500;
         int currentYearOrders = 0;
         int previousYearOrders = 0;
+
+        List<Order> batch = new ArrayList<>(orderCount);
 
         for (int i = 0; i < orderCount; i++) {
             User customer = customers.get(faker.number().numberBetween(0, customers.size()));
@@ -520,16 +490,16 @@ public class SeederService implements CommandLineRunner {
 
             order.setTotalAmount(totalAmount.setScale(2, RoundingMode.HALF_UP));
             order.setItems(items);
-            orderRepository.save(order);
+            batch.add(order);
 
             if (isCurrentYear) currentYearOrders++; else previousYearOrders++;
         }
 
+        orderRepository.saveAll(batch);
+
         logger.info("Generated {} orders ({} in {}, {} in {}).",
                 orderCount, currentYearOrders, currentYear, previousYearOrders, previousYear);
     }
-
-    // ─── Chronological Status Logic ──────────────────────────────────
 
     private String resolveStatus(Faker faker, int orderYear, int currentYear,
                                  LocalDateTime orderDate, LocalDateTime recentCutoff) {
@@ -563,8 +533,6 @@ public class SeederService implements CommandLineRunner {
         }
     }
 
-    // ─── Shared Helpers ──────────────────────────────────────────────
-
     private BigDecimal lookupEurPrice(ProductVariant variant) {
         return productPriceRepository
                 .findByProductVariantAndCurrencyCode(variant, "EUR")
@@ -582,8 +550,6 @@ public class SeederService implements CommandLineRunner {
         int minute = ThreadLocalRandom.current().nextInt(0, 60);
         return LocalDateTime.of(date, LocalTime.of(hour, minute));
     }
-
-    // ─── CSV Seeding (unchanged catalog data) ────────────────────────
 
     private CSVReader createCsvReader(String path) throws Exception {
         ClassPathResource resource = new ClassPathResource(path);
@@ -604,8 +570,8 @@ public class SeederService implements CommandLineRunner {
 
     private void seedCategories() throws Exception {
         try (CSVReader reader = createCsvReader("data/categories.csv")) {
+            List<Category> batch = new ArrayList<>();
             String[] line;
-            int count = 0;
             while ((line = reader.readNext()) != null) {
                 if (!isValidLine(line)) continue;
 
@@ -614,22 +580,25 @@ public class SeederService implements CommandLineRunner {
                 category.setName(line[1]);
                 category.setCode(line[2]);
                 category.setDescription(line[3]);
-                categoryRepository.save(category);
-                count++;
+                batch.add(category);
             }
-            logger.info("Imported {} categories from CSV.", count);
+            categoryRepository.saveAll(batch);
+            logger.info("Imported {} categories from CSV.", batch.size());
         }
     }
 
     private void seedProducts() throws Exception {
+        Map<Long, Category> categoriesById = categoryRepository.findAll().stream()
+                .collect(Collectors.toMap(Category::getId, c -> c));
+
         try (CSVReader reader = createCsvReader("data/products.csv")) {
+            List<Product> batch = new ArrayList<>();
             String[] line;
-            int count = 0;
             while ((line = reader.readNext()) != null) {
                 if (!isValidLine(line)) continue;
 
                 Long categoryId = Long.parseLong(line[1]);
-                Category category = categoryRepository.findById(categoryId).orElse(null);
+                Category category = categoriesById.get(categoryId);
                 if (category == null) {
                     logger.warn("Skipping Product ID {}: Category {} not found.", line[0], categoryId);
                     continue;
@@ -651,22 +620,25 @@ public class SeederService implements CommandLineRunner {
                 product.setDescription(line[6]);
                 product.setMaterialsSpecs(line[7]);
                 product.setShippingInfo(line[8]);
-                productRepository.save(product);
-                count++;
+                batch.add(product);
             }
-            logger.info("Imported {} products from CSV.", count);
+            productRepository.saveAll(batch);
+            logger.info("Imported {} products from CSV.", batch.size());
         }
     }
 
     private void seedVariants() throws Exception {
+        Map<Long, Product> productsById = productRepository.findAll().stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
         try (CSVReader reader = createCsvReader("data/product_variants.csv")) {
+            List<ProductVariant> batch = new ArrayList<>();
             String[] line;
-            int count = 0;
             while ((line = reader.readNext()) != null) {
                 if (!isValidLine(line)) continue;
 
                 Long productId = Long.parseLong(line[1]);
-                Product product = productRepository.findById(productId).orElse(null);
+                Product product = productsById.get(productId);
                 if (product == null) {
                     logger.warn("Skipping Variant ID {}: Product {} not found.", line[0], productId);
                     continue;
@@ -681,22 +653,25 @@ public class SeederService implements CommandLineRunner {
                 variant.setSize(Size.fromString(
                     sizeStr != null && !sizeStr.isEmpty() ? sizeStr.toUpperCase() : null
                 ));
-                productVariantRepository.save(variant);
-                count++;
+                batch.add(variant);
             }
-            logger.info("Imported {} product variants from CSV.", count);
+            productVariantRepository.saveAll(batch);
+            logger.info("Imported {} product variants from CSV.", batch.size());
         }
     }
 
     private void seedInventory() throws Exception {
+        Map<Long, ProductVariant> variantsById = productVariantRepository.findAll().stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
         try (CSVReader reader = createCsvReader("data/products_inventory.csv")) {
+            List<ProductInventory> batch = new ArrayList<>();
             String[] line;
-            int count = 0;
             while ((line = reader.readNext()) != null) {
                 if (!isValidLine(line)) continue;
 
                 Long variantId = Long.parseLong(line[1]);
-                ProductVariant variant = productVariantRepository.findById(variantId).orElse(null);
+                ProductVariant variant = variantsById.get(variantId);
                 if (variant == null) continue;
 
                 ProductInventory inventory = new ProductInventory();
@@ -704,22 +679,25 @@ public class SeederService implements CommandLineRunner {
                 inventory.setProductVariant(variant);
                 inventory.setStockQuantity(Integer.parseInt(line[2]));
                 inventory.setStockLocation(line[3]);
-                productInventoryRepository.save(inventory);
-                count++;
+                batch.add(inventory);
             }
-            logger.info("Imported inventory for {} records.", count);
+            productInventoryRepository.saveAll(batch);
+            logger.info("Imported inventory for {} records.", batch.size());
         }
     }
 
     private void seedPrices() throws Exception {
+        Map<Long, ProductVariant> variantsById = productVariantRepository.findAll().stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
         try (CSVReader reader = createCsvReader("data/product_prices.csv")) {
+            List<ProductPrice> batch = new ArrayList<>();
             String[] line;
-            int count = 0;
             while ((line = reader.readNext()) != null) {
                 if (!isValidLine(line)) continue;
 
                 Long variantId = Long.parseLong(line[1]);
-                ProductVariant variant = productVariantRepository.findById(variantId).orElse(null);
+                ProductVariant variant = variantsById.get(variantId);
                 if (variant == null) continue;
 
                 ProductPrice price = new ProductPrice();
@@ -727,17 +705,22 @@ public class SeederService implements CommandLineRunner {
                 price.setProductVariant(variant);
                 price.setCurrencyCode(line[2]);
                 price.setAmount(new BigDecimal(line[3]));
-                productPriceRepository.save(price);
-                count++;
+                batch.add(price);
             }
-            logger.info("Imported {} product prices.", count);
+            productPriceRepository.saveAll(batch);
+            logger.info("Imported {} product prices.", batch.size());
         }
     }
 
     private void seedProductImages() throws Exception {
+        Map<Long, Product> productsById = productRepository.findAll().stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+        Map<Long, ProductVariant> variantsById = productVariantRepository.findAll().stream()
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
+
         try (CSVReader reader = createCsvReader("data/product_images.csv")) {
+            List<ProductImage> batch = new ArrayList<>();
             String[] line;
-            int count = 0;
             while ((line = reader.readNext()) != null) {
                 if (!isValidLine(line)) continue;
                 Long id = Long.parseLong(line[0]);
@@ -751,7 +734,7 @@ public class SeederService implements CommandLineRunner {
 
                 String productIdStr = line.length > 1 ? line[1] : null;
                 if (productIdStr != null && !productIdStr.trim().isEmpty()) {
-                    Product product = productRepository.findById(Long.parseLong(productIdStr)).orElse(null);
+                    Product product = productsById.get(Long.parseLong(productIdStr));
                     if (product != null) {
                         image.setProduct(product);
                     } else {
@@ -762,7 +745,7 @@ public class SeederService implements CommandLineRunner {
 
                 String variantIdStr = line.length > 2 ? line[2] : null;
                 if (variantIdStr != null && !variantIdStr.trim().isEmpty()) {
-                    ProductVariant variant = productVariantRepository.findById(Long.parseLong(variantIdStr)).orElse(null);
+                    ProductVariant variant = variantsById.get(Long.parseLong(variantIdStr));
                     if (variant != null) {
                         image.setProductVariant(variant);
                     } else {
@@ -776,10 +759,10 @@ public class SeederService implements CommandLineRunner {
                     continue;
                 }
 
-                productImageRepository.save(image);
-                count++;
+                batch.add(image);
             }
-            logger.info("Imported {} product images.", count);
+            productImageRepository.saveAll(batch);
+            logger.info("Imported {} product images.", batch.size());
         }
     }
 
@@ -794,7 +777,7 @@ public class SeederService implements CommandLineRunner {
                 "data/cms_support.csv"
         };
 
-        int total = 0;
+        List<SiteContentEntry> batch = new ArrayList<>();
         for (String path : paths) {
             try (CSVReader reader = createCsvReader(path)) {
                 String[] line;
@@ -806,15 +789,13 @@ public class SeederService implements CommandLineRunner {
                     entry.setEntryKey(line[1].trim());
                     entry.setTitle(line.length > 2 && line[2] != null ? line[2] : "");
                     entry.setContent(line.length > 3 && line[3] != null ? line[3] : "");
-                    siteContentRepository.save(entry);
-                    total++;
+                    batch.add(entry);
                 }
             }
         }
-        logger.info("Imported {} site content rows from cms_*.csv.", total);
+        siteContentRepository.saveAll(batch);
+        logger.info("Imported {} site content rows from cms_*.csv.", batch.size());
     }
-
-    // ─── Audit Log Seed Data ─────────────────────────────────────────
 
     private void seedAuditLog() {
         logger.info("Seeding audit log entries...");

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ProductPriceRepository extends JpaRepository<ProductPrice, Long> {
     Optional<ProductPrice> findByProductVariantAndCurrencyCode(ProductVariant variant, String currencyCode);
     
-    // For compatibility with OrderSeeder
+    /** Alias used by {@link com.java.backend.service.DatabaseSeederService} order generation. */
     default Optional<ProductPrice> findByVariantAndCurrency(ProductVariant variant, String currency) {
         return findByProductVariantAndCurrencyCode(variant, currency);
     }

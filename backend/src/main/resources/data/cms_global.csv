@@ -5,7 +5,7 @@ GLOBAL,skip_link_text,Skip to main content,
 GLOBAL,footer_credit,© Chaotic the Harmony · Music for the Burned Out,
 GLOBAL,demo_region_aria_label,Demo environment notice,
 GLOBAL,demo_badge,Demo mode,
-GLOBAL,demo_static_suffix,"— Sample data for System ""Harmony"" restores every two hours (UTC). "
+GLOBAL,demo_static_suffix,"— Sample data for System ""Harmony"" refreshes daily (03:00 UTC). "
 GLOBAL,coming_soon_body,This page is coming soon. Check back later!,
 GLOBAL,coming_soon_link,Return to home,
 GLOBAL,not_found_title,404 — Page not found,
