@@ -4,13 +4,11 @@
 
 An admin platform and customer storefront for the fictional ska-punk band *"Chaotic The Harmony"* (CTH), built with **Java Spring Boot**, **React**, and **PostgreSQL** in a Neo-Brutalist aesthetic. The admin side — **CTH // BACKLINE** — is a Unified Commerce Platform that merges an **Inventory Management System (IMS)** with a custom **Content Management System (CMS)** and the band's e-commerce operations.
 
-- **🔐 Admin:** [CTH // BACKLINE](tbc)
-- **🔗 Storefront:** [Chaotic The Harmony](tbc)
-*(Will replace with real links in this README once Railway domains are issued.)*
+- **🔐 Admin:** [CTH // BACKLINE](https://cth-frontend-demo-28d7.up.railway.app/admin/login)
+- **🔗 Storefront:** [Chaotic The Harmony](https://cth-frontend-demo-28d7.up.railway.app/)
 
 > **Deployment:** Hosted on **Railway** (PostgreSQL + backend + frontend).
->
-> **Demo refresh:** To ensure a fresh experience for everyone, the database resets daily at 03:00 UTC via GitHub Actions.
+> **Demo refresh:** A GitHub Actions workflow runs daily at **03:00 UTC** and triggers **`railway redeploy`** for the **backend** service. That wipes and re-seeds **only when** deploy + Railway config (e.g. `spring.jpa.hibernate.ddl-auto` / `SPRING_JPA_HIBERNATE_DDL_AUTO`) leave **`app_users` empty** so `DatabaseSeederService` runs; it is not a separate SQL reset job against Postgres.
 
 ---
 
@@ -73,7 +71,7 @@ I manually architected the product catalog rather than using random generators, 
 
 ## Architecture & Tech Stack
 
-Monorepo (`/backend` + `/frontend`), Docker-first, deployed to **Railway** (managed PostgreSQL + two container services). **Local Compose** points the API at the `db` service via `SPRING_DATASOURCE_*` and sets `SPRING_JPA_HIBERNATE_DDL_AUTO=update` so data survives backend restarts while the Postgres volume remains. **`DatabaseSeederService`** runs on startup **only when there are no users** (empty database). **Railway** uses hosted Postgres env vars; schema defaults come from [`application.properties`](backend/src/main/resources/application.properties) unless overridden.
+Monorepo (`/backend` + `/frontend`), Docker-first, deployed to **Railway** (managed PostgreSQL + two container services). **Local Compose** points the API at the `db` service via `SPRING_DATASOURCE_*` and sets `SPRING_JPA_HIBERNATE_DDL_AUTO=update`, so restarting the backend container does not clear the DB. **`docker-compose.yml` does not declare a named `volumes:` entry for Postgres** (the image still stores data under Docker’s default volume for `/var/lib/postgresql/data`). Usual `docker compose` restarts keep that data; **`docker compose down -v`** or volume prune will remove it. **`DatabaseSeederService`** runs on startup **only when there are no users** (empty `app_users`). **Railway** uses hosted Postgres env vars; schema defaults come from [`application.properties`](backend/src/main/resources/application.properties) unless overridden.
 
 
 | Layer        | Stack                                                                                       |
@@ -145,13 +143,13 @@ docker-compose up --build -d
 | PostgreSQL  | localhost:5432                                 |
 
 
-With **`ddl-auto=update`**, Postgres data is **not** wiped on every backend restart unless you remove the volume or change config. The backend **seeds once** when `app_users` is empty (first run or after you wipe the DB). Scheduled in-process resets were removed; use the GitHub workflow / Railway redeploy for periodic refreshes. Product imagery is referenced by URLs in seed data; the backend does not host an image-upload API.
+With **`ddl-auto=update`**, Postgres data is **not** wiped on backend restarts unless you recreate the DB container with volumes removed (`docker compose down -v`), change Hibernate config to recreate schema, or otherwise empty **`app_users`**. The backend **seeds once** when `app_users` is empty. Scheduled in-process resets were removed; the hosted demo relies on the **GitHub Actions** daily **backend redeploy** (see top of this README). Product imagery is referenced by URLs in seed data; the backend does not host an image-upload API.
 
 ### Option B: Manual (for development)
 
 Requires **Java 21**, **Node.js 20+**, and **PostgreSQL 16+**.
 
-**1. Database** — Create a local Postgres database (e.g. `cthdb` on `localhost:5432`) matching the JDBC URL you set in `application-local.properties`.
+**1. Database** — Create a local Postgres database (e.g. `cthdb` on `localhost:5432`) matching the JDBC URL you pass via env vars or an optional `application-local.properties` (gitignored; not shipped in the repo).
 
 **2. Backend** — From repo root, configure datasource env vars (see `.env.example`) or add an optional `application-local.properties` with `spring.datasource.*`, `JWT_SECRET_KEY`, and **`spring.jpa.hibernate.ddl-auto=update`** so restarts keep data while still allowing first-run seeding when the DB is empty:
 
@@ -175,7 +173,7 @@ npm install
 npm run dev
 ```
 
-`frontend/.env.development` already points `VITE_API_URL` at `http://localhost:8080/api/v1`.
+Optionally create **`frontend/.env.development`** (gitignored) with `VITE_API_URL=http://localhost:8080/api/v1`. If you omit it, **`frontend/src/api/axios.js`** defaults the API base to `http://localhost:8080/api/v1` when `VITE_API_URL` is unset.
 
 
 | Service           | URL                                            |
