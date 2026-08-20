@@ -118,7 +118,7 @@ No design prototypes were made upfront — UI and UX decisions are being made as
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | 🚧     | **Assets** — Integrating iteratively; placeholder SVGs with descriptive alt-text are used where final media is pending                     |
 | 🚧     | **Accessibility** — Keyboard navigation, focus management, and screen reader coverage under active development                             |
-| ⏳      | **Testing** — No custom tests yet. Planning JUnit 5 for the backend Service Layer and Vitest + jest-axe for frontend components as I learn |
+| 🚧     | **Testing** — First JUnit 5 test is in (`AuthController` password length). More backend tests and Vitest + jest-axe as I learn |
 | ⏳      | **Notifications** — Might integrate with SendGrid for order confirmations                                                                  |
 
 
